@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת לבדיקת ויזות VIP - אמסלם תיירות ונופש</title>
+    
+    <!-- הערה: לטובת סביבת הייצור (Production), מומלץ להחליף את ה-CDN ב-Build מקומי של Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00b4d8',
+                            light: '#90e0ef',
+                            dark: '#0077b6',
+                            charcoal: '#333333'
+                        }
+                    },
+                    boxShadow: {
+                        'premium': '0 15px 50px -12px rgba(0,0,0,0.08)',
+                        'floating': '0 20px 40px -10px rgba(0,180,216,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#00b4d8 0.5px, transparent 0.5px), radial-gradient(#00b4d8 0.5px, #f8fafc 0.5px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            background-attachment: fixed;
+            background-color: rgba(248, 250, 252, 0.97);
+            background-blend-mode: lighten;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+        
+        .glow-phone:hover { box-shadow: 0 0 25px rgba(56, 189, 248, 0.3); border-color: rgba(56, 189, 248, 0.5); }
+        .glow-whatsapp:hover { box-shadow: 0 0 25px rgba(34, 197, 94, 0.3); border-color: rgba(34, 197, 94, 0.5); }
+        .glow-email:hover { box-shadow: 0 0 25px rgba(244, 63, 94, 0.3); border-color: rgba(244, 63, 94, 0.5); }
+        
+        /* נגישות ועיצוב לרשימה נופלת */
+        .dropdown-item[aria-selected="true"] { background-color: #f1f5f9; }
+
+        /* הגדרות הדפסה (Print-Ready CSS) */
+        @media print {
+            @page { margin: 1.5cm; }
+            body { 
+                background: white !important; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+            }
+            .no-print, #searchContainer, #quickSuggestions, footer, .glow-phone, .glow-email, .glow-whatsapp, .action-buttons { 
+                display: none !important; 
+            }
+            #resultContainer { 
+                box-shadow: none !important; 
+                border: none !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                transform: none !important; 
+                opacity: 1 !important; 
+            }
+            .print-header { 
+                display: flex !important; 
+                justify-content: center; 
+                margin-bottom: 30px; 
+                border-bottom: 2px solid #00b4d8;
+                padding-bottom: 20px;
+            }
+            .fixed { display: none !important; }
+            #calcSectionWrapper { border: 1px solid #e2e8f0 !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Screen Reader Announcer -->
+    <div id="a11y-announcer" class="sr-only" aria-live="polite"></div>
+
+    <!-- Background Elements -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-light/20 rounded-full blur-[100px] pointer-events-none z-0 no-print"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-dark/10 rounded-full blur-[120px] pointer-events-none z-0 no-print"></div>
+
+    <header class="w-full pt-10 pb-4 relative z-10 flex flex-col items-center justify-center text-center px-4 print-header">
+        <a href="#" id="mainLogoLink" tabindex="0" class="inline-block transition-transform hover:scale-105 duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand">
+            <img src="amsvisa-logo.jpg" alt="Amsalem Visa Logo" class="h-20 md:h-24 object-contain drop-shadow-sm" onerror="this.src='https://placehold.co/300x100/ffffff/00b4d8?text=Amsalem+Visa'">
+        </a>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 relative z-30 max-w-5xl">
+        
+        <!-- Intro Section -->
+        <div class="text-center mt-6 mb-12 no-print">
+            <div class="inline-flex items-center justify-center px-5 py-2 border border-slate-200/80 rounded-full bg-white/60 text-slate-500 text-[14px] font-semibold shadow-sm mb-6 tracking-wide backdrop-blur-sm">
+                מבית אמסלם תיירות ונופש
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-slate-800 tracking-tight mb-5">
+                בדיקת <span class="text-brand">ויזה</span> ותוקף דרכון
+            </h1>
+            <p class="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed mb-7">
+                הזינו את מדינת היעד או עיר מרכזית וקבלו מיד מידע ברור על דרישות ויזה, טפסי כניסה ותוקף הדרכון הנדרש לנסיעה.
+            </p>
+            <div class="fade-in">
+                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-white border border-brand/30 rounded-full text-slate-700 text-[14px] font-bold shadow-[0_2px_10px_rgba(0,180,216,0.06)]">
+                    <img src="https://flagcdn.com/w20/il.png" alt="Israel Flag" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" onerror="this.style.display='none'"> 
+                    המידע מותאם לנושאי דרכון ישראלי בלבד
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-2xl mx-auto relative z-40 no-print" id="searchContainer">
+            <div class="relative group">
+                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-brand text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-xl"></i>
+                </div>
+                <input type="text" id="countrySearch" placeholder="לאן טסים? (לדוגמה: לונדון, פריז, תאילנד...)" 
+                    class="w-full pl-6 pr-16 py-5 md:py-6 bg-white/95 backdrop-blur-sm border-2 border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl text-lg md:text-xl focus:outline-none focus:border-brand/40 focus:ring-4 focus:ring-brand/10 transition-all placeholder:text-slate-400 font-medium"
+                    autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocompleteList" aria-haspopup="listbox">
+                <button type="button" id="clearSearch" aria-label="נקה חיפוש" class="absolute inset-y-0 left-0 pl-6 flex items-center cursor-pointer text-slate-300 hover:text-slate-500 hidden transition-colors focus:outline-none">
+                    <i class="fa-solid fa-circle-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="autocompleteList" role="listbox" class="absolute z-50 w-full mt-3 bg-white rounded-2xl shadow-xl border border-slate-100 max-h-72 overflow-y-auto hidden divide-y divide-slate-50">
+            </div>
+
+            <div id="quickSuggestions" class="mt-6 flex flex-wrap justify-center gap-2 md:gap-3 fade-in">
+            </div>
+        </div>
+
+        <div class="mt-16 pb-10">
+            <div id="resultContainer" class="hidden bg-white/95 backdrop-blur-lg border border-white/50 rounded-[2rem] shadow-premium p-6 md:p-10 mx-auto max-w-4xl transform transition-all duration-500 scale-95 opacity-0">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between mb-8 pb-8 border-b border-slate-100 gap-6">
+                    <div class="action-buttons order-2 md:order-1 flex flex-wrap gap-3 w-full md:w-auto justify-center no-print">
+                        <button id="backBtn" type="button" class="text-[14px] md:text-[15px] font-bold text-slate-500 hover:text-brand transition-colors flex items-center gap-2 shrink-0 bg-slate-50 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand px-4 py-2.5 rounded-xl">
+                            <i class="fa-solid fa-arrow-right-long"></i> חיפוש חדש
+                        </button>
+                        <button onclick="window.print()" type="button" class="text-[14px] md:text-[15px] font-bold text-brand bg-brand/10 hover:bg-brand/20 transition-colors flex items-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-brand px-4 py-2.5 rounded-xl" title="הדפס תוצאה">
+                            <i class="fa-solid fa-print"></i> הדפס
+                        </button>
+                        <a id="whatsappShareBtn" target="_blank" rel="noopener noreferrer" class="text-[14px] md:text-[15px] font-bold text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20 transition-colors flex items-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-[#22c55e] px-4 py-2.5 rounded-xl" title="שתף בוואטסאפ">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> שתף
+                        </a>
+                    </div>
+                    
+                    <div class="order-1 md:order-2 flex items-center gap-5 justify-end w-full md:w-auto">
+                        <div class="text-right">
+                            <h2 id="resCountryNameTab" class="text-3xl md:text-4xl font-heading font-black text-slate-800 tracking-tight mb-1.5"></h2>
+                            <p class="text-[13px] md:text-sm text-slate-400 font-medium flex items-center gap-1.5 justify-end">
+                                דרישות לנוסעים עם דרכון ישראלי <img src="https://flagcdn.com/w20/il.png" alt="IL" class="w-4 h-3 rounded-[1px] opacity-70">
+                            </p>
+                        </div>
+                        
+                        <!-- Fallback Flag Container -->
+                        <div class="relative w-[72px] h-[52px] shrink-0 hidden" id="resFlagContainer">
+                            <div class="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg border border-slate-200 text-slate-400">
+                                <i class="fa-solid fa-globe text-2xl"></i>
+                            </div>
+                            <img id="resFlag" src="" alt="Flag" class="absolute inset-0 w-full h-full rounded-lg object-cover shadow-sm border border-slate-100 z-10 bg-white transition-opacity duration-300" onerror="this.style.opacity='0'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 flex flex-col items-center text-center">
+                    <div class="relative mb-6">
+                        <div id="resIconCircle" class="w-20 h-20 rounded-full border-4 flex items-center justify-center bg-white shadow-sm relative z-10 transition-colors duration-300">
+                            <i id="resIcon" class="text-3xl"></i>
+                        </div>
+                        <div id="resIconTail" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] z-0 transition-colors duration-300"></div>
+                    </div>
+                    
+                    <h3 id="resTitle" class="text-3xl md:text-4xl font-heading font-black text-slate-800 leading-tight mb-8"></h3>
+                    
+                    <div class="inline-flex items-center gap-2.5 px-6 py-2.5 bg-white border border-brand/30 rounded-full shadow-[0_4px_15px_rgba(0,180,216,0.08)]">
+                        <span id="resValidityTitle" class="text-[15px] font-bold text-slate-600"></span>
+                        <i class="fa-regular fa-clock text-brand text-lg"></i>
+                    </div>
+                </div>
+                    
+                <div id="resNotesBox" class="mb-10 bg-slate-50/50 rounded-2xl p-6 md:p-8 border border-slate-100 hidden">
+                    <ul id="resDetailsList" class="space-y-4"></ul>
+                </div>
+
+                <div id="calcSectionWrapper" class="bg-white border-2 border-brand-light/30 rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] no-print">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-5">
+                        <div class="text-right">
+                            <h3 class="text-2xl font-heading font-bold text-slate-800">מחשבון תוקף דרכון</h3>
+                            <p class="text-sm text-slate-500 mt-0.5">בדקו אם הדרכון שלכם מתאים לנסיעה זו</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                    </div>
+
+                    <form id="calcForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                        <div class="relative">
+                            <label for="tripDate" id="tripDateLabel" class="block text-sm font-bold text-slate-600 mb-2">תאריך נסיעה</label>
+                            <div class="relative flex items-center">
+                                <i class="fa-regular fa-calendar absolute left-4 text-slate-400 pointer-events-none z-10"></i>
+                                <input type="date" id="tripDate" required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-slate-700 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all cursor-pointer font-medium text-right relative z-0">
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <label for="expiryDate" class="block text-sm font-bold text-slate-600 mb-2">תוקף הדרכון שלכם</label>
+                            <div class="relative flex items-center">
+                                <i class="fa-solid fa-passport absolute left-4 text-slate-400 pointer-events-none z-10"></i>
+                                <input type="date" id="expiryDate" required
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-slate-700 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all cursor-pointer font-medium text-right relative z-0">
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2 mt-2">
+                            <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,180,216,0.39)] hover:shadow-[0_6px_20px_rgba(0,180,216,0.23)] transition-all active:scale-[0.98] flex justify-center items-center gap-3 text-lg border-none outline-none focus:ring-4 focus:ring-brand-light">
+                                <span id="calcBtnText">בדוק תוקף</span> <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="calcResult" class="mt-6 hidden p-5 rounded-xl border flex items-start gap-4 transition-all relative z-10">
+                        <div id="calcResultIcon" class="shrink-0 mt-0.5 text-2xl"></div>
+                        <div>
+                            <h4 id="calcResultTitle" class="font-bold text-lg mb-1"></h4>
+                            <p id="calcResultMessage" class="text-sm font-medium opacity-90"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8 mt-auto relative z-10 text-center no-print">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-3xl font-heading font-black text-slate-800 mb-2">אנחנו כאן לכל שאלה</h2>
+            <p class="text-slate-500 mb-10">צוות מחלקת הויזות זמין לליווי, בדיקת דרישות כניסה וטיפול בבקשות.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto" dir="ltr">
+                <a href="mailto:visa.dept@amsalem.com" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-email group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#f43f5e] group-hover:text-[#f43f5e] shadow-sm">
+                        <i class="fa-regular fa-envelope text-lg transition-colors duration-300"></i>
+                    </div>
+                    <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">דוא"ל</span>
+                    <span class="text-xl font-bold tracking-wide text-slate-800" dir="ltr">visa.dept@amsalem.com</span>
+                </a>
+
+                <a href="https://wa.me/97246700998" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-whatsapp group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#22c55e] group-hover:text-[#22c55e] shadow-sm">
+                        <i class="fa-brands fa-whatsapp text-xl transition-colors duration-300"></i>
+                    </div>
+                    <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">WhatsApp</span>
+                    <span class="text-xl font-bold tracking-wider text-slate-800" dir="ltr">+972 4-670-0998</span>
+                </a>
+
+                <a href="tel:046700900" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-phone group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md relative">
+                    <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#38bdf8] group-hover:text-[#38bdf8] shadow-sm">
+                        <i class="fa-solid fa-phone text-lg transition-colors duration-300"></i>
+                    </div>
+                    <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">שיחה עם נציג</span>
+                    <span class="text-xl font-bold tracking-wider text-slate-800" dir="ltr">04-6700900</span>
+                    <span class="text-[14px] text-white font-bold bg-slate-700 px-3.5 py-1 rounded-full mt-2.5 shadow-sm tracking-wide transition-colors duration-300 group-hover:bg-brand" dir="rtl">שלוחה 5895</span>
+                </a>
+            </div>
+
+            <div class="pt-10 border-t border-slate-200 flex flex-col items-center" dir="rtl">
+                <img src="amsalem-logo.png" alt="Amsalem Global Travel Management" class="h-10 opacity-80 mb-6 transition-opacity hover:opacity-100" onerror="this.style.display='none'">
+                <p class="text-xs text-slate-500 max-w-3xl leading-relaxed">
+                    המידע במערכת מתעדכן באופן שוטף, אך דרישות כניסה עשויות להשתנות ללא הודעה מוקדמת. לפני נסיעה מומלץ לבצע בדיקה סופית מול מחלקת הויזות. 
+                    <br><span id="dataVersionText">הנתונים מעודכנים לשנת <span id="currentYearDisplay"></span></span>.
+                </p>
+                <p class="text-xs text-slate-600 mt-4 font-bold">&copy; כל הזכויות שמורות לאמסלם תיירות ונופש בע"מ</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const schengenAliases = ['שנגן'];
+        
+        // נתונים סטטיים מעודכנים כולל כל התיקונים
+        const fallbackCountriesData = [
+            { "id": "AF", "name": "אפגניסטן", "aliases": ["afghanistan"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "AL", "name": "אלבניה", "aliases": ["albania"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "DZ", "name": "אלג'יריה", "aliases": ["algeria"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "AD", "name": "אנדורה", "aliases": ["andorra"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך צרפת או ספרד (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "AO", "name": "אנגולה", "aliases": ["angola"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "עד 30 יום לביקור, מקסימום 90 יום בשנה קלנדרית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "AG", "name": "אנטיגואה וברבודה", "aliases": ["antigua and barbuda"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 180 יום", "פטור ל-24 שעות בהגעה בקרוזים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "AR", "name": "ארגנטינה", "aliases": ["argentina", "בואנוס איירס"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AM", "name": "ארמניה", "aliases": ["armenia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 120 יום", "בהגעה בנמל התעופה זבארטנוץ או מקוון מראש"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AU", "name": "אוסטרליה", "aliases": ["australia", "סידני", "מלבורן", "sydney", "melbourne"], "category": "online", "visaTitle": "ויזה מקוונת מראש", "requirements": ["ויזת מבקר מקוונת e600 - ישראלים אינם זכאים ל-ETA"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AT", "name": "אוסטריה", "aliases": ["austria", "וינה", "vienna", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "AZ", "name": "אזרבייג'ן", "aliases": ["azerbaijan", "באקו", "baku"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BS", "name": "איי בהאמה", "aliases": ["bahamas"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BH", "name": "בחריין", "aliases": ["bahrain"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 14 יום", "נדרשת הוכחת אמצעים כלכליים וכתובת שהייה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BD", "name": "בנגלדש", "aliases": ["bangladesh"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BB", "name": "ברבדוס", "aliases": ["barbados"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BY", "name": "בלארוס", "aliases": ["belarus"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BE", "name": "בלגיה", "aliases": ["belgium", "בריסל", "brussels", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BZ", "name": "בליז", "aliases": ["belize"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BJ", "name": "בנין", "aliases": ["benin"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "נדרשת תעודת חיסונים בינלאומית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BT", "name": "בהוטן", "aliases": ["bhutan"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CO", "name": "קולומביה", "aliases": ["colombia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה בשגרירות מראש לשהייה עד 90 יום", "ישראל נמצאת ברשימת המדינות שנדרשות להוציא ויזה מראש", "נדרש למלא טופס Check-Mig לרישום מוקדם לפני טיסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BA", "name": "בוסניה והרצגובינה", "aliases": ["bosnia and herzegovina"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BW", "name": "בוצואנה", "aliases": ["botswana"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של שנה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BR", "name": "ברזיל", "aliases": ["brazil", "ריו", "סאו פאולו", "rio"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BN", "name": "ברוניי", "aliases": ["brunei"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - אינה מכירה בישראל"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BG", "name": "בולגריה", "aliases": ["bulgaria", "סופיה", "בורגס", "ורנה", "sofia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BF", "name": "בורקינה פאסו", "aliases": ["burkina faso"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BI", "name": "בורונדי", "aliases": ["burundi"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: חודש", "ויזה בהגעה זמינה בשדות התעופה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KH", "name": "קמבודיה", "aliases": ["cambodia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום", "ויזה בהגעה זמינה בשדות התעופה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CM", "name": "קמרון", "aliases": ["cameroon"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CA", "name": "קנדה", "aliases": ["canada", "טורונטו", "מונטריאול", "toronto"], "category": "eta", "visaTitle": "אישור אלקטרוני (eTA)", "requirements": ["זמן שהייה: 180 יום", "eTA נדרש לטיסה או טרנזיט דרך קנדה"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "CV", "name": "כף ורדה", "aliases": ["cape verde"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 30 יום", "הרשמה מראש דרך פלטפורמת EASE המקוונת"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CF", "name": "הרפובליקה המרכז-אפריקאית", "aliases": ["central african republic"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TD", "name": "צ'אד", "aliases": ["chad"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["נדרשת כרטיס הלוך-חזור ודרכון בתוקף 6 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CL", "name": "צ'ילה", "aliases": ["chile"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "CN", "name": "סין", "aliases": ["china", "בייגינג", "שנחאי", "beijing"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ניתן לבקש ויזה רב-פעמית עד 10 שנים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BO", "name": "בוליביה", "aliases": ["bolivia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KM", "name": "קומורו", "aliases": ["comoros"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 45 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CG", "name": "הרפובליקה של קונגו", "aliases": ["republic of the congo"], "category": "online", "visaTitle": "ויזה מקוונת מראש", "requirements": ["ויזה מקוונת מראש דרך שגרירות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CD", "name": "קונגו הדמוקרטית", "aliases": ["dr congo"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 7 ימים", "נדרש מכתב הזמנה או הזמנת מלון"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CR", "name": "קוסטה ריקה", "aliases": ["costa rica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "CI", "name": "חוף השנהב", "aliases": ["ivory coast"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים", "כניסה עם eVisa רק דרך נמל התעופה פורט בואה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HR", "name": "קרואטיה", "aliases": ["croatia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CU", "name": "קובה", "aliases": ["cuba"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CY", "name": "קפריסין", "aliases": ["cyprus", "לרנקה", "פאפוס", "איה נאפה", "larnaca", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CZ", "name": "צ'כיה", "aliases": ["czech republic", "פראג", "prague", "צכיה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 90 יום; קיימת התייחסות להסכם בילטרלי מיוחד לישראלים, אך לאחר 90 יום יש לצאת מאזור שנגן לפחות ליום אחד"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "DK", "name": "דנמרק", "aliases": ["denmark", "קופנהגן", "copenhagen", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "DJ", "name": "ג'יבוטי", "aliases": ["djibouti"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "DM", "name": "דומיניקה", "aliases": ["dominica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "DO", "name": "הרפובליקה הדומיניקנית", "aliases": ["dominican republic"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "ניתן להאריך עד 120 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "EC", "name": "אקוודור", "aliases": ["ecuador"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "EG", "name": "מצרים", "aliases": ["egypt", "סיני", "שארם", "טאבה", "קהיר", "cairo"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["פטור עד 14 יום לאתרי סיני בלבד, בכניסה דרך טאבה או שארם א-שייח'"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SV", "name": "אל סלבדור", "aliases": ["el salvador"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GQ", "name": "גינאה המשוונית", "aliases": ["equatorial guinea"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ER", "name": "אריתריאה", "aliases": ["eritrea"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
+            { "id": "EE", "name": "אסטוניה", "aliases": ["estonia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SZ", "name": "אסוואטיני", "aliases": ["eswatini"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ET", "name": "אתיופיה", "aliases": ["ethiopia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום", "ויזה בהגעה רק בנמל התעופה אדיס אבבה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "FJ", "name": "פיג'י", "aliases": ["fiji"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "FI", "name": "פינלנד", "aliases": ["finland", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "FR", "name": "צרפת", "aliases": ["france", "פריז", "paris", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "GA", "name": "גבון", "aliases": ["gabon"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום", "כניסה עם eVisa רק דרך נמל התעופה ליברוויל"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GM", "name": "גמביה", "aliases": ["gambia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GE", "name": "גאורגיה", "aliases": ["georgia", "טביליסי", "tbilisi", "בטומי", "batumi"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 365 יום", "שהייה עד שנה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "DE", "name": "גרמניה", "aliases": ["germany", "ברלין", "berlin", "מינכן", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "GH", "name": "גאנה", "aliases": ["ghana"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GR", "name": "יוון", "aliases": ["greece", "אתונה", "athens", "רודוס", "כרתים", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "GD", "name": "גרנדה", "aliases": ["grenada"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GT", "name": "גואטמלה", "aliases": ["guatemala"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GN", "name": "גינאה", "aliases": ["guinea"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GW", "name": "גינאה ביסאו", "aliases": ["guinea-bissau"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GY", "name": "גיאנה", "aliases": ["guyana"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HT", "name": "האיטי", "aliases": ["haiti"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HN", "name": "הונדורס", "aliases": ["honduras"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "HU", "name": "הונגריה", "aliases": ["hungary", "בודפשט", "budapest", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "IS", "name": "איסלנד", "aliases": ["iceland", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "IN", "name": "הודו", "aliases": ["india", "דלהי", "מומבאי", "גואה"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "כניסה עם eVisa דרך 32 שדות תעופה ו-5 נמלי ים מוגדרים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ID", "name": "אינדונזיה", "aliases": ["indonesia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ישראלים בקטגוריית Calling Visa - הליך מיוחד ומורכב"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "IR", "name": "איראן", "aliases": ["iran"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "IQ", "name": "עיראק", "aliases": ["iraq"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "IE", "name": "אירלנד", "aliases": ["ireland"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "IT", "name": "איטליה", "aliases": ["italy", "רומא", "rome", "מילאנו", "ונציה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "JM", "name": "ג'מייקה", "aliases": ["jamaica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "JP", "name": "יפן", "aliases": ["japan", "טוקיו", "tokyo", "קיוטו"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "JO", "name": "ירדן", "aliases": ["jordan"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["נדרשת הזמנת מדריך ירדני ומלון מראש; אסורה כניסה בגשר אלנבי; עד יומיים ללא ויזה ממעבר רבין"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "KZ", "name": "קזחסטן", "aliases": ["kazakhstan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "KE", "name": "קניה", "aliases": ["kenya"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "הגשה עד 90 יום מראש, לפחות 72 שעות לפני נסיעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KI", "name": "קיריבטי", "aliases": ["kiribati"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "עד 90 יום בכל תקופה של 12 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KP", "name": "צפון קוריאה", "aliases": ["north korea"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["נדרש אישור מיוחד לתיירות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KR", "name": "דרום קוריאה", "aliases": ["south korea"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "K-ETA בתוקף 3 שנים מיום האישור"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "KW", "name": "כווית", "aliases": ["kuwait"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "KG", "name": "קירגיזסטן", "aliases": ["kyrgyzstan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "30 יום בכל תקופה של 60 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מעבר למועד היציאה" },
+            { "id": "LA", "name": "לאוס", "aliases": ["laos"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום", "eVisa דרך שדות תעופה וגשרי ידידות מוגדרים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LV", "name": "לטביה", "aliases": ["latvia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LB", "name": "לבנון", "aliases": ["lebanon"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "LS", "name": "לסוטו", "aliases": ["lesotho"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LR", "name": "ליבריה", "aliases": ["liberia"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים", "ויזה מקוונת בהגעה (e-VOA)"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LY", "name": "לוב", "aliases": ["libya"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LI", "name": "ליכטנשטיין", "aliases": ["liechtenstein", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LT", "name": "ליטא", "aliases": ["lithuania", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LU", "name": "לוקסמבורג", "aliases": ["luxembourg", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MG", "name": "מדגסקר", "aliases": ["madagascar"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MW", "name": "מלאווי", "aliases": ["malawi"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MY", "name": "מלזיה", "aliases": ["malaysia"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה לתיירות; למטרות אחרות - ויזה ואישור משרד הפנים המלזי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MV", "name": "האיים המלדיביים", "aliases": ["maldives"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["איסור כניסה לישראלים מ-15.4.2025"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ML", "name": "מאלי", "aliases": ["mali"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MT", "name": "מלטה", "aliases": ["malta", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MH", "name": "איי מרשל", "aliases": ["marshall islands"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MR", "name": "מאוריטניה", "aliases": ["mauritania"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "זמין בנמל התעופה נואקשוט"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MU", "name": "מאוריציוס", "aliases": ["mauritius"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MX", "name": "מקסיקו", "aliases": ["mexico"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "FM", "name": "מיקרונזיה", "aliases": ["micronesia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
+            { "id": "MD", "name": "מולדובה", "aliases": ["moldova"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "MC", "name": "מונקו", "aliases": ["monaco"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MN", "name": "מונגוליה", "aliases": ["mongolia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ME", "name": "מונטנגרו", "aliases": ["montenegro"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MA", "name": "מרוקו", "aliases": ["morocco", "מרקש", "קזבלנקה"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "eVisa ל-30 יום, ניתן להארכה עד 6 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MZ", "name": "מוזמביק", "aliases": ["mozambique"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 30 יום", "רישום ETA לפחות 48 שעות לפני הגעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MM", "name": "מיאנמר", "aliases": ["myanmar"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 28 יום", "כניסה דרך שדות התעופה יאנגון, נייפידאו או מנדליי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NA", "name": "נמיביה", "aliases": ["namibia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום", "ויזה בהגעה בנמל התעופה הוסאה קוטאקו ועמדות נוספות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NR", "name": "נאורו", "aliases": ["nauru"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["ויזה בהגעה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "NP", "name": "נפאל", "aliases": ["nepal"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NL", "name": "הולנד", "aliases": ["netherlands", "אמסטרדם", "amsterdam", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "NZ", "name": "ניו זילנד", "aliases": ["new zealand"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["נדרש NZeTA לפני הנסיעה; שהייה עד 3 חודשים; דרכון בתוקף לפחות 3 חודשים לאחר מועד היציאה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מעבר למועד היציאה" },
+            { "id": "NI", "name": "ניקרגואה", "aliases": ["nicaragua"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NE", "name": "ניז'ר", "aliases": ["niger"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה בהגעה אפשרית עם מכתב Visa Volant"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NG", "name": "ניגריה", "aliases": ["nigeria"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "נדרש אישור ויזה מראש מהאתר הרשמי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MK", "name": "צפון מקדוניה", "aliases": ["north macedonia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "NO", "name": "נורווגיה", "aliases": ["norway", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "OM", "name": "עומאן", "aliases": ["oman"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PK", "name": "פקיסטן", "aliases": ["pakistan"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסה מוגבלת - רק עם ויזה ורישום משטרתי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PW", "name": "פלאו", "aliases": ["palau"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PA", "name": "פנמה", "aliases": ["panama"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "PG", "name": "פפואה גינאה החדשה", "aliases": ["papua new guinea"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PY", "name": "פרגוואי", "aliases": ["paraguay"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף ביום הכניסה" },
+            { "id": "PE", "name": "פרו", "aliases": ["peru"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PH", "name": "הפיליפינים", "aliases": ["philippines"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PL", "name": "פולין", "aliases": ["poland", "ורשה", "warsaw", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "PT", "name": "פורטוגל", "aliases": ["portugal", "ליסבון", "lisbon", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "QA", "name": "קטאר", "aliases": ["qatar"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "RO", "name": "רומניה", "aliases": ["romania", "בוקרשט", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "RU", "name": "רוסיה", "aliases": ["russia", "מוסקבה"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "RW", "name": "רואנדה", "aliases": ["rwanda"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KN", "name": "סנט קיטס ונוויס", "aliases": ["saint kitts and nevis"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LC", "name": "סנט לוסיה", "aliases": ["saint lucia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 6 שבועות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "VC", "name": "סנט וינסנט והגרנדינים", "aliases": ["saint vincent and the grenadines"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "WS", "name": "סמואה", "aliases": ["samoa"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 90 יום", "היתר כניסה בהגעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SM", "name": "סן מרינו", "aliases": ["san marino"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "ST", "name": "סאו טומה ופרינסיפה", "aliases": ["sao tome and principe"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SA", "name": "ערב הסעודית", "aliases": ["saudi arabia"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסה מוגבלת - חרם הליגה הערבית; היתרים זמניים למוסלמים ישראלים לחאג'"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SN", "name": "סנגל", "aliases": ["senegal"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: חודש", "נדרש דרכון בתוקף 6 חודשים וכרטיס המשך"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "RS", "name": "סרביה", "aliases": ["serbia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SC", "name": "סיישל", "aliases": ["seychelles"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "מערכת גבולות אלקטרונית - הגשה עד 30 יום מראש"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "SL", "name": "סיירה לאון", "aliases": ["sierra leone"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SG", "name": "סינגפור", "aliases": ["singapore"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 30 יום", "נדרש למלא SG Arrival Card בתוך 3 ימים לפני ההגעה. שימו לב: זהו טופס כניסה דיגיטלי ואינו מהווה ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SK", "name": "סלובקיה", "aliases": ["slovakia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SI", "name": "סלובניה", "aliases": ["slovenia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SB", "name": "איי שלמה", "aliases": ["solomon islands"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SO", "name": "סומליה", "aliases": ["somalia"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ZA", "name": "דרום אפריקה", "aliases": ["south africa", "קייפטאון", "יוהנסבורג"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "30 יום לפחות מעבר ליציאה + 2 עמודים ריקים" },
+            { "id": "SS", "name": "דרום סודן", "aliases": ["south sudan"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ES", "name": "ספרד", "aliases": ["spain", "מדריד", "ברצלונה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LK", "name": "סרי לנקה", "aliases": ["sri lanka"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["נדרש ETA לתיירות ל־30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SD", "name": "סודן", "aliases": ["sudan"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["הנורמליזציה מ-2020 טרם יושמה בפועל בהסדרי ויזה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SR", "name": "סורינם", "aliases": ["suriname"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הרשמה מקוונת מראש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SE", "name": "שוודיה", "aliases": ["sweden", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CH", "name": "שווייץ", "aliases": ["switzerland", "ציריך", "זנבה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SY", "name": "סוריה", "aliases": ["syria"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TJ", "name": "טג'יקיסטן", "aliases": ["tajikistan"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TZ", "name": "טנזניה", "aliases": ["tanzania", "זנזיבר"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TH", "name": "תאילנד", "aliases": ["thailand", "בנגקוק", "פוקט", "קוסמוי"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 30 יום", "נדרש למלא טופס כניסה דיגיטלי (TDAC) עד 3 ימים לפני הכניסה. שימו לב: אינו ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TL", "name": "מזרח טימור", "aliases": ["timor-leste"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 30 יום", "לא זמין בכל נקודות הכניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TG", "name": "טוגו", "aliases": ["togo"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 15 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TO", "name": "טונגה", "aliases": ["tonga"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TT", "name": "טרינידד וטובגו", "aliases": ["trinidad and tobago"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "TN", "name": "תוניסיה", "aliases": ["tunisia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["לנוסעים בטיול מאורגן - דרך נציג החברה המארגנת"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TR", "name": "טורקיה", "aliases": ["turkey", "איסטנבול", "אנטליה"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TM", "name": "טורקמניסטן", "aliases": ["turkmenistan"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה ל-10 ימים בהגעה עם מכתב הזמנה מאושר מראש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TV", "name": "טובאלו", "aliases": ["tuvalu"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: חודש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "UG", "name": "אוגנדה", "aliases": ["uganda"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "UA", "name": "אוקראינה", "aliases": ["ukraine"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AE", "name": "איחוד האמירויות", "aliases": ["united arab emirates", "uae", "דובאי", "dubai", "אבו דאבי"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "GB", "name": "בריטניה", "aliases": ["united kingdom", "uk", "לונדון", "london", "אנגליה", "england"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 180 יום", "נדרש אישור ETA אלקטרוני לפני הנסיעה"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "US", "name": "ארצות הברית", "aliases": ["united states", "usa", "ארהב", "ניו יורק", "מיאמי"], "category": "eta", "visaTitle": "אישור אלקטרוני (ESTA)", "requirements": ["זמן שהייה: 90 יום", "תוכנית הפטור מוויזה (VWP) - נדרש ESTA בתוקף שנתיים; ללא דרכון ביומטרי - ויזת B1/B2"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד - ישראל נכללת ב\"מועדון 6 החודשים\" של ארה\"ב" },
+            { "id": "UY", "name": "אורוגוואי", "aliases": ["uruguay"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 3 חודשים"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "UZ", "name": "אוזבקיסטן", "aliases": ["uzbekistan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "שהייה מעל 3 ימים מחייבת רישום במשטרה המקומית"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "VU", "name": "ונואטו", "aliases": ["vanuatu"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "VA", "name": "קריית הוותיקן", "aliases": ["vatican city"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך איטליה (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "VE", "name": "ונצואלה", "aliases": ["venezuela"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "VN", "name": "וייטנאם", "aliases": ["vietnam"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום", "eVisa בתוקף 90 יום, רב-פעמי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "YE", "name": "תימן", "aliases": ["yemen"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ZM", "name": "זמביה", "aliases": ["zambia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "זכאות לוויזה אוניברסלית משותפת עם זימבבואה"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
+            { "id": "ZW", "name": "זימבבואה", "aliases": ["zimbabwe"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: חודש", "זכאות לוויזה אוניברסלית משותפת עם זמביה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "XK", "name": "קוסובו", "aliases": ["kosovo"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "TW", "name": "טייוואן", "aliases": ["taiwan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HK", "name": "הונג קונג", "aliases": ["hong kong"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
+            { "id": "MO", "name": "מקאו", "aliases": ["macau"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
+            { "id": "NCY", "name": "צפון קפריסין", "aliases": ["northern cyprus"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "ישראל אינה מכירה בצפון קפריסין"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "PS", "name": "הרשות הפלסטינית", "aliases": ["palestine", "gaza"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסת ישראלים אסורה עפ\"י צו אלוף"], "passportValidity": 0, "validityText": "אין דרישת תוקף" },
+            { "id": "SML", "name": "סומלילנד", "aliases": ["somaliland"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["ויזה בהגעה - בעקבות ההכרה מדצמבר 2025"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" }
+        ];
+
+        class VisaService {
+            constructor() {
+                this.elements = {
+                    searchInput: document.getElementById('countrySearch'),
+                    clearSearch: document.getElementById('clearSearch'),
+                    autocompleteList: document.getElementById('autocompleteList'),
+                    quickSuggestions: document.getElementById('quickSuggestions'),
+                    
+                    resultContainer: document.getElementById('resultContainer'),
+                    resCountryNameTab: document.getElementById('resCountryNameTab'),
+                    resFlagContainer: document.getElementById('resFlagContainer'),
+                    resFlag: document.getElementById('resFlag'),
+                    
+                    resTitle: document.getElementById('resTitle'),
+                    resIconCircle: document.getElementById('resIconCircle'),
+                    resIconTail: document.getElementById('resIconTail'),
+                    resIcon: document.getElementById('resIcon'),
+                    resValidityTitle: document.getElementById('resValidityTitle'),
+                    
+                    resNotesBox: document.getElementById('resNotesBox'),
+                    resDetailsList: document.getElementById('resDetailsList'),
+                    backBtn: document.getElementById('backBtn'),
+                    mainLogoLink: document.getElementById('mainLogoLink'),
+                    
+                    calcSectionWrapper: document.getElementById('calcSectionWrapper'),
+                    calcForm: document.getElementById('calcForm'),
+                    tripDateLabel: document.getElementById('tripDateLabel'),
+                    tripDate: document.getElementById('tripDate'),
+                    expiryDate: document.getElementById('expiryDate'),
+                    calcBtnText: document.getElementById('calcBtnText'),
+                    calcResult: document.getElementById('calcResult'),
+                    calcResultIcon: document.getElementById('calcResultIcon'),
+                    calcResultTitle: document.getElementById('calcResultTitle'),
+                    calcResultMessage: document.getElementById('calcResultMessage'),
+                    
+                    searchContainer: document.getElementById('searchContainer'),
+                    whatsappShareBtn: document.getElementById('whatsappShareBtn'),
+                    a11yAnnouncer: document.getElementById('a11yAnnouncer')
+                };
+
+                this.currentCountry = null;
+                this.countriesData = [];
+                this.handleSearchDebounced = this.debounce(this.handleSearch.bind(this), 150);
+                
+                this.loadData();
+            }
+
+            // פונקציית Debounce לייעול החיפוש
+            debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            // המרה בטוחה של טקסט למניעת XSS ב-Highlight
+            escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, tag => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[tag]));
+            }
+
+            // משיכת הנתונים ועריכת בסיס החישוב (entry/exit)
+            async loadData() {
+                const GOOGLE_SHEET_API_URL = ''; // יתעדכן בהמשך ל-API אמיתי
+                const CACHE_KEY = 'amsvisa_data_cache';
+                
+                if (GOOGLE_SHEET_API_URL) {
+                    try {
+                        const response = await fetch(GOOGLE_SHEET_API_URL);
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const data = await response.json();
+                        if (!Array.isArray(data) || data.length === 0 || !data[0].id) throw new Error('Invalid data format');
+                        
+                        this.countriesData = this.processData(data);
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(this.countriesData));
+                        document.getElementById('dataVersionText').textContent = 'הנתונים מעודכנים מהרשת';
+                    } catch (error) {
+                        console.error('Failed to load data from Sheets', error);
+                        const cachedData = localStorage.getItem(CACHE_KEY);
+                        if (cachedData) {
+                            this.countriesData = JSON.parse(cachedData);
+                            document.getElementById('dataVersionText').textContent = 'מוצגים נתונים שמורים מגרסה קודמת';
+                        } else {
+                            this.countriesData = this.processData(fallbackCountriesData);
+                        }
+                    }
+                } else {
+                    this.countriesData = this.processData(fallbackCountriesData);
+                }
+
+                this.init();
+            }
+
+            // מוודא שלכל מדינה יש הגדרה האם תוקף הדרכון נספר מכניסה או מיציאה
+            processData(data) {
+                return data.map(c => ({
+                    ...c,
+                    validityBasis: c.validityBasis || (c.validityText.includes('כניסה') || c.validityText.includes('ביום') ? 'entry' : 'exit')
+                }));
+            }
+
+            init() {
+                if (this.elements.mainLogoLink) {
+                    this.setDynamicDates();
+                    this.setupEventListeners();
+                    this.renderQuickSuggestions();
+                    this.handleDeepLinking();
+                }
+            }
+            
+            handleDeepLinking() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const destId = urlParams.get('dest');
+                if (destId) {
+                    const country = this.countriesData.find(c => c.id === destId.toUpperCase());
+                    if (country) {
+                        this.selectCountry(country, false);
+                    }
+                }
+            }
+
+            setDynamicDates() {
+                document.getElementById('currentYearDisplay').textContent = new Date().getFullYear();
+                
+                // חישוב תאריך נוכחי מקומי למניעת בעיות אזור זמן
+                const today = new Date();
+                const offset = today.getTimezoneOffset() * 60000;
+                const localISODate = (new Date(today - offset)).toISOString().split('T')[0];
+                
+                if (this.elements.tripDate) this.elements.tripDate.min = localISODate;
+                if (this.elements.expiryDate) this.elements.expiryDate.min = localISODate;
+            }
+
+            // נרמול בטוח: ממיר מקפים לרווחים ואז מנקה תווי פיסוק
+            normalizeString(str) {
+                return str.replace(/[\-]/g, ' ').replace(/[\"\'\׳\״]/g, '').trim().toLowerCase();
+            }
+            
+            levenshteinDistance(a, b) {
+                if (a.length === 0) return b.length;
+                if (b.length === 0) return a.length;
+                const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
+                for (let i = 0; i <= a.length; i += 1) matrix[0][i] = i;
+                for (let j = 0; j <= b.length; j += 1) matrix[j][0] = j;
+                for (let j = 1; j <= b.length; j += 1) {
+                    for (let i = 1; i <= a.length; i += 1) {
+                        const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
+                        matrix[j][i] = Math.min(matrix[j][i - 1] + 1, matrix[j - 1][i] + 1, matrix[j - 1][i - 1] + indicator);
+                    }
+                }
+                return matrix[b.length][a.length];
+            }
+
+            setupEventListeners() {
+                if (!this.elements.searchInput) return;
+
+                this.elements.searchInput.addEventListener('input', (e) => this.handleSearchDebounced(e.target.value));
+                this.elements.searchInput.addEventListener('focus', (e) => {
+                    if(e.target.value) this.handleSearchDebounced(e.target.value);
+                });
+                
+                this.elements.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.clearAutocomplete();
+                    } else if (e.key === 'ArrowDown' && !this.elements.autocompleteList.classList.contains('hidden')) {
+                        e.preventDefault();
+                        const firstOption = this.elements.autocompleteList.querySelector('.dropdown-item');
+                        if (firstOption) firstOption.focus();
+                    }
+                });
+
+                if(this.elements.clearSearch) {
+                    this.elements.clearSearch.addEventListener('click', () => {
+                        this.elements.searchInput.value = '';
+                        this.elements.searchInput.focus();
+                        this.clearAutocomplete();
+                        this.elements.clearSearch.classList.add('hidden');
+                    });
+                }
+
+                document.addEventListener('click', (e) => {
+                    if (this.elements.searchContainer && !this.elements.searchContainer.contains(e.target)) {
+                        this.clearAutocomplete();
+                    }
+                });
+
+                if (this.elements.backBtn) this.elements.backBtn.addEventListener('click', () => this.resetToSearch());
+                
+                if (this.elements.mainLogoLink) {
+                    this.elements.mainLogoLink.addEventListener('click', (e) => {
+                        e.preventDefault(); 
+                        if (this.elements.resultContainer && !this.elements.resultContainer.classList.contains('hidden')) {
+                            this.resetToSearch();
+                        }
+                    });
+                }
+
+                if (this.elements.calcForm) {
+                    this.elements.calcForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.calculateValidity();
+                    });
+                }
+            }
+
+            handleSearch(query) {
+                const term = this.normalizeString(query);
+                
+                if (term.length === 0) {
+                    this.elements.clearSearch.classList.add('hidden');
+                    this.clearAutocomplete();
+                    return;
+                }
+
+                this.elements.clearSearch.classList.remove('hidden');
+
+                const exactMatches = [];
+                const prefixMatches = [];
+                const fuzzyMatches = [];
+
+                this.countriesData.forEach(country => {
+                    const normalizedName = this.normalizeString(country.name);
+                    const aliases = country.aliases.map(a => this.normalizeString(a));
+                    const allTerms = [normalizedName, ...aliases];
+
+                    // התאמה מדויקת
+                    if (allTerms.some(t => t === term)) {
+                        exactMatches.push(country);
+                        return;
+                    }
+                    
+                    // התאמת תחילית או הכלה
+                    if (allTerms.some(t => t.startsWith(term) || t.includes(` ${term}`))) {
+                        prefixMatches.push(country);
+                        return;
+                    }
+
+                    // התאמה סלחנית (Fuzzy) בסף משתנה
+                    if (term.length >= 3) {
+                        const threshold = term.length <= 4 ? 1 : 2;
+                        for (const t of allTerms) {
+                            if (t.length >= 3) {
+                                const words = t.split(/\s+/);
+                                if (words.some(w => this.levenshteinDistance(term, w) <= threshold)) {
+                                    fuzzyMatches.push(country);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // מיזוג ומניעת כפילויות, הגבלת תוצאות
+                const matches = [...new Set([...exactMatches, ...prefixMatches, ...fuzzyMatches])].slice(0, 10);
+                this.renderAutocomplete(matches, query);
+            }
+
+            highlightMatch(text, query) {
+                const safeText = this.escapeHTML(text);
+                const safeQuery = this.escapeHTML(query.trim());
+                if (!safeQuery) return safeText;
+                // הדגשת הטקסט התואם
+                const regex = new RegExp(`(${safeQuery})`, 'gi');
+                return safeText.replace(regex, '<strong class="text-brand">$1</strong>');
+            }
+
+            renderAutocomplete(matches, rawQuery) {
+                this.elements.autocompleteList.innerHTML = '';
+                this.elements.searchInput.setAttribute('aria-expanded', 'true');
+                
+                if (matches.length === 0) {
+                    // יצירת אלמנטים באופן מאובטח מונעת XSS
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'p-5 text-slate-600 text-center flex flex-col items-center gap-3';
+                    
+                    const msgSpan = document.createElement('span');
+                    msgSpan.className = 'font-medium';
+                    msgSpan.textContent = 'לא מצאנו יעד כזה. נסו חיפוש אחר או האיות.';
+                    
+                    const mailBtn = document.createElement('button');
+                    mailBtn.type = 'button';
+                    mailBtn.className = 'inline-flex items-center gap-2 bg-brand/10 hover:bg-brand/20 text-brand font-bold py-2 px-5 rounded-xl transition-colors cursor-pointer z-50 relative focus:outline-none focus:ring-2 focus:ring-brand';
+                    
+                    // הפעלה יזומה דרך JS כדי לעקוף חסימות Iframe
+                    mailBtn.addEventListener('click', () => {
+                        const mailSubject = encodeURIComponent(`בירור ויזה ליעד: ${rawQuery}`);
+                        const mailBody = encodeURIComponent(`שלום,\nאשמח לברר דרישות ויזה עבור היעד: ${rawQuery}\nתודה.`);
+                        window.location.href = `mailto:visa.dept@amsalem.com?subject=${mailSubject}&body=${mailBody}`;
+                    });
+                    
+                    const btnIcon = document.createElement('i');
+                    btnIcon.className = 'fa-regular fa-paper-plane';
+                    const btnText = document.createTextNode(` שאלו אותנו על "${rawQuery}"`);
+                    
+                    mailBtn.appendChild(btnIcon);
+                    mailBtn.appendChild(btnText);
+                    
+                    wrapper.appendChild(msgSpan);
+                    wrapper.appendChild(mailBtn);
+                    
+                    this.elements.autocompleteList.appendChild(wrapper);
+                } else {
+                    matches.forEach((country, index) => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.id = `option-${country.id}`;
+                        btn.className = 'dropdown-item w-full text-right p-4 hover:bg-slate-50 focus:bg-slate-50 cursor-pointer flex items-center gap-3 transition-colors border-none bg-transparent outline-none';
+                        btn.setAttribute('role', 'option');
+                        btn.setAttribute('aria-selected', 'false');
+                        
+                        const highlightedName = this.highlightMatch(country.name, rawQuery);
+                        
+                        let flagSrc = `https://flagcdn.com/w40/${String(country.id).toLowerCase()}.png`;
+                        let flagHtml = `<img src="${flagSrc}" class="w-8 h-6 rounded-sm object-cover border border-slate-100 shrink-0 bg-white" alt="" onerror="this.style.opacity='0'">`;
+                        // Fallback ל-FlagCDN למדינות חריגות
+                        if (country.id.length > 2) {
+                             flagHtml = `<div class="w-8 h-6 rounded-sm border border-slate-100 shrink-0 bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-globe text-xs"></i></div>`;
+                        }
+
+                        btn.innerHTML = `
+                            ${flagHtml}
+                            <span class="font-bold text-slate-700">${highlightedName}</span>
+                        `;
+                        
+                        btn.addEventListener('click', () => this.selectCountry(country));
+                        btn.addEventListener('focus', () => {
+                            btn.setAttribute('aria-selected', 'true');
+                            this.elements.searchInput.setAttribute('aria-activedescendant', btn.id);
+                        });
+                        btn.addEventListener('blur', () => btn.setAttribute('aria-selected', 'false'));
+                        
+                        btn.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                this.selectCountry(country);
+                            } else if (e.key === 'ArrowDown') {
+                                e.preventDefault();
+                                const next = btn.nextElementSibling;
+                                if (next && next.tagName === 'BUTTON') next.focus();
+                            } else if (e.key === 'ArrowUp') {
+                                e.preventDefault();
+                                const prev = btn.previousElementSibling;
+                                if (prev && prev.tagName === 'BUTTON') prev.focus();
+                                else this.elements.searchInput.focus();
+                            } else if (e.key === 'Escape') {
+                                e.preventDefault();
+                                this.elements.searchInput.focus();
+                                this.clearAutocomplete();
+                            }
+                        });
+                        
+                        this.elements.autocompleteList.appendChild(btn);
+                    });
+                }
+                
+                this.elements.autocompleteList.classList.remove('hidden');
+            }
+
+            clearAutocomplete() {
+                this.elements.autocompleteList.innerHTML = '';
+                this.elements.autocompleteList.classList.add('hidden');
+                this.elements.searchInput.setAttribute('aria-expanded', 'false');
+                this.elements.searchInput.removeAttribute('aria-activedescendant');
+            }
+
+            renderQuickSuggestions() {
+                const popular = [
+                    { id: 'GB', name: 'בריטניה' },
+                    { id: 'AE', name: 'איחוד האמירויות' },
+                    { id: 'GR', name: 'יוון' },
+                    { id: 'US', name: 'ארצות הברית' }
+                ];
+
+                this.elements.quickSuggestions.innerHTML = '';
+                
+                popular.forEach(pop => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-[12px] text-sm font-bold hover:border-brand hover:text-brand focus:outline-none focus:ring-2 focus:ring-brand transition-all shadow-sm flex items-center gap-2.5';
+                    
+                    btn.innerHTML = `
+                        <span>${pop.name}</span> 
+                        <img src="https://flagcdn.com/w20/${pop.id.toLowerCase()}.png" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" alt="" onerror="this.style.display='none'">
+                    `;
+                    
+                    btn.addEventListener('click', () => {
+                        this.elements.searchInput.value = ''; // איפוס השדה
+                        const country = this.countriesData.find(c => c.id === pop.id);
+                        if(country) this.selectCountry(country);
+                    });
+                    this.elements.quickSuggestions.appendChild(btn);
+                });
+            }
+
+            selectCountry(country, updateUrl = true) {
+                this.currentCountry = country;
+                this.clearAutocomplete();
+                
+                this.elements.searchContainer.classList.add('hidden');
+                
+                // עדכון URL לשיתוף (Deep Linking)
+                if (updateUrl) {
+                    try {
+                        const newUrl = new URL(window.location);
+                        newUrl.searchParams.set('dest', country.id);
+                        window.history.pushState({}, '', newUrl);
+                    } catch (e) {
+                        console.warn('Deep linking URL update disabled in preview/blob environment.');
+                    }
+                }
+
+                const searchTerm = this.normalizeString(this.elements.searchInput.value);
+                let displayTitle = country.name;
+                
+                // טיפול בשמות באנגלית לעומת עברית
+                const matchedAlias = country.aliases.find(alias => this.isMatchFuzzy(searchTerm, this.normalizeString(alias)));
+                const hasEnglishChars = matchedAlias ? /[a-zA-Z]/.test(matchedAlias) : false;
+                
+                if (matchedAlias && !hasEnglishChars && searchTerm !== this.normalizeString(country.name) && !searchTerm.includes('ארהב') && !schengenAliases.includes(matchedAlias)) {
+                     displayTitle = `${matchedAlias} (${country.name})`;
+                }
+                
+                this.renderDetails(country, displayTitle);
+                
+                // קביעת בסיס הלוגיקה מתוך הנתונים (validityBasis)
+                const isEntry = (country.validityBasis === 'entry');
+                this.elements.tripDateLabel.textContent = isEntry ? 'תאריך כניסה ליעד' : 'תאריך יציאה (סיום שהות)';
+                this.elements.calcBtnText.textContent = `בדוק תוקף דרכון ל${country.name}`;
+                
+                // הסתרת מחשבון למדינות אסורות
+                if (['refused', 'banned_il'].includes(country.category) || country.passportValidity === 0 && !country.validityText) {
+                    this.elements.calcSectionWrapper.classList.add('hidden');
+                } else {
+                    this.elements.calcSectionWrapper.classList.remove('hidden');
+                }
+                
+                // שיתוף בוואטסאפ
+                const shareText = encodeURIComponent(`בדקתי הרגע דרישות ויזה ל${country.name} מול אמסלם ✈️\n\nדרישה: ${country.visaTitle}\nתוקף דרכון נדרש: ${country.validityText}\n\nלצפייה בפרטים:\n${window.location.href}`);
+                if(this.elements.whatsappShareBtn) {
+                    this.elements.whatsappShareBtn.href = `https://wa.me/?text=${shareText}`;
+                }
+
+                // עדכון A11y
+                if(this.elements.a11yAnnouncer) {
+                    this.elements.a11yAnnouncer.textContent = `נמצאו דרישות עבור ${country.name}: ${country.visaTitle}.`;
+                }
+                
+                this.elements.resultContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    this.elements.resultContainer.classList.remove('scale-95', 'opacity-0');
+                    this.elements.resultContainer.classList.add('scale-100', 'opacity-100');
+                    if (window.innerWidth <= 768) {
+                         this.elements.resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 50);
+
+                this.elements.calcForm.reset();
+                this.elements.calcResult.classList.add('hidden');
+            }
+
+            isMatchFuzzy(term, text) {
+                if(text === term) return true;
+                if(term.length >= 3 && text.length >= 3) {
+                    const words = text.split(/\s+/);
+                    return words.some(w => this.levenshteinDistance(term, w) <= (term.length <= 4 ? 1 : 2));
+                }
+                return false;
+            }
+
+            renderDetails(country, displayTitle = country.name) {
+                this.elements.resCountryNameTab.textContent = displayTitle;
+                
+                // טיפול ב-Fallback לדגלים
+                const flagContainer = this.elements.resFlagContainer;
+                const flagImg = this.elements.resFlag;
+                flagContainer.classList.remove('hidden');
+                
+                if (country.id.length > 2) {
+                    flagImg.style.opacity = '0'; // חושף את הגלובוס שמאחור
+                } else {
+                    flagImg.style.opacity = '1';
+                    flagImg.src = `https://flagcdn.com/w80/${String(country.id).toLowerCase()}.png`;
+                    flagImg.alt = `דגל ${country.name}`;
+                }
+
+                this.elements.resTitle.textContent = country.visaTitle;
+                
+                const styles = {
+                    free: { color: '#22c55e', icon: 'fa-check' }, 
+                    evisa: { color: '#fbbf24', icon: 'fa-exclamation' },
+                    evisa_voa: { color: '#fbbf24', icon: 'fa-exclamation' }, 
+                    eta: { color: '#fbbf24', icon: 'fa-exclamation' },
+                    online: { color: '#fbbf24', icon: 'fa-exclamation' },
+                    voa: { color: '#fbbf24', icon: 'fa-exclamation' },
+                    required: { color: '#f43f5e', icon: 'fa-passport' },
+                    refused: { color: '#ef4444', icon: 'fa-ban' },
+                    banned_il: { color: '#ef4444', icon: 'fa-ban' }
+                };
+                const style = styles[country.category] || styles.required;
+                
+                this.elements.resIconCircle.style.borderColor = style.color;
+                this.elements.resIconCircle.style.color = style.color;
+                this.elements.resIconTail.style.borderTopColor = style.color;
+                this.elements.resIcon.className = `fa-solid ${style.icon} text-3xl`;
+
+                this.elements.resValidityTitle.textContent = country.validityText ? `דרישת תוקף: ${country.validityText}` : 'אין דרישת תוקף זמינה';
+
+                const ul = this.elements.resDetailsList;
+                ul.innerHTML = '';
+                
+                if (country.requirements && country.requirements.length > 0) {
+                    country.requirements.forEach(req => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-start gap-3 text-slate-600 font-medium leading-relaxed';
+                        
+                        const iconWrapper = document.createElement('div');
+                        iconWrapper.className = 'mt-1 w-5 h-5 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0';
+                        const icon = document.createElement('i');
+                        icon.className = 'fa-solid fa-angle-left text-[10px]';
+                        iconWrapper.appendChild(icon);
+                        
+                        const textSpan = document.createElement('span');
+                        
+                        let displayText = req;
+                        if (displayText.startsWith('זמן שהייה: ') && !displayText.includes('עד')) {
+                            displayText = displayText.replace('זמן שהייה: ', 'זמן שהייה: עד ');
+                        }
+                        textSpan.textContent = displayText;
+                        
+                        li.appendChild(iconWrapper);
+                        li.appendChild(textSpan);
+                        ul.appendChild(li);
+                    });
+                    this.elements.resNotesBox.classList.remove('hidden');
+                } else {
+                    this.elements.resNotesBox.classList.add('hidden');
+                }
+            }
+
+            resetToSearch() {
+                this.elements.resultContainer.classList.remove('scale-100', 'opacity-100');
+                this.elements.resultContainer.classList.add('scale-95', 'opacity-0');
+                
+                // איפוס URL
+                try {
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.delete('dest');
+                    window.history.pushState({}, '', newUrl);
+                } catch (e) {
+                    console.warn('Deep linking URL update disabled in preview/blob environment.');
+                }
+                
+                setTimeout(() => {
+                    this.elements.resultContainer.classList.add('hidden');
+                    this.elements.searchContainer.classList.remove('hidden');
+                    this.elements.searchInput.value = '';
+                    this.elements.searchInput.focus();
+                    this.elements.clearSearch.classList.add('hidden');
+                    
+                    this.elements.calcForm.reset();
+                    // שימוש ב-classList במקום בדריסת ה-className מונע בעיות תחזוקה
+                    this.elements.calcResult.classList.add('hidden');
+                    this.elements.calcResult.classList.remove('bg-red-50', 'border-red-200', 'text-red-800', 'bg-green-50', 'border-green-200', 'text-green-800', 'bg-orange-50', 'border-orange-200', 'text-orange-800', 'fade-in');
+                    
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+            }
+
+            calculateValidity() {
+                if (!this.currentCountry) return;
+
+                const tripVal = this.elements.tripDate.value;
+                const expiryVal = this.elements.expiryDate.value;
+
+                if (!tripVal || !expiryVal) return;
+
+                const tripDateObj = new Date(tripVal);
+                const expiryDateObj = new Date(expiryVal);
+                
+                const resultBox = this.elements.calcResult;
+                const rIcon = this.elements.calcResultIcon;
+                const rTitle = this.elements.calcResultTitle;
+                const rMsg = this.elements.calcResultMessage;
+
+                // איפוס סגנונות קודמים
+                resultBox.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-800', 'bg-green-50', 'border-green-200', 'text-green-800', 'bg-orange-50', 'border-orange-200', 'text-orange-800');
+                resultBox.classList.add('fade-in');
+
+                const pVal = this.currentCountry.passportValidity;
+                const isStayOnly = (pVal === 0);
+                const isEntry = (this.currentCountry.validityBasis === 'entry');
+
+                let minExpiryDate = new Date(tripDateObj);
+                if (pVal > 0) {
+                    const targetMonth = minExpiryDate.getMonth() + pVal;
+                    minExpiryDate.setMonth(targetMonth);
+                    if (minExpiryDate.getMonth() !== targetMonth % 12) {
+                        minExpiryDate.setDate(0); 
+                    }
+                }
+
+                if (expiryDateObj < tripDateObj) {
+                    resultBox.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+                    rIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                    rTitle.textContent = isEntry ? 'הדרכון יפוג לפני מועד הכניסה!' : 'הדרכון יפוג לפני תום הנסיעה!';
+                    rMsg.textContent = 'תוקף הדרכון יפוג לפני התאריך שהזנת. עליכם לחדש את הדרכון בהקדם.';
+                } else if (expiryDateObj >= minExpiryDate) {
+                    resultBox.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
+                    rIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                    rTitle.textContent = 'הדרכון שלכם תקין לנסיעה!';
+                    
+                    if (isStayOnly) {
+                        rMsg.textContent = 'הדרכון בתוקף למשך הזמן הנדרש בהגדרות המדינה. נסיעה טובה!';
+                    } else {
+                        const baseText = isEntry ? 'מיום הכניסה ליעד' : 'לאחר תאריך היציאה המתוכנן';
+                        rMsg.textContent = `תוקף הדרכון עומד בדרישה. יש לכם לפחות ${pVal} חודשי תוקף ${baseText}. נסיעה טובה!`;
+                    }
+                } else {
+                    resultBox.classList.add('bg-orange-50', 'border-orange-200', 'text-orange-800');
+                    rIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-orange-500"></i>';
+                    rTitle.textContent = 'תוקף הדרכון אינו מספיק';
+                    if (pVal > 0) {
+                        rMsg.textContent = `דרישת המדינה היא לתוקף של לפחות ${pVal} חודשים. תוקף דרכונכם הנוכחי קצר מכך. עליכם לחדש את הדרכון.`;
+                    } else {
+                        rMsg.textContent = `תוקף הדרכון אינו מכסה את התאריך הנדרש. עליכם לחדש את הדרכון.`;
+                    }
+                }
+                
+                // בדיקת אזהרת שנגן (הסרת תלות בשם ע"י זיהוי כינוי שנגן שקיים ב-31 מדינות)
+                if (this.currentCountry.aliases.includes('שנגן')) {
+                    const schengenWarning = document.createElement('div');
+                    schengenWarning.className = 'mt-3 pt-3 border-t border-current opacity-90 text-[13px]';
+                    schengenWarning.innerHTML = '<strong><i class="fa-solid fa-circle-info"></i> שימו לב (כללי שנגן):</strong> בנוסף לתוקף, חובה לוודא שהדרכון <strong>הונפק ב-10 השנים האחרונות</strong>. דרכון ישן יותר לא יתקבל גם אם הוא עדיין בתוקף.';
+                    rMsg.appendChild(schengenWarning);
+                }
+                
+                if (this.elements.a11yAnnouncer) {
+                    this.elements.a11yAnnouncer.textContent = rTitle.textContent + ' ' + rMsg.textContent;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new VisaService();
+        });
+    </script>
+</body>
+</html>
