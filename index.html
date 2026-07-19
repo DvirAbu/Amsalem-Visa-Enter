@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת לבדיקת ויזות VIP - אמסלם תיירות ונופש</title>
+    <meta name="description" content="בדיקת דרישות ויזה ותוקף דרכון לנושאי דרכון ישראלי - מעל 190 יעדים בעולם. שירות מבית אמסלם תיירות ונופש.">
+    <meta name="theme-color" content="#00b4d8">
+    <meta property="og:title" content="בדיקת ויזה ותוקף דרכון | אמסלם תיירות ונופש">
+    <meta property="og:description" content="הזינו יעד וקבלו מיד מידע על דרישות ויזה, טפסי כניסה ותוקף הדרכון הנדרש - מותאם לדרכון ישראלי.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="he_IL">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2300b4d8'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E">
     
     <!-- הערה: לטובת סביבת הייצור (Production), מומלץ להחליף את ה-CDN ב-Build מקומי של Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <script>
@@ -55,6 +64,16 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* כיבוד העדפת משתמש להפחתת אנימציות */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         input[type="date"]::-webkit-calendar-picker-indicator {
@@ -110,16 +129,22 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
+    <noscript>
+        <div style="background:#fef2f2;color:#991b1b;text-align:center;padding:14px;font-weight:bold;">
+            להצגת בודק הויזות יש להפעיל JavaScript בדפדפן. לחלופין, פנו למחלקת הויזות: 04-6700900 שלוחה 5895.
+        </div>
+    </noscript>
+
     <!-- Screen Reader Announcer -->
     <div id="a11y-announcer" class="sr-only" aria-live="polite"></div>
 
     <!-- Background Elements -->
-    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-light/20 rounded-full blur-[100px] pointer-events-none z-0 no-print"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-dark/10 rounded-full blur-[120px] pointer-events-none z-0 no-print"></div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-light/20 rounded-full blur-[100px] pointer-events-none z-0 no-print" aria-hidden="true"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-dark/10 rounded-full blur-[120px] pointer-events-none z-0 no-print" aria-hidden="true"></div>
 
     <header class="w-full pt-10 pb-4 relative z-10 flex flex-col items-center justify-center text-center px-4 print-header">
-        <a href="#" id="mainLogoLink" tabindex="0" class="inline-block transition-transform hover:scale-105 duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand">
-            <img src="amsvisa-logo.jpg" alt="Amsalem Visa Logo" class="h-20 md:h-24 object-contain drop-shadow-sm" onerror="this.src='https://placehold.co/300x100/ffffff/00b4d8?text=Amsalem+Visa'">
+        <a href="#" id="mainLogoLink" tabindex="0" aria-label="AMSVISA - חזרה לחיפוש" class="inline-block transition-transform hover:scale-105 duration-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCADwAlcDASIAAhEBAxEB/8QAHAABAAEFAQEAAAAAAAAAAAAAAAcDBAUGCAEC/8QAWhAAAQMDAQQEBA4OBwYFBQAAAQACAwQFEQYHEiExE0FRYRQVcYEIFyIyNlJUdZGSobGz0RYYIzM0QlZic3SUssHTN1NVcpOVwyQlQ4LC0jVEg6LhY4Sj4/D/xAAbAQEAAgMBAQAAAAAAAAAAAAAAAQIEBQYDB//EADoRAQABBAECBAIHBgQHAAAAAAABAgMEEQUSMQYhQWETURQVFjJxkaEiUoGxwfBCU9HhIzM0Q0Ricv/aAAwDAQACEQMRAD8A6pREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQERfEk0UXGSRjP7xAQfaKj4dS+6YfjhPDqX3TD8cIKyKnFUQz73RSxybpwdxwOPgVRAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQFYXq90NgonVddMI428h1uPYAqtzuVNaKKWtq5BHDEMk9vcO9cs7T9otXqu6SRxyFlMw7rWtPADs+tRM6TEbbbrPb7WTyyU1mHQxg43mHif8Am+rCjKu1xfK+Qvlq3ZPn+dYFFRdk/sluvup3wBPsluo/8074AsYvDyQdCehfqZauyaimmeXvNzAJP6FimtQf6Fb2Pah9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wNz8C+qikp6oNFRBFKGnIEjA7HwqBEO17Wli1ppb7GtM18F6utwqImRQ0Z6QsAdkucRwA4dfb5VJb7lbtI2CkdebjS0cMEccBnnkDGucGgYyes4KyUFDS0pJgp4YieBLGBufgX1UUsFUwMnhjlaDkB7Q4A+dBEktbBtJ2u2KtsjnVtnsEL5Z61jT0JldnDWuPBx9by7D2KX+QXzFFHCwMiY1jBya0YA8y+lIhrbRfLbf7np3T9qrIa66095jM1LA7ffFjnvAcsZ61tu2sgbLb+SQB0LOf6Vi3KOipopnTR08LJXZ3ntYA457SqksMc8bo5Y2SMdza8Ag+YqNJ2hTaM4D0PFpJIA8HoeOe4La9qVKKzY3cmYyWUMUo7t0sd8wW+vpKeWAQPgidCMARuYC0Y5cOS+3wxyRGJ8bHRkbpYQCCOzCaNtY0q1mptmdthdIWsrrSyFz24JG9Fukjv5rXdb6ZpNG7ELrZKOaaWClpCBJMRvOzIHEnAA5kqSYoo4I2xxMbGxowGtGAPMksUc8bo5WNkY7gWuAIPmKaQwGzs50Hp7HH/d0H7gWwrxjGRMaxjWta0YDWjAAXqkEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERB//2Q==" alt="AMSVISA - ויזות לכל העולם בהליך קל ומהיר" class="h-20 md:h-24 object-contain drop-shadow-sm">
         </a>
     </header>
 
@@ -138,7 +163,7 @@
             </p>
             <div class="fade-in">
                 <div class="inline-flex items-center gap-2.5 px-4 py-1.5 bg-white border border-brand/30 rounded-full text-slate-700 text-[14px] font-bold shadow-[0_2px_10px_rgba(0,180,216,0.06)]">
-                    <img src="https://flagcdn.com/w20/il.png" alt="Israel Flag" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" onerror="this.style.display='none'"> 
+                    <img src="https://flagcdn.com/w20/il.png" alt="" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" loading="lazy" onerror="this.style.display='none'"> 
                     המידע מותאם לנושאי דרכון ישראלי בלבד
                 </div>
             </div>
@@ -147,17 +172,17 @@
         <div class="max-w-2xl mx-auto relative z-40 no-print" id="searchContainer">
             <div class="relative group">
                 <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none transition-colors duration-300 group-focus-within:text-brand text-slate-400">
-                    <i class="fa-solid fa-magnifying-glass text-xl"></i>
+                    <i class="fa-solid fa-magnifying-glass text-xl" aria-hidden="true"></i>
                 </div>
                 <input type="text" id="countrySearch" placeholder="לאן טסים? (לדוגמה: לונדון, פריז, תאילנד...)" 
                     class="w-full pl-6 pr-16 py-5 md:py-6 bg-white/95 backdrop-blur-sm border-2 border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl text-lg md:text-xl focus:outline-none focus:border-brand/40 focus:ring-4 focus:ring-brand/10 transition-all placeholder:text-slate-400 font-medium"
-                    autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocompleteList" aria-haspopup="listbox">
+                    autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocompleteList" aria-haspopup="listbox" aria-label="חיפוש מדינת יעד">
                 <button type="button" id="clearSearch" aria-label="נקה חיפוש" class="absolute inset-y-0 left-0 pl-6 flex items-center cursor-pointer text-slate-300 hover:text-slate-500 hidden transition-colors focus:outline-none">
-                    <i class="fa-solid fa-circle-xmark text-lg"></i>
+                    <i class="fa-solid fa-circle-xmark text-lg" aria-hidden="true"></i>
                 </button>
             </div>
 
-            <div id="autocompleteList" role="listbox" class="absolute z-50 w-full mt-3 bg-white rounded-2xl shadow-xl border border-slate-100 max-h-72 overflow-y-auto hidden divide-y divide-slate-50">
+            <div id="autocompleteList" role="listbox" aria-label="תוצאות חיפוש" class="absolute z-50 w-full mt-3 bg-white rounded-2xl shadow-xl border border-slate-100 max-h-72 overflow-y-auto hidden divide-y divide-slate-50">
             </div>
 
             <div id="quickSuggestions" class="mt-6 flex flex-wrap justify-center gap-2 md:gap-3 fade-in">
@@ -165,18 +190,18 @@
         </div>
 
         <div class="mt-16 pb-10">
-            <div id="resultContainer" class="hidden bg-white/95 backdrop-blur-lg border border-white/50 rounded-[2rem] shadow-premium p-6 md:p-10 mx-auto max-w-4xl transform transition-all duration-500 scale-95 opacity-0">
+            <div id="resultContainer" class="hidden bg-white/95 backdrop-blur-lg border border-white/50 rounded-[2rem] shadow-premium p-6 md:p-10 mx-auto max-w-4xl transform transition-all duration-500 scale-95 opacity-0" role="region" aria-label="תוצאות בדיקת ויזה">
                 
                 <div class="flex flex-col md:flex-row items-center justify-between mb-8 pb-8 border-b border-slate-100 gap-6">
                     <div class="action-buttons order-2 md:order-1 flex flex-wrap gap-3 w-full md:w-auto justify-center no-print">
                         <button id="backBtn" type="button" class="text-[14px] md:text-[15px] font-bold text-slate-500 hover:text-brand transition-colors flex items-center gap-2 shrink-0 bg-slate-50 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand px-4 py-2.5 rounded-xl">
-                            <i class="fa-solid fa-arrow-right-long"></i> חיפוש חדש
+                            <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i> חיפוש חדש
                         </button>
                         <button onclick="window.print()" type="button" class="text-[14px] md:text-[15px] font-bold text-brand bg-brand/10 hover:bg-brand/20 transition-colors flex items-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-brand px-4 py-2.5 rounded-xl" title="הדפס תוצאה">
-                            <i class="fa-solid fa-print"></i> הדפס
+                            <i class="fa-solid fa-print" aria-hidden="true"></i> הדפס
                         </button>
                         <a id="whatsappShareBtn" target="_blank" rel="noopener noreferrer" class="text-[14px] md:text-[15px] font-bold text-[#22c55e] bg-[#22c55e]/10 hover:bg-[#22c55e]/20 transition-colors flex items-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-[#22c55e] px-4 py-2.5 rounded-xl" title="שתף בוואטסאפ">
-                            <i class="fa-brands fa-whatsapp text-lg"></i> שתף
+                            <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i> שתף
                         </a>
                     </div>
                     
@@ -184,16 +209,16 @@
                         <div class="text-right">
                             <h2 id="resCountryNameTab" class="text-3xl md:text-4xl font-heading font-black text-slate-800 tracking-tight mb-1.5"></h2>
                             <p class="text-[13px] md:text-sm text-slate-400 font-medium flex items-center gap-1.5 justify-end">
-                                דרישות לנוסעים עם דרכון ישראלי <img src="https://flagcdn.com/w20/il.png" alt="IL" class="w-4 h-3 rounded-[1px] opacity-70">
+                                דרישות לנוסעים עם דרכון ישראלי <img src="https://flagcdn.com/w20/il.png" alt="" class="w-4 h-3 rounded-[1px] opacity-70" loading="lazy" onerror="this.style.display='none'">
                             </p>
                         </div>
                         
                         <!-- Fallback Flag Container -->
                         <div class="relative w-[72px] h-[52px] shrink-0 hidden" id="resFlagContainer">
                             <div class="absolute inset-0 flex items-center justify-center bg-slate-100 rounded-lg border border-slate-200 text-slate-400">
-                                <i class="fa-solid fa-globe text-2xl"></i>
+                                <i class="fa-solid fa-globe text-2xl" aria-hidden="true"></i>
                             </div>
-                            <img id="resFlag" src="" alt="Flag" class="absolute inset-0 w-full h-full rounded-lg object-cover shadow-sm border border-slate-100 z-10 bg-white transition-opacity duration-300" onerror="this.style.opacity='0'">
+                            <img id="resFlag" src="" alt="" class="absolute inset-0 w-full h-full rounded-lg object-cover shadow-sm border border-slate-100 z-10 bg-white transition-opacity duration-300" onerror="this.style.opacity='0'">
                         </div>
                     </div>
                 </div>
@@ -201,16 +226,16 @@
                 <div class="mb-12 flex flex-col items-center text-center">
                     <div class="relative mb-6">
                         <div id="resIconCircle" class="w-20 h-20 rounded-full border-4 flex items-center justify-center bg-white shadow-sm relative z-10 transition-colors duration-300">
-                            <i id="resIcon" class="text-3xl"></i>
+                            <i id="resIcon" class="text-3xl" aria-hidden="true"></i>
                         </div>
-                        <div id="resIconTail" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] z-0 transition-colors duration-300"></div>
+                        <div id="resIconTail" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] z-0 transition-colors duration-300" aria-hidden="true"></div>
                     </div>
                     
                     <h3 id="resTitle" class="text-3xl md:text-4xl font-heading font-black text-slate-800 leading-tight mb-8"></h3>
                     
                     <div class="inline-flex items-center gap-2.5 px-6 py-2.5 bg-white border border-brand/30 rounded-full shadow-[0_4px_15px_rgba(0,180,216,0.08)]">
                         <span id="resValidityTitle" class="text-[15px] font-bold text-slate-600"></span>
-                        <i class="fa-regular fa-clock text-brand text-lg"></i>
+                        <i class="fa-regular fa-clock text-brand text-lg" aria-hidden="true"></i>
                     </div>
                 </div>
                     
@@ -225,7 +250,7 @@
                             <p class="text-sm text-slate-500 mt-0.5">בדקו אם הדרכון שלכם מתאים לנסיעה זו</p>
                         </div>
                         <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-calculator"></i>
+                            <i class="fa-solid fa-calculator" aria-hidden="true"></i>
                         </div>
                     </div>
 
@@ -233,7 +258,7 @@
                         <div class="relative">
                             <label for="tripDate" id="tripDateLabel" class="block text-sm font-bold text-slate-600 mb-2">תאריך נסיעה</label>
                             <div class="relative flex items-center">
-                                <i class="fa-regular fa-calendar absolute left-4 text-slate-400 pointer-events-none z-10"></i>
+                                <i class="fa-regular fa-calendar absolute left-4 text-slate-400 pointer-events-none z-10" aria-hidden="true"></i>
                                 <input type="date" id="tripDate" required
                                     class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-slate-700 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all cursor-pointer font-medium text-right relative z-0">
                             </div>
@@ -242,7 +267,7 @@
                         <div class="relative">
                             <label for="expiryDate" class="block text-sm font-bold text-slate-600 mb-2">תוקף הדרכון שלכם</label>
                             <div class="relative flex items-center">
-                                <i class="fa-solid fa-passport absolute left-4 text-slate-400 pointer-events-none z-10"></i>
+                                <i class="fa-solid fa-passport absolute left-4 text-slate-400 pointer-events-none z-10" aria-hidden="true"></i>
                                 <input type="date" id="expiryDate" required
                                     class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3.5 text-slate-700 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all cursor-pointer font-medium text-right relative z-0">
                             </div>
@@ -250,17 +275,20 @@
 
                         <div class="md:col-span-2 mt-2">
                             <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(0,180,216,0.39)] hover:shadow-[0_6px_20px_rgba(0,180,216,0.23)] transition-all active:scale-[0.98] flex justify-center items-center gap-3 text-lg border-none outline-none focus:ring-4 focus:ring-brand-light">
-                                <span id="calcBtnText">בדוק תוקף</span> <i class="fa-solid fa-check"></i>
+                                <span id="calcBtnText">בדוק תוקף</span> <i class="fa-solid fa-check" aria-hidden="true"></i>
                             </button>
                         </div>
                     </form>
 
-                    <div id="calcResult" class="mt-6 hidden p-5 rounded-xl border flex items-start gap-4 transition-all relative z-10">
-                        <div id="calcResultIcon" class="shrink-0 mt-0.5 text-2xl"></div>
-                        <div>
-                            <h4 id="calcResultTitle" class="font-bold text-lg mb-1"></h4>
-                            <p id="calcResultMessage" class="text-sm font-medium opacity-90"></p>
+                    <div id="calcResult" class="mt-6 hidden p-5 rounded-xl border transition-all relative z-10" role="status">
+                        <div class="flex items-start gap-4">
+                            <div id="calcResultIcon" class="shrink-0 mt-0.5 text-2xl"></div>
+                            <div>
+                                <h4 id="calcResultTitle" class="font-bold text-lg mb-1"></h4>
+                                <p id="calcResultMessage" class="text-sm font-medium opacity-90"></p>
+                            </div>
                         </div>
+                        <div id="calcExtraNote" class="hidden mt-3 pt-3 border-t border-current opacity-90 text-[13px]"></div>
                     </div>
                 </div>
 
@@ -276,7 +304,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto" dir="ltr">
                 <a href="mailto:visa.dept@amsalem.com" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-email group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md">
                     <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#f43f5e] group-hover:text-[#f43f5e] shadow-sm">
-                        <i class="fa-regular fa-envelope text-lg transition-colors duration-300"></i>
+                        <i class="fa-regular fa-envelope text-lg transition-colors duration-300" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">דוא"ל</span>
                     <span class="text-xl font-bold tracking-wide text-slate-800" dir="ltr">visa.dept@amsalem.com</span>
@@ -284,7 +312,7 @@
 
                 <a href="https://wa.me/97246700998" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-whatsapp group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md">
                     <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#22c55e] group-hover:text-[#22c55e] shadow-sm">
-                        <i class="fa-brands fa-whatsapp text-xl transition-colors duration-300"></i>
+                        <i class="fa-brands fa-whatsapp text-xl transition-colors duration-300" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">WhatsApp</span>
                     <span class="text-xl font-bold tracking-wider text-slate-800" dir="ltr">+972 4-670-0998</span>
@@ -292,7 +320,7 @@
 
                 <a href="tel:046700900" class="bg-slate-50 hover:bg-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center transition-all duration-300 glow-phone group cursor-pointer border border-slate-100 shadow-sm hover:shadow-md relative">
                     <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mb-4 transition-all duration-300 text-slate-500 group-hover:border-[#38bdf8] group-hover:text-[#38bdf8] shadow-sm">
-                        <i class="fa-solid fa-phone text-lg transition-colors duration-300"></i>
+                        <i class="fa-solid fa-phone text-lg transition-colors duration-300" aria-hidden="true"></i>
                     </div>
                     <span class="text-sm text-slate-500 mb-2 font-medium" dir="rtl">שיחה עם נציג</span>
                     <span class="text-xl font-bold tracking-wider text-slate-800" dir="ltr">04-6700900</span>
@@ -301,7 +329,7 @@
             </div>
 
             <div class="pt-10 border-t border-slate-200 flex flex-col items-center" dir="rtl">
-                <img src="amsalem-logo.png" alt="Amsalem Global Travel Management" class="h-10 opacity-80 mb-6 transition-opacity hover:opacity-100" onerror="this.style.display='none'">
+                <img src="data:image/png;base64,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" alt="Amsalem Global Travel Management" class="h-10 opacity-80 mb-6 transition-opacity hover:opacity-100">
                 <p class="text-xs text-slate-500 max-w-3xl leading-relaxed">
                     המידע במערכת מתעדכן באופן שוטף, אך דרישות כניסה עשויות להשתנות ללא הודעה מוקדמת. לפני נסיעה מומלץ לבצע בדיקה סופית מול מחלקת הויזות. 
                     <br><span id="dataVersionText">הנתונים מעודכנים לשנת <span id="currentYearDisplay"></span></span>.
@@ -312,208 +340,210 @@
     </footer>
 
     <script>
+        'use strict';
+
         const schengenAliases = ['שנגן'];
         
         // נתונים סטטיים מעודכנים כולל כל התיקונים
         const fallbackCountriesData = [
             { "id": "AF", "name": "אפגניסטן", "aliases": ["afghanistan"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "AL", "name": "אלבניה", "aliases": ["albania"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "AL", "name": "אלבניה", "aliases": ["albania"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "DZ", "name": "אלג'יריה", "aliases": ["algeria"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "AD", "name": "אנדורה", "aliases": ["andorra"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך צרפת או ספרד (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "AO", "name": "אנגולה", "aliases": ["angola"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "עד 30 יום לביקור, מקסימום 90 יום בשנה קלנדרית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "AD", "name": "אנדורה", "aliases": ["andorra"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך צרפת או ספרד (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "AO", "name": "אנגולה", "aliases": ["angola"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום", "עד 30 יום לביקור, מקסימום 90 יום בשנה קלנדרית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "AG", "name": "אנטיגואה וברבודה", "aliases": ["antigua and barbuda"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 180 יום", "פטור ל-24 שעות בהגעה בקרוזים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "AR", "name": "ארגנטינה", "aliases": ["argentina", "בואנוס איירס"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AR", "name": "ארגנטינה", "aliases": ["argentina", "בואנוס איירס"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "AM", "name": "ארמניה", "aliases": ["armenia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 120 יום", "בהגעה בנמל התעופה זבארטנוץ או מקוון מראש"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "AU", "name": "אוסטרליה", "aliases": ["australia", "סידני", "מלבורן", "sydney", "melbourne"], "category": "online", "visaTitle": "ויזה מקוונת מראש", "requirements": ["ויזת מבקר מקוונת e600 - ישראלים אינם זכאים ל-ETA"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "AT", "name": "אוסטריה", "aliases": ["austria", "וינה", "vienna", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "AT", "name": "אוסטריה", "aliases": ["austria", "וינה", "vienna", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "AZ", "name": "אזרבייג'ן", "aliases": ["azerbaijan", "באקו", "baku"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "BS", "name": "איי בהאמה", "aliases": ["bahamas"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BS", "name": "איי בהאמה", "aliases": ["bahamas"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "BH", "name": "בחריין", "aliases": ["bahrain"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 14 יום", "נדרשת הוכחת אמצעים כלכליים וכתובת שהייה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "BD", "name": "בנגלדש", "aliases": ["bangladesh"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "BB", "name": "ברבדוס", "aliases": ["barbados"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "BY", "name": "בלארוס", "aliases": ["belarus"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "BE", "name": "בלגיה", "aliases": ["belgium", "בריסל", "brussels", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "BZ", "name": "בליז", "aliases": ["belize"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BB", "name": "ברבדוס", "aliases": ["barbados"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BY", "name": "בלארוס", "aliases": ["belarus"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BE", "name": "בלגיה", "aliases": ["belgium", "בריסל", "brussels", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BZ", "name": "בליז", "aliases": ["belize"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "BJ", "name": "בנין", "aliases": ["benin"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "נדרשת תעודת חיסונים בינלאומית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "BT", "name": "בהוטן", "aliases": ["bhutan"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "CO", "name": "קולומביה", "aliases": ["colombia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה בשגרירות מראש לשהייה עד 90 יום", "ישראל נמצאת ברשימת המדינות שנדרשות להוציא ויזה מראש", "נדרש למלא טופס Check-Mig לרישום מוקדם לפני טיסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "BA", "name": "בוסניה והרצגובינה", "aliases": ["bosnia and herzegovina"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "BW", "name": "בוצואנה", "aliases": ["botswana"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של שנה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "BR", "name": "ברזיל", "aliases": ["brazil", "ריו", "סאו פאולו", "rio"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "BA", "name": "בוסניה והרצגובינה", "aliases": ["bosnia and herzegovina"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BW", "name": "בוצואנה", "aliases": ["botswana"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של שנה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BR", "name": "ברזיל", "aliases": ["brazil", "ריו", "סאו פאולו", "rio"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "BN", "name": "ברוניי", "aliases": ["brunei"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - אינה מכירה בישראל"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "BG", "name": "בולגריה", "aliases": ["bulgaria", "סופיה", "בורגס", "ורנה", "sofia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "BG", "name": "בולגריה", "aliases": ["bulgaria", "סופיה", "בורגס", "ורנה", "sofia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "BF", "name": "בורקינה פאסו", "aliases": ["burkina faso"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "BI", "name": "בורונדי", "aliases": ["burundi"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: חודש", "ויזה בהגעה זמינה בשדות התעופה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "KH", "name": "קמבודיה", "aliases": ["cambodia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום", "ויזה בהגעה זמינה בשדות התעופה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "CM", "name": "קמרון", "aliases": ["cameroon"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "CA", "name": "קנדה", "aliases": ["canada", "טורונטו", "מונטריאול", "toronto"], "category": "eta", "visaTitle": "אישור אלקטרוני (eTA)", "requirements": ["זמן שהייה: 180 יום", "eTA נדרש לטיסה או טרנזיט דרך קנדה"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "CV", "name": "כף ורדה", "aliases": ["cape verde"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 30 יום", "הרשמה מראש דרך פלטפורמת EASE המקוונת"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "CF", "name": "הרפובליקה המרכז-אפריקאית", "aliases": ["central african republic"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "CF", "name": "הרפובליקה המרכז-אפריקאית", "aliases": ["central african republic"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TD", "name": "צ'אד", "aliases": ["chad"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["נדרשת כרטיס הלוך-חזור ודרכון בתוקף 6 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "CL", "name": "צ'ילה", "aliases": ["chile"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "CL", "name": "צ'ילה", "aliases": ["chile"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "CN", "name": "סין", "aliases": ["china", "בייגינג", "שנחאי", "beijing"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ניתן לבקש ויזה רב-פעמית עד 10 שנים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "BO", "name": "בוליביה", "aliases": ["bolivia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "BO", "name": "בוליביה", "aliases": ["bolivia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "KM", "name": "קומורו", "aliases": ["comoros"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 45 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "CG", "name": "הרפובליקה של קונגו", "aliases": ["republic of the congo"], "category": "online", "visaTitle": "ויזה מקוונת מראש", "requirements": ["ויזה מקוונת מראש דרך שגרירות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "CD", "name": "קונגו הדמוקרטית", "aliases": ["dr congo"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 7 ימים", "נדרש מכתב הזמנה או הזמנת מלון"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "CR", "name": "קוסטה ריקה", "aliases": ["costa rica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "CR", "name": "קוסטה ריקה", "aliases": ["costa rica"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "CI", "name": "חוף השנהב", "aliases": ["ivory coast"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים", "כניסה עם eVisa רק דרך נמל התעופה פורט בואה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "HR", "name": "קרואטיה", "aliases": ["croatia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "HR", "name": "קרואטיה", "aliases": ["croatia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "CU", "name": "קובה", "aliases": ["cuba"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "CY", "name": "קפריסין", "aliases": ["cyprus", "לרנקה", "פאפוס", "איה נאפה", "larnaca", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "CZ", "name": "צ'כיה", "aliases": ["czech republic", "פראג", "prague", "צכיה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 90 יום; קיימת התייחסות להסכם בילטרלי מיוחד לישראלים, אך לאחר 90 יום יש לצאת מאזור שנגן לפחות ליום אחד"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "DK", "name": "דנמרק", "aliases": ["denmark", "קופנהגן", "copenhagen", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CY", "name": "קפריסין", "aliases": ["cyprus", "לרנקה", "פאפוס", "איה נאפה", "larnaca", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CZ", "name": "צ'כיה", "aliases": ["czech republic", "פראג", "prague", "צכיה", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: עד 90 יום; קיימת התייחסות להסכם בילטרלי מיוחד לישראלים, אך לאחר 90 יום יש לצאת מאזור שנגן לפחות ליום אחד"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "DK", "name": "דנמרק", "aliases": ["denmark", "קופנהגן", "copenhagen", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "DJ", "name": "ג'יבוטי", "aliases": ["djibouti"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "DM", "name": "דומיניקה", "aliases": ["dominica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "DO", "name": "הרפובליקה הדומיניקנית", "aliases": ["dominican republic"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "ניתן להאריך עד 120 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "EC", "name": "אקוודור", "aliases": ["ecuador"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "DM", "name": "דומיניקה", "aliases": ["dominica"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "DO", "name": "הרפובליקה הדומיניקנית", "aliases": ["dominican republic"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום", "ניתן להאריך עד 120 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "EC", "name": "אקוודור", "aliases": ["ecuador"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "EG", "name": "מצרים", "aliases": ["egypt", "סיני", "שארם", "טאבה", "קהיר", "cairo"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["פטור עד 14 יום לאתרי סיני בלבד, בכניסה דרך טאבה או שארם א-שייח'"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SV", "name": "אל סלבדור", "aliases": ["el salvador"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SV", "name": "אל סלבדור", "aliases": ["el salvador"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "GQ", "name": "גינאה המשוונית", "aliases": ["equatorial guinea"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "ER", "name": "אריתריאה", "aliases": ["eritrea"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
-            { "id": "EE", "name": "אסטוניה", "aliases": ["estonia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "SZ", "name": "אסוואטיני", "aliases": ["eswatini"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "EE", "name": "אסטוניה", "aliases": ["estonia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SZ", "name": "אסוואטיני", "aliases": ["eswatini"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "ET", "name": "אתיופיה", "aliases": ["ethiopia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום", "ויזה בהגעה רק בנמל התעופה אדיס אבבה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "FJ", "name": "פיג'י", "aliases": ["fiji"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "FI", "name": "פינלנד", "aliases": ["finland", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "FR", "name": "צרפת", "aliases": ["france", "פריז", "paris", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "FJ", "name": "פיג'י", "aliases": ["fiji"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "FI", "name": "פינלנד", "aliases": ["finland", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "FR", "name": "צרפת", "aliases": ["france", "פריז", "paris", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "GA", "name": "גבון", "aliases": ["gabon"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום", "כניסה עם eVisa רק דרך נמל התעופה ליברוויל"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "GM", "name": "גמביה", "aliases": ["gambia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "GE", "name": "גאורגיה", "aliases": ["georgia", "טביליסי", "tbilisi", "בטומי", "batumi"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 365 יום", "שהייה עד שנה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
-            { "id": "DE", "name": "גרמניה", "aliases": ["germany", "ברלין", "berlin", "מינכן", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "GE", "name": "גאורגיה", "aliases": ["georgia", "טביליסי", "tbilisi", "בטומי", "batumi"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 365 יום", "שהייה עד שנה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "DE", "name": "גרמניה", "aliases": ["germany", "ברלין", "berlin", "מינכן", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "GH", "name": "גאנה", "aliases": ["ghana"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "GR", "name": "יוון", "aliases": ["greece", "אתונה", "athens", "רודוס", "כרתים", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "GD", "name": "גרנדה", "aliases": ["grenada"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "GT", "name": "גואטמלה", "aliases": ["guatemala"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GR", "name": "יוון", "aliases": ["greece", "אתונה", "athens", "רודוס", "כרתים", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "GD", "name": "גרנדה", "aliases": ["grenada"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "GT", "name": "גואטמלה", "aliases": ["guatemala"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "GN", "name": "גינאה", "aliases": ["guinea"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "GW", "name": "גינאה ביסאו", "aliases": ["guinea-bissau"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "GY", "name": "גיאנה", "aliases": ["guyana"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "HT", "name": "האיטי", "aliases": ["haiti"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "HN", "name": "הונדורס", "aliases": ["honduras"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "HU", "name": "הונגריה", "aliases": ["hungary", "בודפשט", "budapest", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "IS", "name": "איסלנד", "aliases": ["iceland", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "HT", "name": "האיטי", "aliases": ["haiti"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HN", "name": "הונדורס", "aliases": ["honduras"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "HU", "name": "הונגריה", "aliases": ["hungary", "בודפשט", "budapest", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "IS", "name": "איסלנד", "aliases": ["iceland", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "IN", "name": "הודו", "aliases": ["india", "דלהי", "מומבאי", "גואה"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "כניסה עם eVisa דרך 32 שדות תעופה ו-5 נמלי ים מוגדרים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "ID", "name": "אינדונזיה", "aliases": ["indonesia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ישראלים בקטגוריית Calling Visa - הליך מיוחד ומורכב"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "IR", "name": "איראן", "aliases": ["iran"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "IQ", "name": "עיראק", "aliases": ["iraq"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "IE", "name": "אירלנד", "aliases": ["ireland"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "IT", "name": "איטליה", "aliases": ["italy", "רומא", "rome", "מילאנו", "ונציה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "JM", "name": "ג'מייקה", "aliases": ["jamaica"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "JP", "name": "יפן", "aliases": ["japan", "טוקיו", "tokyo", "קיוטו"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "IE", "name": "אירלנד", "aliases": ["ireland"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "IT", "name": "איטליה", "aliases": ["italy", "רומא", "rome", "מילאנו", "ונציה", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "JM", "name": "ג'מייקה", "aliases": ["jamaica"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "JP", "name": "יפן", "aliases": ["japan", "טוקיו", "tokyo", "קיוטו"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "JO", "name": "ירדן", "aliases": ["jordan"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["נדרשת הזמנת מדריך ירדני ומלון מראש; אסורה כניסה בגשר אלנבי; עד יומיים ללא ויזה ממעבר רבין"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
-            { "id": "KZ", "name": "קזחסטן", "aliases": ["kazakhstan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "KZ", "name": "קזחסטן", "aliases": ["kazakhstan"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
             { "id": "KE", "name": "קניה", "aliases": ["kenya"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "הגשה עד 90 יום מראש, לפחות 72 שעות לפני נסיעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "KI", "name": "קיריבטי", "aliases": ["kiribati"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "עד 90 יום בכל תקופה של 12 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "KI", "name": "קיריבטי", "aliases": ["kiribati"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "עד 90 יום בכל תקופה של 12 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "KP", "name": "צפון קוריאה", "aliases": ["north korea"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["נדרש אישור מיוחד לתיירות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "KR", "name": "דרום קוריאה", "aliases": ["south korea"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "K-ETA בתוקף 3 שנים מיום האישור"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "KW", "name": "כווית", "aliases": ["kuwait"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
-            { "id": "KG", "name": "קירגיזסטן", "aliases": ["kyrgyzstan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "30 יום בכל תקופה של 60 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מעבר למועד היציאה" },
+            { "id": "KG", "name": "קירגיזסטן", "aliases": ["kyrgyzstan"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום", "30 יום בכל תקופה של 60 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מעבר למועד היציאה" },
             { "id": "LA", "name": "לאוס", "aliases": ["laos"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום", "eVisa דרך שדות תעופה וגשרי ידידות מוגדרים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "LV", "name": "לטביה", "aliases": ["latvia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LV", "name": "לטביה", "aliases": ["latvia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "LB", "name": "לבנון", "aliases": ["lebanon"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
-            { "id": "LS", "name": "לסוטו", "aliases": ["lesotho"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LS", "name": "לסוטו", "aliases": ["lesotho"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "LR", "name": "ליבריה", "aliases": ["liberia"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים", "ויזה מקוונת בהגעה (e-VOA)"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "LY", "name": "לוב", "aliases": ["libya"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה ומעבר - חרם הליגה הערבית"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "LI", "name": "ליכטנשטיין", "aliases": ["liechtenstein", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "LT", "name": "ליטא", "aliases": ["lithuania", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "LU", "name": "לוקסמבורג", "aliases": ["luxembourg", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LI", "name": "ליכטנשטיין", "aliases": ["liechtenstein", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LT", "name": "ליטא", "aliases": ["lithuania", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "LU", "name": "לוקסמבורג", "aliases": ["luxembourg", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "MG", "name": "מדגסקר", "aliases": ["madagascar"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "MW", "name": "מלאווי", "aliases": ["malawi"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MW", "name": "מלאווי", "aliases": ["malawi"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "MY", "name": "מלזיה", "aliases": ["malaysia"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["סירוב כניסה לתיירות; למטרות אחרות - ויזה ואישור משרד הפנים המלזי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "MV", "name": "האיים המלדיביים", "aliases": ["maldives"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["איסור כניסה לישראלים מ-15.4.2025"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "ML", "name": "מאלי", "aliases": ["mali"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "MT", "name": "מלטה", "aliases": ["malta", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "MH", "name": "איי מרשל", "aliases": ["marshall islands"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MT", "name": "מלטה", "aliases": ["malta", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MH", "name": "איי מרשל", "aliases": ["marshall islands"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "MR", "name": "מאוריטניה", "aliases": ["mauritania"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "זמין בנמל התעופה נואקשוט"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "MU", "name": "מאוריציוס", "aliases": ["mauritius"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "MX", "name": "מקסיקו", "aliases": ["mexico"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "FM", "name": "מיקרונזיה", "aliases": ["micronesia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
-            { "id": "MD", "name": "מולדובה", "aliases": ["moldova"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
-            { "id": "MC", "name": "מונקו", "aliases": ["monaco"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "MN", "name": "מונגוליה", "aliases": ["mongolia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "ME", "name": "מונטנגרו", "aliases": ["montenegro"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MU", "name": "מאוריציוס", "aliases": ["mauritius"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "MX", "name": "מקסיקו", "aliases": ["mexico"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 180 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "FM", "name": "מיקרונזיה", "aliases": ["micronesia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
+            { "id": "MD", "name": "מולדובה", "aliases": ["moldova"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "MC", "name": "מונקו", "aliases": ["monaco"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MN", "name": "מונגוליה", "aliases": ["mongolia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "ME", "name": "מונטנגרו", "aliases": ["montenegro"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "MA", "name": "מרוקו", "aliases": ["morocco", "מרקש", "קזבלנקה"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "eVisa ל-30 יום, ניתן להארכה עד 6 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "MZ", "name": "מוזמביק", "aliases": ["mozambique"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 30 יום", "רישום ETA לפחות 48 שעות לפני הגעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "MM", "name": "מיאנמר", "aliases": ["myanmar"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 28 יום", "כניסה דרך שדות התעופה יאנגון, נייפידאו או מנדליי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "NA", "name": "נמיביה", "aliases": ["namibia"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום", "ויזה בהגעה בנמל התעופה הוסאה קוטאקו ועמדות נוספות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "NR", "name": "נאורו", "aliases": ["nauru"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["ויזה בהגעה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
             { "id": "NP", "name": "נפאל", "aliases": ["nepal"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "NL", "name": "הולנד", "aliases": ["netherlands", "אמסטרדם", "amsterdam", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "NL", "name": "הולנד", "aliases": ["netherlands", "אמסטרדם", "amsterdam", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "NZ", "name": "ניו זילנד", "aliases": ["new zealand"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["נדרש NZeTA לפני הנסיעה; שהייה עד 3 חודשים; דרכון בתוקף לפחות 3 חודשים לאחר מועד היציאה"], "passportValidity": 3, "validityText": "3 חודשים לפחות מעבר למועד היציאה" },
-            { "id": "NI", "name": "ניקרגואה", "aliases": ["nicaragua"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "NI", "name": "ניקרגואה", "aliases": ["nicaragua"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הסכם הגבולות CA-4"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "NE", "name": "ניז'ר", "aliases": ["niger"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה בהגעה אפשרית עם מכתב Visa Volant"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "NG", "name": "ניגריה", "aliases": ["nigeria"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום", "נדרש אישור ויזה מראש מהאתר הרשמי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "MK", "name": "צפון מקדוניה", "aliases": ["north macedonia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "NO", "name": "נורווגיה", "aliases": ["norway", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "MK", "name": "צפון מקדוניה", "aliases": ["north macedonia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "NO", "name": "נורווגיה", "aliases": ["norway", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "OM", "name": "עומאן", "aliases": ["oman"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "PK", "name": "פקיסטן", "aliases": ["pakistan"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסה מוגבלת - רק עם ויזה ורישום משטרתי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "PW", "name": "פלאו", "aliases": ["palau"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "PA", "name": "פנמה", "aliases": ["panama"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "PW", "name": "פלאו", "aliases": ["palau"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PA", "name": "פנמה", "aliases": ["panama"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
             { "id": "PG", "name": "פפואה גינאה החדשה", "aliases": ["papua new guinea"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "PY", "name": "פרגוואי", "aliases": ["paraguay"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף ביום הכניסה" },
-            { "id": "PE", "name": "פרו", "aliases": ["peru"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "PH", "name": "הפיליפינים", "aliases": ["philippines"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "PL", "name": "פולין", "aliases": ["poland", "ורשה", "warsaw", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "PT", "name": "פורטוגל", "aliases": ["portugal", "ליסבון", "lisbon", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "PY", "name": "פרגוואי", "aliases": ["paraguay"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף ביום הכניסה" },
+            { "id": "PE", "name": "פרו", "aliases": ["peru"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PH", "name": "הפיליפינים", "aliases": ["philippines"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "PL", "name": "פולין", "aliases": ["poland", "ורשה", "warsaw", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "PT", "name": "פורטוגל", "aliases": ["portugal", "ליסבון", "lisbon", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "QA", "name": "קטאר", "aliases": ["qatar"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "RO", "name": "רומניה", "aliases": ["romania", "בוקרשט", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "RU", "name": "רוסיה", "aliases": ["russia", "מוסקבה"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "RO", "name": "רומניה", "aliases": ["romania", "בוקרשט", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "RU", "name": "רוסיה", "aliases": ["russia", "מוסקבה"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "RW", "name": "רואנדה", "aliases": ["rwanda"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "KN", "name": "סנט קיטס ונוויס", "aliases": ["saint kitts and nevis"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "LC", "name": "סנט לוסיה", "aliases": ["saint lucia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 6 שבועות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "VC", "name": "סנט וינסנט והגרנדינים", "aliases": ["saint vincent and the grenadines"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "LC", "name": "סנט לוסיה", "aliases": ["saint lucia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 6 שבועות"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "VC", "name": "סנט וינסנט והגרנדינים", "aliases": ["saint vincent and the grenadines"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "WS", "name": "סמואה", "aliases": ["samoa"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 90 יום", "היתר כניסה בהגעה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SM", "name": "סן מרינו", "aliases": ["san marino"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SM", "name": "סן מרינו", "aliases": ["san marino"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "ST", "name": "סאו טומה ופרינסיפה", "aliases": ["sao tome and principe"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "SA", "name": "ערב הסעודית", "aliases": ["saudi arabia"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסה מוגבלת - חרם הליגה הערבית; היתרים זמניים למוסלמים ישראלים לחאג'"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "SN", "name": "סנגל", "aliases": ["senegal"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: חודש", "נדרש דרכון בתוקף 6 חודשים וכרטיס המשך"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "RS", "name": "סרביה", "aliases": ["serbia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "RS", "name": "סרביה", "aliases": ["serbia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "SC", "name": "סיישל", "aliases": ["seychelles"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 90 יום", "מערכת גבולות אלקטרונית - הגשה עד 30 יום מראש"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "SL", "name": "סיירה לאון", "aliases": ["sierra leone"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SG", "name": "סינגפור", "aliases": ["singapore"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 30 יום", "נדרש למלא SG Arrival Card בתוך 3 ימים לפני ההגעה. שימו לב: זהו טופס כניסה דיגיטלי ואינו מהווה ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SK", "name": "סלובקיה", "aliases": ["slovakia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "SI", "name": "סלובניה", "aliases": ["slovenia", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "SB", "name": "איי שלמה", "aliases": ["solomon islands"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SG", "name": "סינגפור", "aliases": ["singapore"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: עד 30 יום", "נדרש למלא SG Arrival Card בתוך 3 ימים לפני ההגעה. שימו לב: זהו טופס כניסה דיגיטלי ואינו מהווה ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SK", "name": "סלובקיה", "aliases": ["slovakia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SI", "name": "סלובניה", "aliases": ["slovenia", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SB", "name": "איי שלמה", "aliases": ["solomon islands"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "SO", "name": "סומליה", "aliases": ["somalia"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "ZA", "name": "דרום אפריקה", "aliases": ["south africa", "קייפטאון", "יוהנסבורג"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "30 יום לפחות מעבר ליציאה + 2 עמודים ריקים" },
+            { "id": "ZA", "name": "דרום אפריקה", "aliases": ["south africa", "קייפטאון", "יוהנסבורג"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "30 יום לפחות מעבר ליציאה + 2 עמודים ריקים" },
             { "id": "SS", "name": "דרום סודן", "aliases": ["south sudan"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "ES", "name": "ספרד", "aliases": ["spain", "מדריד", "ברצלונה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "ES", "name": "ספרד", "aliases": ["spain", "מדריד", "ברצלונה", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "LK", "name": "סרי לנקה", "aliases": ["sri lanka"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["נדרש ETA לתיירות ל־30 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "SD", "name": "סודן", "aliases": ["sudan"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["הנורמליזציה מ-2020 טרם יושמה בפועל בהסדרי ויזה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SR", "name": "סורינם", "aliases": ["suriname"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הרשמה מקוונת מראש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "SE", "name": "שוודיה", "aliases": ["sweden", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "CH", "name": "שווייץ", "aliases": ["switzerland", "ציריך", "זנבה", "שנגן"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "SR", "name": "סורינם", "aliases": ["suriname"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הרשמה מקוונת מראש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "SE", "name": "שוודיה", "aliases": ["sweden", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "CH", "name": "שווייץ", "aliases": ["switzerland", "ציריך", "זנבה", "שנגן"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל 180 יום במרחב שנגן"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "SY", "name": "סוריה", "aliases": ["syria"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TJ", "name": "טג'יקיסטן", "aliases": ["tajikistan"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 60 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TZ", "name": "טנזניה", "aliases": ["tanzania", "זנזיבר"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "TH", "name": "תאילנד", "aliases": ["thailand", "בנגקוק", "פוקט", "קוסמוי"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: עד 30 יום", "נדרש למלא טופס כניסה דיגיטלי (TDAC) עד 3 ימים לפני הכניסה. שימו לב: אינו ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TH", "name": "תאילנד", "aliases": ["thailand", "בנגקוק", "פוקט", "קוסמוי"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: עד 60 יום", "נדרש למלא טופס כניסה דיגיטלי (TDAC) עד 3 ימים לפני הכניסה. שימו לב: אינו ויזה."], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TL", "name": "מזרח טימור", "aliases": ["timor-leste"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: 30 יום", "לא זמין בכל נקודות הכניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TG", "name": "טוגו", "aliases": ["togo"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 15 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "TO", "name": "טונגה", "aliases": ["tonga"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "TT", "name": "טרינידד וטובגו", "aliases": ["trinidad and tobago"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "TO", "name": "טונגה", "aliases": ["tonga"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TT", "name": "טרינידד וטובגו", "aliases": ["trinidad and tobago"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "TN", "name": "תוניסיה", "aliases": ["tunisia"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["לנוסעים בטיול מאורגן - דרך נציג החברה המארגנת"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "TR", "name": "טורקיה", "aliases": ["turkey", "איסטנבול", "אנטליה"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "TR", "name": "טורקיה", "aliases": ["turkey", "איסטנבול", "אנטליה"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TM", "name": "טורקמניסטן", "aliases": ["turkmenistan"], "category": "required", "visaTitle": "נדרשת ויזה בשגרירות", "requirements": ["ויזה ל-10 ימים בהגעה עם מכתב הזמנה מאושר מראש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "TV", "name": "טובאלו", "aliases": ["tuvalu"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["זמן שהייה: חודש"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "UG", "name": "אוגנדה", "aliases": ["uganda"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 3 חודשים"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "UA", "name": "אוקראינה", "aliases": ["ukraine"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "AE", "name": "איחוד האמירויות", "aliases": ["united arab emirates", "uae", "דובאי", "dubai", "אבו דאבי"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
+            { "id": "UA", "name": "אוקראינה", "aliases": ["ukraine"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "AE", "name": "איחוד האמירויות", "aliases": ["united arab emirates", "uae", "דובאי", "dubai", "אבו דאבי"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 3, "validityText": "3 חודשים לפחות מיום הכניסה" },
             { "id": "GB", "name": "בריטניה", "aliases": ["united kingdom", "uk", "לונדון", "london", "אנגליה", "england"], "category": "eta", "visaTitle": "אישור אלקטרוני (ETA)", "requirements": ["זמן שהייה: 180 יום", "נדרש אישור ETA אלקטרוני לפני הנסיעה"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "US", "name": "ארצות הברית", "aliases": ["united states", "usa", "ארהב", "ניו יורק", "מיאמי"], "category": "eta", "visaTitle": "אישור אלקטרוני (ESTA)", "requirements": ["זמן שהייה: 90 יום", "תוכנית הפטור מוויזה (VWP) - נדרש ESTA בתוקף שנתיים; ללא דרכון ביומטרי - ויזת B1/B2"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד - ישראל נכללת ב\"מועדון 6 החודשים\" של ארה\"ב" },
-            { "id": "UY", "name": "אורוגוואי", "aliases": ["uruguay"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 3 חודשים"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
-            { "id": "UZ", "name": "אוזבקיסטן", "aliases": ["uzbekistan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "שהייה מעל 3 ימים מחייבת רישום במשטרה המקומית"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "VU", "name": "ונואטו", "aliases": ["vanuatu"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "VA", "name": "קריית הוותיקן", "aliases": ["vatican city"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך איטליה (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "US", "name": "ארצות הברית", "aliases": ["united states", "usa", "ארהב", "ניו יורק", "מיאמי"], "category": "eta", "visaTitle": "אישור אלקטרוני (ESTA)", "requirements": ["זמן שהייה: 90 יום", "תוכנית הפטור מויזה (VWP) - נדרש ESTA בתוקף שנתיים; ללא דרכון ביומטרי - ויזת B1/B2"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד - ישראל נכללת ב\"מועדון 6 החודשים\" של ארה\"ב" },
+            { "id": "UY", "name": "אורוגוואי", "aliases": ["uruguay"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 3 חודשים"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "UZ", "name": "אוזבקיסטן", "aliases": ["uzbekistan"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום", "שהייה מעל 3 ימים מחייבת רישום במשטרה המקומית"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "VU", "name": "ונואטו", "aliases": ["vanuatu"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 120 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "VA", "name": "קריית הוותיקן", "aliases": ["vatican city"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "הכניסה דרך איטליה (שנגן)"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
             { "id": "VE", "name": "ונצואלה", "aliases": ["venezuela"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["יש לבדוק דרישות פרטניות במעמד הבקשה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "VN", "name": "וייטנאם", "aliases": ["vietnam"], "category": "evisa", "visaTitle": "ויזה אלקטרונית (eVisa)", "requirements": ["זמן שהייה: 90 יום", "eVisa בתוקף 90 יום, רב-פעמי"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
             { "id": "YE", "name": "תימן", "aliases": ["yemen"], "category": "banned_il", "visaTitle": "אסור עפ\"י החוק הישראלי", "requirements": ["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "ZM", "name": "זמביה", "aliases": ["zambia"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 30 יום", "זכאות לוויזה אוניברסלית משותפת עם זימבבואה"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
-            { "id": "ZW", "name": "זימבבואה", "aliases": ["zimbabwe"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: חודש", "זכאות לוויזה אוניברסלית משותפת עם זמביה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "XK", "name": "קוסובו", "aliases": ["kosovo"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
-            { "id": "TW", "name": "טייוואן", "aliases": ["taiwan"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
-            { "id": "HK", "name": "הונג קונג", "aliases": ["hong kong"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
-            { "id": "MO", "name": "מקאו", "aliases": ["macau"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
-            { "id": "NCY", "name": "צפון קפריסין", "aliases": ["northern cyprus"], "category": "free", "visaTitle": "פטור מוויזה", "requirements": ["זמן שהייה: 90 יום", "ישראל אינה מכירה בצפון קפריסין"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
+            { "id": "ZM", "name": "זמביה", "aliases": ["zambia"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 30 יום", "זכאות לויזה אוניברסלית משותפת עם זימבבואה"], "passportValidity": 4, "validityText": "4 חודשים לפחות מיום הכניסה" },
+            { "id": "ZW", "name": "זימבבואה", "aliases": ["zimbabwe"], "category": "evisa_voa", "visaTitle": "ויזה אלקטרונית או בהגעה", "requirements": ["זמן שהייה: חודש", "זכאות לויזה אוניברסלית משותפת עם זמביה"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "XK", "name": "קוסובו", "aliases": ["kosovo"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "90 יום בכל תקופה של 180 יום"], "passportValidity": 3, "validityText": "3 חודשים מעבר ליציאה" },
+            { "id": "TW", "name": "טייוואן", "aliases": ["taiwan"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" },
+            { "id": "HK", "name": "הונג קונג", "aliases": ["hong kong"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
+            { "id": "MO", "name": "מקאו", "aliases": ["macau"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום"], "passportValidity": 1, "validityText": "חודש לפחות מעבר לשהייה" },
+            { "id": "NCY", "name": "צפון קפריסין", "aliases": ["northern cyprus"], "category": "free", "visaTitle": "פטור מויזה", "requirements": ["זמן שהייה: 90 יום", "ישראל אינה מכירה בצפון קפריסין"], "passportValidity": 0, "validityText": "תקף למשך השהות בלבד" },
             { "id": "PS", "name": "הרשות הפלסטינית", "aliases": ["palestine", "gaza"], "category": "refused", "visaTitle": "כניסה אסורה / מוגבלת", "requirements": ["כניסת ישראלים אסורה עפ\"י צו אלוף"], "passportValidity": 0, "validityText": "אין דרישת תוקף" },
             { "id": "SML", "name": "סומלילנד", "aliases": ["somaliland"], "category": "voa", "visaTitle": "ויזה בהגעה", "requirements": ["ויזה בהגעה - בעקבות ההכרה מדצמבר 2025"], "passportValidity": 6, "validityText": "6 חודשים לפחות מיום הכניסה" }
         ];
@@ -552,14 +582,24 @@
                     calcResultIcon: document.getElementById('calcResultIcon'),
                     calcResultTitle: document.getElementById('calcResultTitle'),
                     calcResultMessage: document.getElementById('calcResultMessage'),
+                    calcExtraNote: document.getElementById('calcExtraNote'),
                     
                     searchContainer: document.getElementById('searchContainer'),
                     whatsappShareBtn: document.getElementById('whatsappShareBtn'),
-                    a11yAnnouncer: document.getElementById('a11yAnnouncer')
+                    a11yAnnouncer: document.getElementById('a11y-announcer')
                 };
+
+                // רשימה מרכזית של מחלקות צבע לתוצאת המחשבון - מונע כפילויות בקוד
+                this.CALC_STATE_CLASSES = [
+                    'bg-red-50', 'border-red-200', 'text-red-800',
+                    'bg-green-50', 'border-green-200', 'text-green-800',
+                    'bg-orange-50', 'border-orange-200', 'text-orange-800',
+                    'fade-in'
+                ];
 
                 this.currentCountry = null;
                 this.countriesData = [];
+                this.currentMatches = [];
                 this.handleSearchDebounced = this.debounce(this.handleSearch.bind(this), 150);
                 
                 this.loadData();
@@ -576,9 +616,23 @@
 
             // המרה בטוחה של טקסט למניעת XSS ב-Highlight
             escapeHTML(str) {
-                return str.replace(/[&<>'"]/g, tag => ({
+                return String(str).replace(/[&<>'"]/g, tag => ({
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
                 }[tag]));
+            }
+
+            // מניעת שבירת Regex ע"י תווים מיוחדים בקלט המשתמש
+            escapeRegExp(str) {
+                return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
+            // גישה בטוחה ל-localStorage (מצב פרטי / חסימת עוגיות)
+            safeStorage(action, key, value) {
+                try {
+                    if (action === 'get') return localStorage.getItem(key);
+                    if (action === 'set') localStorage.setItem(key, value);
+                } catch (e) { return null; }
+                return null;
             }
 
             // משיכת הנתונים ועריכת בסיס החישוב (entry/exit)
@@ -594,14 +648,18 @@
                         if (!Array.isArray(data) || data.length === 0 || !data[0].id) throw new Error('Invalid data format');
                         
                         this.countriesData = this.processData(data);
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(this.countriesData));
+                        this.safeStorage('set', CACHE_KEY, JSON.stringify(data));
                         document.getElementById('dataVersionText').textContent = 'הנתונים מעודכנים מהרשת';
                     } catch (error) {
                         console.error('Failed to load data from Sheets', error);
-                        const cachedData = localStorage.getItem(CACHE_KEY);
+                        const cachedData = this.safeStorage('get', CACHE_KEY);
                         if (cachedData) {
-                            this.countriesData = JSON.parse(cachedData);
-                            document.getElementById('dataVersionText').textContent = 'מוצגים נתונים שמורים מגרסה קודמת';
+                            try {
+                                this.countriesData = this.processData(JSON.parse(cachedData));
+                                document.getElementById('dataVersionText').textContent = 'מוצגים נתונים שמורים מגרסה קודמת';
+                            } catch (e) {
+                                this.countriesData = this.processData(fallbackCountriesData);
+                            }
                         } else {
                             this.countriesData = this.processData(fallbackCountriesData);
                         }
@@ -613,11 +671,12 @@
                 this.init();
             }
 
-            // מוודא שלכל מדינה יש הגדרה האם תוקף הדרכון נספר מכניסה או מיציאה
+            // מעשיר כל מדינה: בסיס תוקף (כניסה/יציאה) + מונחי חיפוש מנורמלים מראש (ביצועים)
             processData(data) {
                 return data.map(c => ({
                     ...c,
-                    validityBasis: c.validityBasis || (c.validityText.includes('כניסה') || c.validityText.includes('ביום') ? 'entry' : 'exit')
+                    validityBasis: c.validityBasis || (c.validityText.includes('כניסה') || c.validityText.includes('ביום') ? 'entry' : 'exit'),
+                    _searchTerms: [this.normalizeString(c.name), ...(c.aliases || []).map(a => this.normalizeString(a))]
                 }));
             }
 
@@ -637,25 +696,30 @@
                     const country = this.countriesData.find(c => c.id === destId.toUpperCase());
                     if (country) {
                         this.selectCountry(country, false);
+                        return true;
                     }
                 }
+                return false;
+            }
+
+            // תאריך מקומי בפורמט ISO ללא הסטת אזור זמן
+            getLocalISODate() {
+                const today = new Date();
+                const offset = today.getTimezoneOffset() * 60000;
+                return (new Date(today.getTime() - offset)).toISOString().split('T')[0];
             }
 
             setDynamicDates() {
                 document.getElementById('currentYearDisplay').textContent = new Date().getFullYear();
                 
-                // חישוב תאריך נוכחי מקומי למניעת בעיות אזור זמן
-                const today = new Date();
-                const offset = today.getTimezoneOffset() * 60000;
-                const localISODate = (new Date(today - offset)).toISOString().split('T')[0];
-                
+                const localISODate = this.getLocalISODate();
                 if (this.elements.tripDate) this.elements.tripDate.min = localISODate;
                 if (this.elements.expiryDate) this.elements.expiryDate.min = localISODate;
             }
 
             // נרמול בטוח: ממיר מקפים לרווחים ואז מנקה תווי פיסוק
             normalizeString(str) {
-                return str.replace(/[\-]/g, ' ').replace(/[\"\'\׳\״]/g, '').trim().toLowerCase();
+                return String(str).replace(/[\-]/g, ' ').replace(/["'׳״]/g, '').trim().toLowerCase();
             }
             
             levenshteinDistance(a, b) {
@@ -688,6 +752,12 @@
                         e.preventDefault();
                         const firstOption = this.elements.autocompleteList.querySelector('.dropdown-item');
                         if (firstOption) firstOption.focus();
+                    } else if (e.key === 'Enter') {
+                        // Enter בשדה החיפוש בוחר את התוצאה הראשונה
+                        e.preventDefault();
+                        if (this.currentMatches.length > 0) {
+                            this.selectCountry(this.currentMatches[0]);
+                        }
                     }
                 });
 
@@ -717,10 +787,25 @@
                     });
                 }
 
+                // תמיכה בכפתורי קדימה/אחורה של הדפדפן (Deep Linking)
+                window.addEventListener('popstate', () => {
+                    const shown = this.handleDeepLinking();
+                    if (!shown && !this.elements.resultContainer.classList.contains('hidden')) {
+                        this.resetToSearch(false);
+                    }
+                });
+
                 if (this.elements.calcForm) {
                     this.elements.calcForm.addEventListener('submit', (e) => {
                         e.preventDefault();
                         this.calculateValidity();
+                    });
+
+                    // תוקף הדרכון חייב להיות לפחות מתאריך הנסיעה
+                    this.elements.tripDate.addEventListener('change', () => {
+                        if (this.elements.tripDate.value) {
+                            this.elements.expiryDate.min = this.elements.tripDate.value;
+                        }
                     });
                 }
             }
@@ -741,9 +826,7 @@
                 const fuzzyMatches = [];
 
                 this.countriesData.forEach(country => {
-                    const normalizedName = this.normalizeString(country.name);
-                    const aliases = country.aliases.map(a => this.normalizeString(a));
-                    const allTerms = [normalizedName, ...aliases];
+                    const allTerms = country._searchTerms;
 
                     // התאמה מדויקת
                     if (allTerms.some(t => t === term)) {
@@ -774,15 +857,16 @@
 
                 // מיזוג ומניעת כפילויות, הגבלת תוצאות
                 const matches = [...new Set([...exactMatches, ...prefixMatches, ...fuzzyMatches])].slice(0, 10);
+                this.currentMatches = matches;
                 this.renderAutocomplete(matches, query);
             }
 
             highlightMatch(text, query) {
                 const safeText = this.escapeHTML(text);
-                const safeQuery = this.escapeHTML(query.trim());
-                if (!safeQuery) return safeText;
-                // הדגשת הטקסט התואם
-                const regex = new RegExp(`(${safeQuery})`, 'gi');
+                const trimmedQuery = query.trim();
+                if (!trimmedQuery) return safeText;
+                // הדגשת הטקסט התואם - עם Escape כפול (HTML + Regex)
+                const regex = new RegExp(`(${this.escapeRegExp(this.escapeHTML(trimmedQuery))})`, 'gi');
                 return safeText.replace(regex, '<strong class="text-brand">$1</strong>');
             }
 
@@ -812,6 +896,7 @@
                     
                     const btnIcon = document.createElement('i');
                     btnIcon.className = 'fa-regular fa-paper-plane';
+                    btnIcon.setAttribute('aria-hidden', 'true');
                     const btnText = document.createTextNode(` שאלו אותנו על "${rawQuery}"`);
                     
                     mailBtn.appendChild(btnIcon);
@@ -822,7 +907,7 @@
                     
                     this.elements.autocompleteList.appendChild(wrapper);
                 } else {
-                    matches.forEach((country, index) => {
+                    matches.forEach((country) => {
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.id = `option-${country.id}`;
@@ -832,11 +917,13 @@
                         
                         const highlightedName = this.highlightMatch(country.name, rawQuery);
                         
-                        let flagSrc = `https://flagcdn.com/w40/${String(country.id).toLowerCase()}.png`;
-                        let flagHtml = `<img src="${flagSrc}" class="w-8 h-6 rounded-sm object-cover border border-slate-100 shrink-0 bg-white" alt="" onerror="this.style.opacity='0'">`;
-                        // Fallback ל-FlagCDN למדינות חריגות
+                        let flagHtml;
                         if (country.id.length > 2) {
-                             flagHtml = `<div class="w-8 h-6 rounded-sm border border-slate-100 shrink-0 bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-globe text-xs"></i></div>`;
+                            // Fallback למדינות ללא קוד ISO תקני
+                            flagHtml = `<div class="w-8 h-6 rounded-sm border border-slate-100 shrink-0 bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-globe text-xs" aria-hidden="true"></i></div>`;
+                        } else {
+                            const flagSrc = `https://flagcdn.com/w40/${String(country.id).toLowerCase()}.png`;
+                            flagHtml = `<img src="${flagSrc}" class="w-8 h-6 rounded-sm object-cover border border-slate-100 shrink-0 bg-white" alt="" loading="lazy" onerror="this.style.opacity='0'">`;
                         }
 
                         btn.innerHTML = `
@@ -883,6 +970,7 @@
                 this.elements.autocompleteList.classList.add('hidden');
                 this.elements.searchInput.setAttribute('aria-expanded', 'false');
                 this.elements.searchInput.removeAttribute('aria-activedescendant');
+                this.currentMatches = [];
             }
 
             renderQuickSuggestions() {
@@ -902,7 +990,7 @@
                     
                     btn.innerHTML = `
                         <span>${pop.name}</span> 
-                        <img src="https://flagcdn.com/w20/${pop.id.toLowerCase()}.png" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" alt="" onerror="this.style.display='none'">
+                        <img src="https://flagcdn.com/w20/${pop.id.toLowerCase()}.png" class="w-5 h-[14px] rounded-[2px] object-cover border border-slate-100 shadow-[0_1px_2px_rgba(0,0,0,0.1)]" alt="" loading="lazy" onerror="this.style.display='none'">
                     `;
                     
                     btn.addEventListener('click', () => {
@@ -950,7 +1038,7 @@
                 this.elements.calcBtnText.textContent = `בדוק תוקף דרכון ל${country.name}`;
                 
                 // הסתרת מחשבון למדינות אסורות
-                if (['refused', 'banned_il'].includes(country.category) || country.passportValidity === 0 && !country.validityText) {
+                if (['refused', 'banned_il'].includes(country.category) || (country.passportValidity === 0 && !country.validityText)) {
                     this.elements.calcSectionWrapper.classList.add('hidden');
                 } else {
                     this.elements.calcSectionWrapper.classList.remove('hidden');
@@ -976,8 +1064,7 @@
                     }
                 }, 50);
 
-                this.elements.calcForm.reset();
-                this.elements.calcResult.classList.add('hidden');
+                this.resetCalcState();
             }
 
             isMatchFuzzy(term, text) {
@@ -1039,6 +1126,7 @@
                         iconWrapper.className = 'mt-1 w-5 h-5 rounded-full bg-brand/10 text-brand flex items-center justify-center shrink-0';
                         const icon = document.createElement('i');
                         icon.className = 'fa-solid fa-angle-left text-[10px]';
+                        icon.setAttribute('aria-hidden', 'true');
                         iconWrapper.appendChild(icon);
                         
                         const textSpan = document.createElement('span');
@@ -1059,17 +1147,29 @@
                 }
             }
 
-            resetToSearch() {
+            // איפוס מרוכז של המחשבון ותוצאתו
+            resetCalcState() {
+                this.elements.calcForm.reset();
+                this.elements.expiryDate.min = this.getLocalISODate();
+                this.elements.calcResult.classList.add('hidden');
+                this.elements.calcResult.classList.remove(...this.CALC_STATE_CLASSES);
+                this.elements.calcExtraNote.classList.add('hidden');
+                this.elements.calcExtraNote.innerHTML = '';
+            }
+
+            resetToSearch(updateUrl = true) {
                 this.elements.resultContainer.classList.remove('scale-100', 'opacity-100');
                 this.elements.resultContainer.classList.add('scale-95', 'opacity-0');
                 
                 // איפוס URL
-                try {
-                    const newUrl = new URL(window.location);
-                    newUrl.searchParams.delete('dest');
-                    window.history.pushState({}, '', newUrl);
-                } catch (e) {
-                    console.warn('Deep linking URL update disabled in preview/blob environment.');
+                if (updateUrl) {
+                    try {
+                        const newUrl = new URL(window.location);
+                        newUrl.searchParams.delete('dest');
+                        window.history.pushState({}, '', newUrl);
+                    } catch (e) {
+                        console.warn('Deep linking URL update disabled in preview/blob environment.');
+                    }
                 }
                 
                 setTimeout(() => {
@@ -1079,10 +1179,7 @@
                     this.elements.searchInput.focus();
                     this.elements.clearSearch.classList.add('hidden');
                     
-                    this.elements.calcForm.reset();
-                    // שימוש ב-classList במקום בדריסת ה-className מונע בעיות תחזוקה
-                    this.elements.calcResult.classList.add('hidden');
-                    this.elements.calcResult.classList.remove('bg-red-50', 'border-red-200', 'text-red-800', 'bg-green-50', 'border-green-200', 'text-green-800', 'bg-orange-50', 'border-orange-200', 'text-orange-800', 'fade-in');
+                    this.resetCalcState();
                     
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 300);
@@ -1096,17 +1193,25 @@
 
                 if (!tripVal || !expiryVal) return;
 
-                const tripDateObj = new Date(tripVal);
-                const expiryDateObj = new Date(expiryVal);
+                // פירוק ידני של התאריך מונע הסטות אזור זמן (UTC vs Local)
+                const parseISO = (v) => {
+                    const [y, m, d] = v.split('-').map(Number);
+                    return new Date(y, m - 1, d);
+                };
+                const tripDateObj = parseISO(tripVal);
+                const expiryDateObj = parseISO(expiryVal);
                 
                 const resultBox = this.elements.calcResult;
                 const rIcon = this.elements.calcResultIcon;
                 const rTitle = this.elements.calcResultTitle;
                 const rMsg = this.elements.calcResultMessage;
+                const rExtra = this.elements.calcExtraNote;
 
                 // איפוס סגנונות קודמים
-                resultBox.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-800', 'bg-green-50', 'border-green-200', 'text-green-800', 'bg-orange-50', 'border-orange-200', 'text-orange-800');
+                resultBox.classList.remove('hidden', ...this.CALC_STATE_CLASSES);
                 resultBox.classList.add('fade-in');
+                rExtra.classList.add('hidden');
+                rExtra.innerHTML = '';
 
                 const pVal = this.currentCountry.passportValidity;
                 const isStayOnly = (pVal === 0);
@@ -1116,19 +1221,19 @@
                 if (pVal > 0) {
                     const targetMonth = minExpiryDate.getMonth() + pVal;
                     minExpiryDate.setMonth(targetMonth);
-                    if (minExpiryDate.getMonth() !== targetMonth % 12) {
+                    if (minExpiryDate.getMonth() !== ((targetMonth % 12) + 12) % 12) {
                         minExpiryDate.setDate(0); 
                     }
                 }
 
                 if (expiryDateObj < tripDateObj) {
                     resultBox.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
-                    rIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                    rIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500" aria-hidden="true"></i>';
                     rTitle.textContent = isEntry ? 'הדרכון יפוג לפני מועד הכניסה!' : 'הדרכון יפוג לפני תום הנסיעה!';
                     rMsg.textContent = 'תוקף הדרכון יפוג לפני התאריך שהזנת. עליכם לחדש את הדרכון בהקדם.';
                 } else if (expiryDateObj >= minExpiryDate) {
                     resultBox.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
-                    rIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                    rIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500" aria-hidden="true"></i>';
                     rTitle.textContent = 'הדרכון שלכם תקין לנסיעה!';
                     
                     if (isStayOnly) {
@@ -1139,7 +1244,7 @@
                     }
                 } else {
                     resultBox.classList.add('bg-orange-50', 'border-orange-200', 'text-orange-800');
-                    rIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-orange-500"></i>';
+                    rIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-orange-500" aria-hidden="true"></i>';
                     rTitle.textContent = 'תוקף הדרכון אינו מספיק';
                     if (pVal > 0) {
                         rMsg.textContent = `דרישת המדינה היא לתוקף של לפחות ${pVal} חודשים. תוקף דרכונכם הנוכחי קצר מכך. עליכם לחדש את הדרכון.`;
@@ -1148,12 +1253,10 @@
                     }
                 }
                 
-                // בדיקת אזהרת שנגן (הסרת תלות בשם ע"י זיהוי כינוי שנגן שקיים ב-31 מדינות)
+                // בדיקת אזהרת שנגן (זיהוי לפי כינוי "שנגן" הקיים ב-31 המדינות)
                 if (this.currentCountry.aliases.includes('שנגן')) {
-                    const schengenWarning = document.createElement('div');
-                    schengenWarning.className = 'mt-3 pt-3 border-t border-current opacity-90 text-[13px]';
-                    schengenWarning.innerHTML = '<strong><i class="fa-solid fa-circle-info"></i> שימו לב (כללי שנגן):</strong> בנוסף לתוקף, חובה לוודא שהדרכון <strong>הונפק ב-10 השנים האחרונות</strong>. דרכון ישן יותר לא יתקבל גם אם הוא עדיין בתוקף.';
-                    rMsg.appendChild(schengenWarning);
+                    rExtra.innerHTML = '<strong><i class="fa-solid fa-circle-info" aria-hidden="true"></i> שימו לב (כללי שנגן):</strong> בנוסף לתוקף, חובה לוודא שהדרכון <strong>הונפק ב-10 השנים האחרונות</strong>. דרכון ישן יותר לא יתקבל גם אם הוא עדיין בתוקף.';
+                    rExtra.classList.remove('hidden');
                 }
                 
                 if (this.elements.a11yAnnouncer) {
