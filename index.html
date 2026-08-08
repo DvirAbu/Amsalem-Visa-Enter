@@ -18,25 +18,30 @@
   --line:#e3ecf0; --field:#f7fafc; --panel:#ffffff; --bg:#f2f7f9;
   --danger:#c8372a; --danger-soft:#fdf3f1; --ok:#159d69; --warn:#d9722c;
   --r:14px;
-  --shadow:0 1px 2px rgba(16,44,55,.05), 0 10px 24px -12px rgba(16,44,55,.18);
-  --shadow-lg:0 2px 6px rgba(16,44,55,.06), 0 30px 60px -30px rgba(16,44,55,.35);
+  --shadow:0 1px 2px rgba(16,44,55,.04), 0 4px 6px -1px rgba(16,44,55,.05), 0 12px 24px -14px rgba(16,44,55,.14);
+  --shadow-lg:0 2px 4px rgba(16,44,55,.04), 0 10px 15px -3px rgba(16,44,55,.08), 0 30px 50px -28px rgba(16,44,55,.22);
+  --glass:rgba(255,255,255,.82); --hair:rgba(16,44,55,.07); --grid:rgba(16,44,55,.035);
 }
 body.dark{
   --brand-soft:rgba(27,176,206,.14); --brand-line:rgba(27,176,206,.32);
   --ink:#f1f6f8; --ink-soft:#c3d2d9; --muted:#8ea3ad;
   --line:#26343d; --field:#131e25; --panel:#18242b; --bg:#0e171d;
   --danger-soft:rgba(200,55,42,.14);
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 24px -12px rgba(0,0,0,.6);
-  --shadow-lg:0 2px 6px rgba(0,0,0,.4), 0 30px 60px -30px rgba(0,0,0,.8);
+  --shadow:0 1px 2px rgba(0,0,0,.28), 0 4px 6px -1px rgba(0,0,0,.3), 0 12px 24px -14px rgba(0,0,0,.5);
+  --shadow-lg:0 2px 4px rgba(0,0,0,.3), 0 10px 15px -3px rgba(0,0,0,.4), 0 30px 50px -28px rgba(0,0,0,.6);
+  --glass:rgba(24,36,43,.82); --hair:rgba(255,255,255,.06); --grid:rgba(255,255,255,.022);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0; font-family:'Heebo',system-ui,sans-serif; color:var(--ink);
-  background:
+  background-color:var(--bg);
+  background-image:
     radial-gradient(1100px 520px at 82% -10%, rgba(27,176,206,.14), transparent 62%),
     radial-gradient(820px 460px at 6% 102%, rgba(27,176,206,.09), transparent 60%),
-    var(--bg);
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:100% 100%, 100% 100%, 44px 44px, 44px 44px;
   background-attachment:fixed;
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   min-height:100vh; padding-bottom:60px;
@@ -48,10 +53,12 @@ body{
 
 /* ── סרגל עליון ─────────────────────────── */
 .topbar{
-  position:sticky; top:0; z-index:60; background:var(--panel);
-  border-bottom:1px solid var(--line);
-  box-shadow:0 1px 0 rgba(16,44,55,.03), 0 6px 20px -18px rgba(16,44,55,.5);
+  position:sticky; top:0; z-index:60;
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(14px) saturate(1.6); backdrop-filter:blur(14px) saturate(1.6);
+  border-bottom:1px solid var(--hair);
 }
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.topbar{background:var(--panel)}}
 .topbar-in{
   max-width:1180px; margin:0 auto; padding:12px 20px;
   display:flex; align-items:center; gap:18px; flex-wrap:wrap;
@@ -87,7 +94,11 @@ body.dark .brand img{background:#fff;border-radius:7px;padding:4px 6px}
   padding:6px 15px; border-radius:999px; margin-bottom:16px;
 }
 h1{font-size:clamp(26px,4vw,40px); font-weight:900; letter-spacing:-.8px; margin:0 0 12px; line-height:1.15}
-h1 span{color:var(--brand)}
+h1 span{
+  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-deep) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+}
+body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .lede{margin:0 auto; max-width:560px; color:var(--muted); font-size:16px; line-height:1.6; font-weight:400}
 .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
 .pill{
@@ -100,13 +111,14 @@ h1 span{color:var(--brand)}
 .search-wrap{max-width:640px; margin:0 auto; position:relative; z-index:40}
 .search{position:relative}
 .search input{
-  width:100%; padding:18px 56px 18px 20px; font-family:inherit; font-size:17px; font-weight:500;
-  color:var(--ink); background:var(--panel); border:2px solid transparent; border-radius:16px;
-  box-shadow:inset 0 0 0 1px var(--line), var(--shadow); transition:.2s;
+  width:100%; padding:19px 58px 19px 24px; font-family:inherit; font-size:17px; font-weight:500;
+  color:var(--ink); background:var(--panel); border:2px solid transparent; border-radius:999px;
+  box-shadow:inset 0 0 0 1px var(--line), var(--shadow);
+  transition:box-shadow .3s cubic-bezier(.4,0,.2,1), transform .3s cubic-bezier(.4,0,.2,1), border-color .2s;
 }
 .search input::placeholder{color:#a9b9c1;font-weight:400}
-.search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(27,176,206,.15), var(--shadow)}
-.search .ico{position:absolute; inset-inline-start:20px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none}
+.search input:focus{outline:none;border-color:var(--brand);transform:translateY(-2px);box-shadow:0 0 0 4px rgba(27,176,206,.15), 0 12px 26px -10px rgba(27,176,206,.35)}
+.search .ico{position:absolute; inset-inline-start:22px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none}
 .search .ico svg{width:21px;height:21px; display:block}
 .search .clr{
   position:absolute; inset-inline-end:16px; top:50%; transform:translateY(-50%);
@@ -139,7 +151,8 @@ h1 span{color:var(--brand)}
 .quick img{width:20px;height:14px;border-radius:2px;object-fit:cover}
 
 /* ── תוצאת בדיקה ───────────────────────── */
-#result{display:none; max-width:900px; margin:38px auto 0; padding:26px; border-radius:20px}
+#result{display:none; max-width:900px; margin:38px auto 0; padding:26px; border-radius:20px; position:relative; overflow:hidden}
+#result::before{content:"";position:absolute;top:0;inset-inline-start:0;bottom:0;width:4px;background:linear-gradient(to bottom,var(--vc,var(--brand)) 0%,var(--vc,var(--brand)) 55%,transparent 100%);opacity:.85}
 #result.on{display:block}
 .res-top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .res-id{display:flex;align-items:center;gap:16px}
@@ -197,11 +210,21 @@ body.dark input[type=date]{color-scheme:dark}
   width:100%;padding:15px;border:0;border-radius:11px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:900;
   color:#fff; background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 62%,var(--brand-deep) 100%);
   display:flex;align-items:center;justify-content:center;gap:10px;
-  box-shadow:0 5px 16px -4px rgba(18,143,169,.45); transition:.2s;
+  box-shadow:0 5px 16px -4px rgba(18,143,169,.45), inset 0 1px 0 rgba(255,255,255,.22);
+  transition:.2s; position:relative; overflow:hidden;
 }
-.btn svg{width:18px;height:18px}
-.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px -6px rgba(18,143,169,.55)}
+.btn svg{width:18px;height:18px;position:relative;z-index:1}
+.btn span{position:relative;z-index:1}
+.btn::after{
+  content:"";position:absolute;top:0;inset-inline-start:-100%;width:55%;height:100%;
+  background:linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,.22) 50%,rgba(255,255,255,0) 100%);
+  transform:skewX(-25deg);transition:inset-inline-start .55s ease;pointer-events:none;
+}
+.btn:hover:not(:disabled)::after{inset-inline-start:160%}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px -6px rgba(18,143,169,.55), inset 0 1px 0 rgba(255,255,255,.25)}
+.btn:active:not(:disabled){transform:scale(.978)}
 .btn:disabled{background:#b3c1c8;box-shadow:none;cursor:default}
+.btn:disabled::after{display:none}
 .calcres{display:none;margin-top:16px;padding:16px 18px;border-radius:12px;border:1px solid;font-size:14px;line-height:1.55}
 .calcres.on{display:block;animation:rise .3s both}
 .calcres b{display:block;font-size:16px;margin-bottom:4px}
@@ -213,7 +236,7 @@ body.dark input[type=date]{color-scheme:dark}
 /* ── מחירון ────────────────────────────── */
 .toolbar{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
 .toolbar .search{flex:1 1 340px;max-width:460px}
-.toolbar .search input{padding:13px 46px 13px 16px;font-size:15px;border-radius:12px}
+.toolbar .search input{padding:13px 46px 13px 20px;font-size:15px;border-radius:999px}
 .toolbar .search .ico{inset-inline-start:16px}
 .toolbar .search .ico svg{width:18px;height:18px}
 .seg{display:flex;gap:4px;background:var(--field);border:1px solid var(--line);padding:4px;border-radius:12px}
@@ -226,7 +249,10 @@ body.dark input[type=date]{color-scheme:dark}
   background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);transition:.22s cubic-bezier(.16,.84,.34,1);
   text-align:start;font-family:inherit;
 }
-.ccard:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:0 12px 28px -12px rgba(18,143,169,.4)}
+.ccard:hover{transform:translateY(-4px) scale(1.008);border-color:var(--brand-line);box-shadow:0 14px 28px -14px rgba(16,44,55,.28), 0 4px 10px -4px rgba(18,143,169,.22)}
+.ccard:active{transform:translateY(-1px) scale(.996)}
+.ccard img{transition:transform .3s cubic-bezier(.16,.84,.34,1)}
+.ccard:hover img{transform:scale(1.09)}
 .ccard img{width:34px;height:25px;border-radius:4px;object-fit:cover;box-shadow:0 0 0 1px rgba(22,38,46,.13);flex:0 0 auto}
 .ccard h3{margin:0 0 2px;font-size:16.5px;font-weight:800;color:var(--ink)}
 .ccard span{font-size:12.5px;color:var(--muted);font-weight:600}
@@ -387,6 +413,8 @@ body.dark .toast{background:var(--brand-dark)}
   .view{display:none!important}
   .view.on{display:block!important}
   #result{box-shadow:none!important;border:0!important;margin:0!important;padding:0!important}
+  #result::before{display:none!important}
+  .topbar{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
   .drawer:not(.on){display:none!important}
   .drawer{position:static!important;max-width:100%!important;height:auto!important;box-shadow:none!important;inset:auto!important}
   .drawer-body{overflow:visible!important;padding:0!important}
@@ -1312,6 +1340,7 @@ function pickCountry(c, push){
 
   const st = VSTYLE[c.category] || VSTYLE.required;
   $('rMark').style.borderColor = st.c; $('rMark').style.color = st.c;
+  $('result').style.setProperty('--vc', st.c);
   $('rMarkIco').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + st.i + '</svg>';
   $('rTitle').textContent = c.visaTitle;
   $('rValidity').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;color:var(--brand-dark)" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>'
