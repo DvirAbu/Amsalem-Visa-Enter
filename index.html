@@ -173,6 +173,21 @@ body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%
 .act:hover{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-soft)}
 .act.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 .act.primary:hover{background:var(--brand-dark);color:#fff}
+.act.apply{background:var(--ink);border-color:var(--ink);color:#fff}
+.act.apply:hover{background:#0a1319;border-color:#0a1319;color:#fff;transform:translateY(-1px)}
+body.dark .act.apply{background:var(--brand);border-color:var(--brand);color:#062832}
+body.dark .act.apply:hover{background:#3fc9e4;border-color:#3fc9e4;color:#062832}
+.applybar{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;border-radius:12px;
+  background:linear-gradient(135deg,var(--brand-soft),transparent);border:1px solid var(--brand-line);
+  text-decoration:none;color:inherit;transition:.22s;
+}
+.applybar:hover{border-color:var(--brand);box-shadow:0 8px 20px -12px rgba(18,143,169,.6);transform:translateY(-2px)}
+.applybar .ic{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.applybar .ic svg{width:19px;height:19px}
+.applybar b{display:block;font-size:14.5px;font-weight:900;margin-bottom:2px}
+.applybar span{font-size:12.5px;color:var(--muted);font-weight:500}
+.applybar .arw{margin-inline-start:auto;color:var(--brand-dark);font-size:20px;font-weight:900;flex:0 0 auto}
 .act.wa{color:#128a4d;border-color:rgba(18,138,77,.25);background:rgba(18,138,77,.08)}
 .act.wa:hover{background:rgba(18,138,77,.16);color:#0d6b3b}
 .verdict{display:flex;align-items:center;gap:18px;padding:26px 0 22px;flex-wrap:wrap}
@@ -540,9 +555,12 @@ body.dark .toast{background:var(--brand-dark)}
           חיפוש חדש
         </button>
         <button type="button" class="act" id="rPrice" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           מחירון ליעד
         </button>
+        <a class="act apply" id="rApply" target="_blank" rel="noopener" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          הגשה ותשלום מקוון
+        </a>
         <button type="button" class="act primary" id="rLead">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           העבר פנייה
@@ -808,6 +826,30 @@ const ENDPOINT      = 'https://script.google.com/macros/s/AKfycbx3mXkSBkhZuSThBU
 const VISA_MAIL     = 'visa.dept@amsalem.com';
 const URGENT_DAYS   = 14;
 const PRICE_UPDATED = 'מחירון מעודכן לחודש יוני 2026';
+
+/* ═══════════ קישורי הגשה ותשלום מקוון באתר אמסלם ═══════════
+   מפתח = קוד ה-ISO של המדינה. יעד ללא קישור פשוט לא יציג את הכפתור. */
+const APPLY = {
+  US:"https://www.amsalem.co.il/visa/visa-to-united-states",
+  GB:"https://www.amsalem.co.il/visa/visa-to-united-kingdom",
+  IN:"https://www.amsalem.co.il/visa/visa-to-india",
+  CN:"https://www.amsalem.co.il/visa/visa-to-china",
+  MA:"https://www.amsalem.co.il/visa/visa-to-morocco",
+  AU:"https://www.amsalem.co.il/visa/visa-to-australia",
+  IL:"https://www.amsalem.co.il/visa/visa-to-israel",
+  AM:"https://www.amsalem.co.il/visa/visa-to-armenia",
+  SC:"https://www.amsalem.co.il/visa/visa-to-seychelles",
+  TH:"https://www.amsalem.co.il/visa/visa-to-thailand",
+  ET:"https://www.amsalem.co.il/visa/visa-to-ethiopia",
+  BH:"https://www.amsalem.co.il/visa/visa-to-bahrain",
+  VN:"https://www.amsalem.co.il/visa/visa-to-vietnam",
+  NZ:"https://www.amsalem.co.il/visa/visa-to-new-zealand",
+  LK:"https://www.amsalem.co.il/visa/visa-to-sri-lanka",
+  KE:"https://www.amsalem.co.il/visa/visa-to-kenya",
+  CU:"https://www.amsalem.co.il/visa/visa-to-cuba",
+  UG:"https://www.amsalem.co.il/visa/visa-to-uganda",
+  AZ:"https://www.amsalem.co.il/visa/visa-to-azerbaijan"
+};
 
 /* ═══════════ דרישות כניסה לפי יעד ═══════════ */
 const COUNTRIES = [
@@ -1400,6 +1442,11 @@ function pickCountry(c, push){
   /* קישור למחירון רק אם ליעד יש מחירון פעיל */
   $('rPrice').style.display = PRICES[c.id] ? '' : 'none';
 
+  /* הגשה ותשלום מקוון באתר אמסלם — רק ליעדים שיש להם עמוד ייעודי */
+  const ap = APPLY[c.id];
+  $('rApply').style.display = ap ? '' : 'none';
+  if(ap){ $('rApply').href = ap; $('rApply').title = 'הגשת בקשה ותשלום מקוון ל' + c.name + ' באתר אמסלם'; }
+
   const url = window.location.origin + window.location.pathname + '?tab=check&dest=' + c.id;
   $('rShare').href = 'https://wa.me/?text=' + encodeURIComponent(
     'בדקתי דרישות ויזה ל' + c.name + ' באמסלם ✈️\n\nדרישה: ' + c.visaTitle +
@@ -1569,7 +1616,14 @@ function openDrawer(code){
   if(f){ fi.src = f; fi.style.display = ''; fi.style.visibility = 'visible'; fi.onerror = () => { fi.style.visibility = 'hidden'; }; }
   else fi.style.display = 'none';
 
-  let html = '<div class="printhead"><img id="dPrintLogo" src="' + LOGO_SRC + '" alt="AMSVISA">'
+  let html = '';
+  if(APPLY[code]){
+    html += '<a class="applybar" href="' + APPLY[code] + '" target="_blank" rel="noopener">'
+      + '<span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></span>'
+      + '<span><b>הגשה ותשלום מקוון</b><span>פתיחת בקשה ל' + esc(name) + ' ותשלום ישירות באתר אמסלם</span></span>'
+      + '<span class="arw">‹</span></a>';
+  }
+  html += '<div class="printhead"><img id="dPrintLogo" src="' + LOGO_SRC + '" alt="AMSVISA">'
     + '<h1 style="font-size:20px;margin:10px 0 4px">הצעת מחיר לאשרת כניסה — ' + esc(name) + '</h1>'
     + '<p style="margin:0;font-size:13px">המחירים המוצגים מתייחסים לנוסע יחיד</p></div>';
 
@@ -1616,6 +1670,7 @@ function openDrawer(code){
   });
 
   html += '<div class="printfoot">'
+    + (APPLY[code] ? '<div style="margin-bottom:8px"><strong>הגשה ותשלום מקוון:</strong> ' + APPLY[code] + '</div>' : '')
     + 'האגרות, זמני הטיפול ורשימת המסמכים נתונים להחלטת הרשויות ועשויים להשתנות ללא הודעה מוקדמת.<br>'
     + '<strong>צוות מחלקת הויזות — אמסלם תיירות ונופש</strong><br>'
     + '04-6700900 שלוחה 5895 | WhatsApp 04-670-0998 | visa.dept@amsalem.com</div>';
@@ -1688,6 +1743,7 @@ function copyOption(i, o){
     + 'סה״כ לאדם: ' + usd(optTotal(o) + extra) + '\n';
   if(ads.length) t += '\nשירותים נוספים שנבחרו:\n' + ads.map(a => '• ' + a.label).join('\n') + '\n';
   if(o.docs && o.docs.length) t += '\nמסמכים ודרישות:\n' + o.docs.map(d => '• ' + d).join('\n') + '\n';
+  if(APPLY[dCode]) t += '\nהגשה ותשלום מקוון: ' + APPLY[dCode] + '\n';
   t += '\nמחלקת הויזות אמסלם | 04-6700900 שלוחה 5895\n';
   const ta = document.createElement('textarea');
   ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
