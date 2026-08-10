@@ -910,7 +910,7 @@ const COUNTRIES = [
 {id:"CI",name:"חוף השנהב",aliases:["ivory coast"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 3 חודשים","כניסה עם eVisa רק דרך נמל התעופה פורט בואה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"HR",name:"קרואטיה",aliases:["croatia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"CU",name:"קובה",aliases:["cuba"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"CY",name:"קפריסין",aliases:["cyprus","לרנקה","פאפוס","איה נאפה","larnaca","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"CY",name:"קפריסין",aliases:["cyprus","לרנקה","פאפוס","איה נאפה","larnaca"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"CZ",name:"צ'כיה",aliases:["czech republic","פראג","prague","צכיה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום; קיימת התייחסות להסכם בילטרלי מיוחד לישראלים, אך לאחר 90 יום יש לצאת מאזור שנגן לפחות ליום אחד"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"DK",name:"דנמרק",aliases:["denmark","קופנהגן","copenhagen","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"DJ",name:"ג'יבוטי",aliases:["djibouti"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1470,10 +1470,13 @@ function pickCountry(c, push){
   $('rApply').style.display = ap ? '' : 'none';
   if(ap){ $('rApply').href = ap; $('rApply').title = 'הגשת בקשה ותשלום מקוון ל' + c.name + ' באתר אמסלם'; }
 
-  const url = window.location.origin + window.location.pathname + '?tab=check&dest=' + c.id;
+  /* קישור לשיתוף רק כשהמערכת מוגשת משרת; בפתיחה מקומית (file://) אין כתובת תקינה */
+  const web = /^https?:$/.test(window.location.protocol);
+  const url = web ? window.location.origin + window.location.pathname + '?tab=check&dest=' + c.id : '';
+  const apLink = APPLY[c.id] ? '\n\nהגשה ותשלום מקוון:\n' + APPLY[c.id] : '';
   $('rShare').href = 'https://wa.me/?text=' + encodeURIComponent(
     'בדקתי דרישות ויזה ל' + c.name + ' באמסלם ✈️\n\nדרישה: ' + c.visaTitle +
-    '\nתוקף דרכון נדרש: ' + c.validityText + '\n\n' + url);
+    '\nתוקף דרכון נדרש: ' + c.validityText + apLink + (url ? '\n\n' + url : ''));
 
   $('result').classList.add('on');
   $('cSearch').value = '';
