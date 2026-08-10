@@ -434,6 +434,13 @@ body.dark .fc-mail{--c:#ff8b96}
 body.dark .fcard .ext{background:var(--brand-dark);color:#0b1519}
 .legal{max-width:820px;margin:0 auto;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.65}
 .legal .upd{display:inline-block;margin-top:14px;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--brand-dark);border-radius:999px;padding:5px 15px;font-size:12px;font-weight:800}
+.dstat{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.dstat .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+.dstat.ok .dot{background:var(--ok)}
+.dstat.bad{color:var(--warn)}
+.dstat.bad .dot{background:var(--warn)}
+.dstat button{background:none;border:0;color:var(--brand-dark);font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;padding:2px 4px;border-radius:5px;text-decoration:underline;text-underline-offset:2px}
+.dstat button:hover{background:var(--brand-soft)}
 .copy{margin-top:18px;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
 .toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:13px 24px;border-radius:999px;font-size:14.5px;font-weight:800;box-shadow:var(--shadow-lg);transition:bottom .3s;z-index:500}
 .toast.on{bottom:26px}
@@ -808,6 +815,7 @@ body.dark .toast{background:var(--brand-dark)}
     רשימת המסמכים כללית בלבד וייתכנו דרישות פרטניות בהתאם לנסיבות הבקשה. זמני הטיפול משוערים ומתייחסים לימי עבודה מרגע קליטת הבקשה.
     המחירים הנקובים בדולר הם הערכה ועשויים להשתנות בהתאם לשער החליפין ביום ההגשה.
     <br><span class="upd" id="updBadge">מחירון מעודכן לחודש יוני 2026</span>
+    <div class="dstat" id="dataStatus"><span class="dot"></span><span class="dtxt">טוען נתונים...</span><button type="button" id="dataRefresh" title="משיכת נתונים מעודכנים מהשרת">רענן נתונים</button></div>
   </div>
   <div class="copy">© כל הזכויות שמורות לאמסלם תיירות ונופש בע״מ</div>
 </footer>
@@ -822,7 +830,12 @@ body.dark .toast{background:var(--brand-dark)}
    VISA_MAIL — כתובת מחלקת הויזות (גם לגיבוי מייל אם השליחה נכשלת)
    URGENT_DAYS — מתחת למספר ימים זה הפנייה מסומנת כדחופה
    PRICE_UPDATED — הטקסט המוצג בתחתית העמוד                                   */
-const ENDPOINT      = 'https://script.google.com/macros/s/AKfycbx3mXkSBkhZuSThBU_XjONG3dA39khUyHE4B6U2up_lGBQ33hcTCHDiAScDFdp4gf35/exec';
+const ENDPOINT      = 'https://script.google.com/macros/s/AKfycbyW525W07O_HxXsNZWMJMlsGD7PUiDZDsNyhRcZL9y6yvbajGpqLwt014mXv0MxiPMpRA/exec';
+/* DATA_ENDPOINT — כתובת ה-Web App שמחזירה את הנתונים מ-Google Sheets.
+   אם משתמשים באותה פריסה גם לקליטת הפניות, אפשר פשוט: const DATA_ENDPOINT = ENDPOINT;
+   השארה ריקה = המערכת עובדת על הנתונים המובנים בקובץ בלבד.                         */
+const DATA_ENDPOINT  = ENDPOINT;
+const DATA_CACHE_KEY = 'ams_data_v1';
 const VISA_MAIL     = 'visa.dept@amsalem.com';
 const URGENT_DAYS   = 14;
 const PRICE_UPDATED = 'מחירון מעודכן לחודש יוני 2026';
@@ -1254,14 +1267,21 @@ function lev(a,b){
   return m[b.length][a.length];
 }
 
-/* אינדוקס היעדים פעם אחת: מונחי חיפוש ובסיס חישוב התוקף */
-COUNTRIES.forEach(c => {
-  c.terms = [norm(c.name)].concat((c.aliases||[]).map(norm));
-  c.basis = (c.validityText.indexOf('כניסה') > -1 || c.validityText.indexOf('ביום') > -1) ? 'entry' : 'exit';
-  c.schengen = (c.aliases||[]).indexOf('שנגן') > -1;
-});
+/* אינדוקס היעדים: מונחי חיפוש ובסיס חישוב התוקף. רץ מחדש בכל טעינת נתונים. */
 const byId = {};
-COUNTRIES.forEach(c => byId[c.id] = c);
+function indexCountries(){
+  COUNTRIES.forEach(c => {
+    c.aliases = c.aliases || [];
+    c.requirements = c.requirements || [];
+    c.validityText = c.validityText || '';
+    c.terms = [norm(c.name)].concat(c.aliases.map(norm));
+    c.basis = (c.validityText.indexOf('כניסה') > -1 || c.validityText.indexOf('ביום') > -1) ? 'entry' : 'exit';
+    c.schengen = c.aliases.indexOf('שנגן') > -1;
+  });
+  Object.keys(byId).forEach(k => delete byId[k]);
+  COUNTRIES.forEach(c => byId[c.id] = c);
+}
+indexCountries();
 
 /* ═══════════ מצב תצוגה ═══════════ */
 function setTheme(dark){
@@ -1383,7 +1403,9 @@ cClear.addEventListener('click', () => { cSearch.value = ''; cClear.classList.re
 document.addEventListener('pointerdown', e => { if(!e.target.closest('.search-wrap')) closeAc(); });
 
 /* יעדים מבוקשים */
-['GB','AE','GR','US','TH','VN'].forEach(id => {
+function buildQuick(){
+  $('cQuick').innerHTML = '';
+  ['GB','AE','GR','US','TH','VN'].forEach(id => {
   const c = byId[id]; if(!c) return;
   const b = document.createElement('button');
   b.type = 'button';
@@ -1391,7 +1413,8 @@ document.addEventListener('pointerdown', e => { if(!e.target.closest('.search-wr
   b.innerHTML = '<span>' + esc(c.name) + '</span>' + (f ? '<img src="' + f + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '');
   b.addEventListener('click', () => { cSearch.value = ''; cClear.classList.remove('on'); pickCountry(c); });
   $('cQuick').appendChild(b);
-});
+  });
+}
 
 const VSTYLE = {
   free:      {c:'#159d69', i:'<polyline points="20 6 9 17 4 12"></polyline>'},
@@ -1774,9 +1797,13 @@ function printOption(i, o){
 /* ═══════════ מסך 3 — העברת פנייה ═══════════ */
 const PAGE_READY = Date.now();
 const dest = $('destination'), destList = $('destList'), destFlag = $('destFlag');
-const DESTS = COUNTRIES.map(c => c.name).sort((a,b) => a.localeCompare(b,'he')).concat(['אחר / לא בטוח']);
+let DESTS = [];
 const flagByName = {};
-COUNTRIES.forEach(c => flagByName[c.name] = flagUrl(c.id, 40));
+function rebuildDests(){
+  DESTS = COUNTRIES.map(c => c.name).sort((a,b) => a.localeCompare(b,'he')).concat(['אחר / לא בטוח']);
+  Object.keys(flagByName).forEach(k => delete flagByName[k]);
+  COUNTRIES.forEach(c => flagByName[c.name] = flagUrl(c.id, 40));
+}
 let dShown = [], dIdx = -1;
 
 function setDestFlag(name){
@@ -2054,11 +2081,78 @@ $('againBtn').addEventListener('click', () => {
   $('clientName').focus();
 });
 
+/* ═══════════ נתונים חיים מ-Google Sheets ═══════════
+   הזרימה: קודם מוצגים הנתונים המובנים בקובץ (תצוגה מיידית),
+   אחריהם העותק השמור מהפעם הקודמת, ולבסוף רענון מהשרת ברקע.
+   כך המערכת עובדת גם בלי רשת, ותמיד מציגה משהו.                       */
+function setDataStatus(txt, kind){
+  const el = $('dataStatus'); if(!el) return;
+  el.className = 'dstat' + (kind ? ' ' + kind : '');
+  el.querySelector('.dtxt').textContent = txt;
+}
+function fmtWhen(ts){
+  try{ return new Date(ts).toLocaleString('he-IL', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}); }
+  catch(e){ return ''; }
+}
+function applyData(d){
+  if(!d) return false;
+  let changed = false;
+  if(Array.isArray(d.countries) && d.countries.length > 20){
+    COUNTRIES.length = 0;
+    d.countries.forEach(c => COUNTRIES.push(c));
+    indexCountries(); changed = true;
+  }
+  if(d.prices && Object.keys(d.prices).length){
+    Object.keys(PRICES).forEach(k => delete PRICES[k]);
+    Object.keys(d.prices).forEach(k => PRICES[k] = d.prices[k]);
+    changed = true;
+  }
+  if(d.apply && Object.keys(d.apply).length){
+    Object.keys(APPLY).forEach(k => delete APPLY[k]);
+    Object.keys(d.apply).forEach(k => APPLY[k] = d.apply[k]);
+    changed = true;
+  }
+  if(d.updated) $('updBadge').textContent = d.updated;
+  if(!changed) return false;
+  buildQuick(); rebuildDests(); buildPrice();
+  /* רענון תצוגות פתוחות כדי שלא יישארו נתונים ישנים על המסך */
+  if(current && byId[current.id]) pickCountry(byId[current.id], false);
+  if(dCode && PRICES[dCode]) openDrawer(dCode);
+  return true;
+}
+async function loadData(force){
+  if(force) store.set(DATA_CACHE_KEY, '');
+  else {
+    try{
+      const raw = store.get(DATA_CACHE_KEY);
+      if(raw){
+        const c = JSON.parse(raw);
+        if(c && c.data && applyData(c.data)) setDataStatus('מקור נתונים: עותק שמור מ-' + fmtWhen(c.at));
+      }
+    }catch(e){}
+  }
+  if(!DATA_ENDPOINT){ setDataStatus('מקור נתונים: הנתונים המובנים בקובץ'); return; }
+  setDataStatus('מתעדכן מול Google Sheets...');
+  try{
+    const sep = DATA_ENDPOINT.indexOf('?') > -1 ? '&' : '?';
+    const res = await fetch(DATA_ENDPOINT + sep + 'data=1&t=' + Date.now());
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    if(!d || (!Array.isArray(d.countries) && !d.prices)) throw new Error('bad payload');
+    applyData(d);
+    store.set(DATA_CACHE_KEY, JSON.stringify({at: Date.now(), data: d}));
+    setDataStatus('מקור נתונים: Google Sheets · עודכן ' + fmtWhen(Date.now()), 'ok');
+  }catch(err){
+    console.error('data load failed', err);
+    setDataStatus('העדכון מהשרת נכשל — מוצגים הנתונים השמורים', 'bad');
+  }
+}
+
 /* ═══════════ אתחול ═══════════ */
 $('updBadge').textContent = PRICE_UPDATED;
 $('rPrintLogo').src = LOGO_SRC;
 setTheme(store.get('ams_theme') === 'dark');
-buildPrice();
+buildQuick(); rebuildDests(); buildPrice();
 (function boot(){
   let tab = 'check', d = null;
   try{
@@ -2073,6 +2167,8 @@ buildPrice();
     if(tab === 'price' && PRICES[d.toUpperCase()]) openDrawer(d.toUpperCase());
   }
 })();
+$('dataRefresh').addEventListener('click', () => { toast('מרענן נתונים...'); loadData(true); });
+loadData();
 
 </script>
 </body>
