@@ -76,6 +76,14 @@ body.dark .gatebox > img{background:#fff;border-radius:8px;padding:6px 8px}
 .gatebox > p{margin:0 0 22px;font-size:13.5px;color:var(--muted);line-height:1.55}
 .gatebox .fld{text-align:start;margin-bottom:14px}
 .gatebox .btn{margin-top:8px}
+.passwrap{position:relative}
+.passwrap input{padding-inline-end:44px}
+.passwrap button{
+  position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);
+  border:0;background:none;color:var(--muted);cursor:pointer;padding:7px;border-radius:8px;display:flex;
+}
+.passwrap button:hover{color:var(--brand-dark);background:var(--brand-soft)}
+.passwrap button svg{width:19px;height:19px}
 .gremember{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin:2px 0 4px;text-align:start}
 .gremember input{width:16px;height:16px;accent-color:var(--brand);padding:0;box-shadow:none;background:none}
 .gerr{
@@ -555,7 +563,12 @@ body.dark .toast{background:var(--brand-dark)}
     </div>
     <div class="fld">
       <label for="gPass">סיסמה</label>
-      <input type="password" id="gPass" autocomplete="current-password" required placeholder="••••••••">
+      <div class="passwrap">
+        <input type="password" id="gPass" autocomplete="current-password" required placeholder="••••••••">
+        <button type="button" id="gEye" aria-label="הצגת הסיסמה" title="הצגת הסיסמה">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
+      </div>
     </div>
     <label class="gremember"><input type="checkbox" id="gRemember" checked><span>השאר אותי מחובר במחשב הזה</span></label>
     <button type="submit" class="btn" id="gBtn">
@@ -2347,9 +2360,13 @@ function gateErr(msg){
 
 const dec = v => { try{ return atob(v.split('').reverse().join('')); }catch(e){ return ''; } };
 
+/* ניקוי הדבקה: מסיר רווחים ותווי כיווניות נסתרים שנדבקים בהעתקה
+   ממייל או מוואטסאפ בעברית ומכשילים את ההשוואה */
+const clean = v => String(v).replace(/[\u200b-\u200f\u202a-\u202e\u2066-\u2069\uFEFF]/g, '').trim();
+
 $('gateForm').addEventListener('submit', e => {
   e.preventDefault();
-  const user = $('gUser').value.trim(), pass = $('gPass').value;
+  const user = clean($('gUser').value), pass = clean($('gPass').value);
   if(!user || !pass) return gateErr('יש להזין שם משתמש וסיסמה');
   if(user.toLowerCase() !== dec(AUTH_USER).toLowerCase() || pass !== dec(AUTH_PASS)){
     gateErr('שם משתמש או סיסמה שגויים');
@@ -2360,6 +2377,12 @@ $('gateForm').addEventListener('submit', e => {
   saveSession({ name:user, user, exp: Date.now() + SESSION_HOURS * 3600 * 1000 }, $('gRemember').checked);
   unlock();
   loadData();
+});
+
+$('gEye').addEventListener('click', () => {
+  const f = $('gPass');
+  f.type = f.type === 'password' ? 'text' : 'password';
+  f.focus();
 });
 
 $('logoutBtn').addEventListener('click', () => {
