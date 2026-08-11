@@ -233,6 +233,24 @@ body.dark .act.apply:hover{background:#3fc9e4;border-color:#3fc9e4;color:#062832
   width:20px;height:20px;border-radius:50%;background:var(--brand-soft);color:var(--brand-dark);
   display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px;font-style:normal;font-size:11px;font-weight:900;
 }
+/* ── טפסי כניסה, הצהרות ואישורים מקוונים ── */
+.formbox{display:none;margin-top:20px}
+.formbox.on{display:block}
+.formbox > h4{display:flex;align-items:center;gap:9px;margin:0 0 12px;font-size:14px;font-weight:900;color:var(--ink-soft)}
+.formbox > h4 svg{width:18px;height:18px;color:var(--brand)}
+.frow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);transition:.22s;text-decoration:none;color:inherit}
+.frow + .frow{margin-top:10px}
+.frow:hover{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-2px);box-shadow:0 8px 20px -14px rgba(18,143,169,.7)}
+.frow .fname{font-size:15px;font-weight:800;line-height:1.35}
+.frow .fkind{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
+.frow .go{margin-inline-start:auto;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--brand-dark);white-space:nowrap}
+.frow .go svg{width:15px;height:15px}
+.fbadge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:900;flex:0 0 auto}
+.fbadge.must{background:rgba(200,55,42,.1);color:var(--danger);border:1px solid rgba(200,55,42,.25)}
+body.dark .fbadge.must{color:#ff8b96}
+.fbadge.rec{background:var(--field);color:var(--ink-soft);border:1px solid var(--line)}
+.formbox .disc{margin:10px 2px 0;font-size:12px;color:var(--muted);line-height:1.5}
+@media (max-width:560px){.frow{gap:10px}.frow .go{margin-inline-start:0;width:100%}}
 .calc{margin-top:22px;padding:22px;border:1px solid var(--brand-line);border-radius:14px;background:var(--panel)}
 .calc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:18px}
 .calc-head h4{margin:0 0 2px;font-size:18px;font-weight:900}
@@ -650,6 +668,8 @@ body.dark .toast{background:var(--brand-dark)}
 
     <ul class="reqs" id="rReqs"></ul>
 
+    <section class="formbox" id="rForms" aria-label="טפסי כניסה ואישורים"></section>
+
     <div class="calc" id="rCalc">
       <div class="calc-head">
         <div>
@@ -931,6 +951,104 @@ const APPLY = {
   UG:"https://www.amsalem.co.il/visa/visa-to-uganda",
   AZ:"https://www.amsalem.co.il/visa/visa-to-azerbaijan"
 };
+/* ═══════════ טפסי כניסה, הצהרות ואישורים מקוונים ═══════════
+   לכל יעד: האם ההגשה חובה או מומלצת, שם הטופס וקישור ישיר לאתר הרשמי.
+   kind: form = טופס כניסה / הצהרה (אינו ויזה) | eta = אישור נסיעה אלקטרוני
+         visa = הגשת ויזה מקוונת | info = עמוד תנאי כניסה רשמי                */
+const ENTRY_FORMS = {
+  AG:[{req:"מומלץ",name:"ArriveAntigua",url:"https://arriveantigua.com/",kind:"form"}],
+  AR:[{req:"מומלץ",name:"Customs Declaration",url:"https://www.argentina.gob.ar/servicio/declarar-objetos-del-equipaje-en-viajes-al-exterior",kind:"form"}],
+  AM:[{req:"חובה",name:"eVisa",url:"https://evisa.mfa.am/",kind:"visa"}],
+  BS:[{req:"חובה",name:"Immigration / Arrival Card",url:"https://www.immigration.gov.bs/entry-requirements/before-your-arrival/",kind:"form"}],
+  BB:[{req:"חובה",name:"Immigration & Customs Form",url:"https://www.travelform.gov.bb/",kind:"form"}],
+  BZ:[{req:"חובה",name:"E-Embarkation Declaration",url:"https://ideclare.gov.bz/",kind:"form"}],
+  BJ:[{req:"חובה",name:"eVisa",url:"https://evisa.bj/",kind:"visa"}],
+  BT:[{req:"חובה",name:"Visa / Pre-registration",url:"https://immi.gov.bt/",kind:"visa"}],
+  CO:[{req:"מומלץ",name:"Check-Mig",url:"https://apps.migracioncolombia.gov.co/pre-registro/",kind:"form"}],
+  BA:[{req:"מומלץ",name:"Registration of Stay",url:"https://sps.gov.ba/en/",kind:"form"}],
+  BR:[{req:"מומלץ",name:"e-DBV — כאשר רלוונטי",url:"https://www.edbv.receita.fazenda.gov.br/",kind:"form"}],
+  BN:[{req:"חובה",name:"E-Arrival Card",url:"https://www.immigration.gov.bn/en/",kind:"form"}],
+  BF:[{req:"חובה",name:"eVisa / Entry Information",url:"https://www.visaburkina.bf/en/home/",kind:"info"}],
+  KH:[{req:"חובה",name:"e-Arrival",url:"https://www.evisa.gov.kh/",kind:"form"}],
+  CV:[{req:"חובה",name:"EASE Pre-registration",url:"https://www.ease.gov.cv/",kind:"form"}],
+  CL:[{req:"חובה",name:"Declaración Jurada SAG",url:"https://www.ingresoachile.cl/",kind:"form"}],
+  CN:[{req:"חובה",name:"Arrival Card",url:"https://s.nia.gov.cn/ArrivalCardFillingPC/",kind:"form"}],
+  CD:[{req:"חובה",name:"eVisa / VAP",url:"https://evisa.gouv.cd/",kind:"visa"}],
+  CI:[{req:"מומלץ",name:"eVisa Pre-enrolment",url:"https://snedai.com/e-visa/",kind:"visa"}],
+  CU:[{req:"חובה",name:"D'Viajeros",url:"https://dviajeros.mitrans.gob.cu/",kind:"form"}],
+  DJ:[{req:"חובה",name:"eVisa",url:"https://www.evisa.gouv.dj/",kind:"visa"}],
+  DM:[{req:"חובה",name:"ED Card",url:"https://edcard.dominica.gov.dm/",kind:"form"}],
+  DO:[{req:"חובה",name:"E-Ticket",url:"https://eticket.migracion.gob.do/",kind:"form"}],
+  EC:[{req:"מומלץ",name:"Customs Registration Form",url:"https://www.aduana.gob.ec/servicio-al-ciudadano/formulario-de-registro-aduanero/login/",kind:"form"}],
+  EG:[{req:"מומלץ",name:"בדיקת זכאות",url:"https://visa2egypt.gov.eg/eVisa/FAQ",kind:"info"}],
+  SV:[{req:"חובה",name:"Electronic Customs Declaration",url:"https://sitio.aduana.gob.sv/",kind:"form"}],
+  GQ:[{req:"חובה",name:"eVisa",url:"https://egonline.vfsevisa.com/gnq/en",kind:"visa"}],
+  ET:[{req:"מומלץ",name:"eVisa",url:"https://www.evisa.gov.et/",kind:"visa"}],
+  FJ:[{req:"חובה",name:"Passenger Arrival Card",url:"https://frcs.org.fj/our-services/customs/travellers/visiting-fiji/arriving-in-fiji/",kind:"form"}],
+  GA:[{req:"חובה",name:"eVisa",url:"https://evisa.dgdi.ga/",kind:"visa"}],
+  GH:[{req:"חובה",name:"Visa / eVisa",url:"https://gis.gov.gh/",kind:"visa"}],
+  GD:[{req:"חובה",name:"Immigration & Customs Form",url:"https://edcard.gov.gd/",kind:"form"}],
+  GT:[{req:"חובה",name:"DJRV Traveller Declaration",url:"https://farm2.sat.gob.gt/declaDelViajeroGt-web/pages/public/declaracionJuradaDelViajero.html",kind:"form"}],
+  GN:[{req:"חובה",name:"ETA / eVisa",url:"https://www.paf.gov.gn/visa",kind:"eta"}],
+  GY:[{req:"חובה",name:"Immigration & Customs Form",url:"https://ed.gpf.gov.gy/",kind:"form"}],
+  HN:[{req:"מומלץ",name:"Prechequeo Migratorio",url:"https://prechequeo.inm.gob.hn/",kind:"form"}],
+  IN:[{req:"חובה",name:"e-Arrival Card",url:"https://indianvisaonline.gov.in/earrival/",kind:"form"}],
+  ID:[{req:"חובה",name:"All Indonesia",url:"https://allindonesia.imigrasi.go.id/",kind:"form"}],
+  JM:[{req:"חובה",name:"Electronic C5",url:"https://www.enterjamaica.gov.jm/",kind:"form"}],
+  JP:[{req:"מומלץ",name:"Visit Japan Web",url:"https://www.vjw.digital.go.jp/",kind:"form"}],
+  JO:[{req:"מומלץ",name:"תנאים לפי מעבר גבול",url:"https://international.visitjordan.com/page/21/border/",kind:"info"}],
+
+  KI:[{req:"חובה",name:"Entry / Visa Exemption Information",url:"https://www.mfa.gov.ki/immigration/",kind:"info"}],
+  KR:[{req:"מומלץ",name:"K-ETA",url:"https://www.k-eta.go.kr/",kind:"eta"}],
+  LA:[{req:"חובה",name:"Digital Immigration Form",url:"https://immigration.gov.la/en/registration/arrival/arrival-info",kind:"form"}],
+  LR:[{req:"חובה",name:"Visa on Arrival Pre-Application",url:"https://apply.visaonarrival.lis.gov.lr/LiberiaVisa",kind:"visa"}],
+  MG:[{req:"מומלץ",name:"eVisa",url:"https://evisamada-mg.com/en/home",kind:"visa"}],
+  MW:[{req:"מומלץ",name:"eVisa / Visa Eligibility",url:"https://evisa.gov.mw/VisaAssistance",kind:"info"}],
+  MY:[{req:"חובה",name:"MDAC",url:"https://imigresen-online.imi.gov.my/mdac/main",kind:"form"}],
+  MV:[{req:"חובה",name:"IMUGA Traveller Declaration",url:"https://imuga.immigration.gov.mv/traveller",kind:"form"}],
+  MH:[{req:"מומלץ",name:"Visitor Visa / VOA",url:"https://rmiimmigration.org/applications/",kind:"visa"}],
+  MR:[{req:"חובה",name:"eVisa",url:"https://anrpts.gov.mr/visa/requestvisa",kind:"visa"}],
+  MU:[{req:"חובה",name:"All-in-One Travel Form",url:"https://safemauritius.govmu.org/",kind:"form"}],
+  MX:[{req:"מומלץ",name:"FMM / INM בהתאם לאופן הכניסה",url:"https://www.inm.gob.mx/spublic/portal/inmex.html",kind:"form"}],
+  FM:[{req:"חובה",name:"Entry Information",url:"https://fsmembassy.fm/for-guests-visitors/",kind:"info"}],
+  MN:[{req:"מומלץ",name:"eVisa / Registration",url:"https://www.evisa.mn/en",kind:"visa"}],
+  ME:[{req:"מומלץ",name:"Registration of Stay",url:"https://www.gov.me/en/article/114749--registration-of-tourists-stay-with-the-police-is-responsibility-of-accommodation-providers-not-tourists",kind:"form"}],
+  MZ:[{req:"חובה",name:"eTA / eVisa",url:"https://evisa.gov.mz/Home",kind:"eta"}],
+  MM:[{req:"חובה",name:"Tourist eVisa",url:"https://evisa.moip.gov.mm/",kind:"visa"}],
+  NR:[{req:"מומלץ",name:"Visa / Entry Requirements",url:"https://www.nauru.gov.nr/about-nauru/visiting-nauru/visa-requirements.aspx",kind:"info"}],
+  NP:[{req:"חובה",name:"Online Tourist / Arrival Form",url:"https://nepaliport.immigration.gov.np/online",kind:"form"}],
+  NZ:[{req:"חובה",name:"NZ Traveller Declaration",url:"https://www.travellerdeclaration.govt.nz/",kind:"form"}],
+  NI:[{req:"חובה",name:"Customs Declaration",url:"https://www.eaai.com.ni/en/customs/",kind:"form"}],
+  NG:[{req:"חובה",name:"Landing / Exit Card",url:"https://lecard.immigration.gov.ng/",kind:"form"}],
+  MK:[{req:"מומלץ",name:"Registration of Foreigners",url:"https://mvr.gov.mk/en-GB/prijavi-stranci",kind:"form"}],
+  OM:[{req:"מומלץ",name:"eVisa Eligibility",url:"https://evisa.rop.gov.om/apply-for-a-visa",kind:"info"}],
+  PW:[{req:"חובה",name:"Entry Form",url:"https://www.palaugov.pw/",kind:"form"}],
+  PA:[{req:"חובה",name:"Traveller Declaration",url:"https://declaraciondeviajero.ana.gob.pa/",kind:"form"}],
+  PG:[{req:"חובה",name:"PNG Digital Arrival Card",url:"https://pngdac.ica.gov.pg/",kind:"form"}],
+  PY:[{req:"מומלץ",name:"Pre Registro Migratorio",url:"https://migraciones.gov.py/pre-registro-migratorio/",kind:"form"}],
+  PE:[{req:"מומלץ",name:"Customs Declaration",url:"https://bienvenidoalperu.sunat.gob.pe/",kind:"form"}],
+  PH:[{req:"חובה",name:"eTravel",url:"https://etravel.gov.ph/",kind:"form"}],
+  QA:[{req:"מומלץ",name:"Visa / Hayya — נדרש אימות",url:"https://visitqatar.com/intl-en/plan-your-trip/visas",kind:"visa"}],
+  KN:[{req:"חובה",name:"eTA / Travel Form",url:"https://www.knatravelform.kn/",kind:"eta"}],
+  VC:[{req:"מומלץ",name:"Pre-Arrival Form",url:"https://tourism.gov.vc/tourism/index.php/news/544-st-vincent-and-the-grenadines-pre-arrival-form",kind:"form"}],
+  RS:[{req:"מומלץ",name:"Registration of Stay",url:"https://www.mfa.gov.rs/en/citizens/travel-serbia/registration-stay",kind:"form"}],
+  SL:[{req:"חובה",name:"eVisa",url:"https://slid.gov.sl/",kind:"visa"}],
+  SG:[{req:"חובה",name:"SG Arrival Card",url:"https://eservices.ica.gov.sg/sgarrivalcard/",kind:"form"}],
+  SB:[{req:"חובה",name:"Immigration / Concessional Entry",url:"https://immigration.gov.sb/",kind:"form"}],
+  ZA:[{req:"חובה",name:"Traveller Declaration",url:"https://www.sars.gov.za/travellerdeclaration/",kind:"form"}],
+  SS:[{req:"חובה",name:"eVisa",url:"https://www.evisa.gov.ss/",kind:"visa"}],
+  SR:[{req:"חובה",name:"Entry Fee",url:"https://suriname.vfsevisa.com/",kind:"form"}],
+  TJ:[{req:"חובה",name:"eVisa",url:"https://www.evisa.tj/",kind:"visa"}],
+  TZ:[{req:"מומלץ",name:"eVisa / Visa on Arrival",url:"https://visa.immigration.go.tz/",kind:"visa"}],
+  TL:[{req:"מומלץ",name:"Visa on Arrival",url:"https://migracao.gov.tl/wp/tourist-visa/",kind:"visa"}],
+  TG:[{req:"חובה",name:"Togo Voyage",url:"https://voyage.gouv.tg/",kind:"form"}],
+  TT:[{req:"חובה",name:"Online Arrival/Departure Card",url:"https://travel.gov.tt/",kind:"form"}],
+  UG:[{req:"חובה",name:"eVisa",url:"https://visas.immigration.go.ug/",kind:"visa"}],
+  VN:[{req:"מומלץ",name:"Pre-Arrival Information",url:"https://prearrival.immigration.gov.vn/",kind:"info"}],
+  ZW:[{req:"מומלץ",name:"Entry Declaration / Visa",url:"https://www.evisa.gov.zw/",kind:"visa"}],
+  TW:[{req:"חובה",name:"TWAC",url:"https://twac.immigration.gov.tw/",kind:"form"}]
+};
+
 /* ═══════════ דרישות כניסה לפי יעד ═══════════ */
 const COUNTRIES = [
 {id:"AF",name:"אפגניסטן",aliases:["afghanistan"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1522,6 +1640,8 @@ function pickCountry(c, push){
   });
   ul.style.display = (c.requirements || []).length ? '' : 'none';
 
+  renderForms(c);
+
   /* מחשבון תוקף — מוסתר ביעדים שהכניסה אליהם חסומה */
   const blocked = ['refused','banned_il'].indexOf(c.category) > -1;
   $('rCalc').style.display = blocked ? 'none' : '';
@@ -1553,9 +1673,40 @@ function pickCountry(c, push){
   if(window.innerWidth <= 760) $('result').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
+/* ── טפסי כניסה, הצהרות ואישורים מקוונים ── */
+const FKIND = {
+  form:'טופס כניסה / הצהרת נוסע — אינו ויזה ואינו אישור כניסה',
+  eta :'אישור נסיעה אלקטרוני — נדרש לפני העלייה למטוס',
+  visa:'הגשת ויזה מקוונת באתר הרשמי',
+  info:'עמוד תנאי הכניסה הרשמי של הרשויות'
+};
+function renderForms(c){
+  const box = $('rForms');
+  const list = ENTRY_FORMS[c.id];
+  if(!list || !list.length || ['refused','banned_il'].indexOf(c.category) > -1){
+    box.classList.remove('on'); box.innerHTML = ''; return;
+  }
+  box.innerHTML =
+      '<h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    + '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>'
+    + '<line x1="16" y1="17" x2="8" y2="17"></line></svg>טפסי כניסה ואישורים מקוונים</h4>'
+    + list.map(f =>
+        '<a class="frow" href="' + f.url + '" target="_blank" rel="noopener">'
+      + '<span class="fbadge ' + (f.req === 'חובה' ? 'must' : 'rec') + '">' + esc(f.req) + '</span>'
+      + '<span><span class="fname">' + esc(f.name) + '</span>'
+      + '<span class="fkind">' + (FKIND[f.kind] || FKIND.form) + '</span></span>'
+      + '<span class="go">לאתר ההגשה הרשמי'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline>'
+      + '<line x1="10" y1="14" x2="21" y2="3"></line></svg></span></a>').join('')
+    + '<p class="disc">הדרישות נקבעות על ידי הרשויות ביעד ועשויות להשתנות. יש לוודא את התנאים העדכניים באתר הרשמי סמוך למועד הנסיעה.</p>';
+  box.classList.add('on');
+}
+
 function resetCheck(){
   current = null;
   $('result').classList.remove('on');
+  $('rForms').classList.remove('on');
   cSearch.value = ''; cClear.classList.remove('on'); closeAc(); resetCalc();
   syncUrl();
   cSearch.focus();
@@ -2244,6 +2395,11 @@ function applyData(d){
     Object.keys(d.prices).forEach(k => PRICES[k] = d.prices[k]);
     changed = true;
   }
+  if(d.forms && Object.keys(d.forms).length){
+    Object.keys(ENTRY_FORMS).forEach(k => delete ENTRY_FORMS[k]);
+    Object.keys(d.forms).forEach(k => ENTRY_FORMS[k] = d.forms[k]);
+    changed = true;
+  }
   if(d.apply && Object.keys(d.apply).length){
     Object.keys(APPLY).forEach(k => delete APPLY[k]);
     Object.keys(d.apply).forEach(k => APPLY[k] = d.apply[k]);
@@ -2275,7 +2431,7 @@ async function loadData(force){
     const res = await fetch(DATA_ENDPOINT + sep + 'data=1&t=' + Date.now());
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
-    if(!d || (!Array.isArray(d.countries) && !d.prices && !d.apply)) throw new Error('bad payload');
+    if(!d || (!Array.isArray(d.countries) && !d.prices && !d.forms && !d.apply)) throw new Error('bad payload');
     applyData(d);
     store.set(DATA_CACHE_KEY, JSON.stringify({at: Date.now(), data: d}));
     setDataStatus('מקור נתונים: Google Sheets · עודכן ' + fmtWhen(Date.now()), 'ok');
