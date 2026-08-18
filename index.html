@@ -1271,7 +1271,7 @@ const COUNTRIES = [
    המפתח הוא קוד ה-ISO של המדינה — השם והדגל נשלפים אוטומטית מ-COUNTRIES.
    feeUsd = אגרת רשויות | serviceUsd = דמי שירות | הסה"כ מחושב אוטומטית.
    ups:true  → מוצגת אפשרות שילוח דרכון פיזי (UPS)
-   form:true → מוצגת אפשרות סיוע במילוי טופס הבקשה הרשמי                        */
+   (שירות הסיוע במילוי טופס הבקשה הרשמי בוטל ואינו מוצג עוד)                    */
 const PRICES = {
 "US":{ups:true,options:[
   {type:"אישור כניסה אלקטרוני ESTA, תיירות / עסקים",time:"עד 72 שעות",validity:"שנתיים או עד פקיעת הדרכון",feeUsd:40,serviceUsd:35,tag:"electronic",ups:false,form:false,
@@ -1312,12 +1312,10 @@ const PRICES = {
    docs:["דרכון בתוקף 6 חודשים לפחות עם 2 עמודים ריקים","סריקה צבעונית של עמוד הפרטים בדרכון (PDF)","תמונת פספורט דיגיטלית ריבועית (רקע לבן)","מכתב הזמנה מחברה בהודו או כרטיס ביקור (באנגלית)","פרטי החברה המזמינה"]}
 ]},
 "CN":{ups:true,options:[
-  {type:"ויזת תיירות / עסקים - נוהל רגיל",time:"5 ימי עבודה",validity:"לפי החלטת הקונסוליה",feeUsd:90,serviceUsd:65,tag:"physical",form:true,
+  {type:"ויזת תיירות / עסקים - נוהל רגיל",time:"5 ימי עבודה",validity:"לפי החלטת הקונסוליה",feeUsd:90,serviceUsd:65,tag:"physical",
    docs:["דרכון מקורי בתוקף 6 חודשים לפחות עם 2 עמודים ריקים + צילום עמוד הפרטים","טופס בקשה מקוון מלא (COVA)","תמונת פספורט עדכנית (רקע לבן, 48x33 מ״מ)","אישור הזמנת טיסות הלוך-חזור ומלון","לעסקים: מכתב הזמנה מחברה בסין (על נייר מכתבים רשמי)"]},
-  {type:"ויזת תיירות / עסקים - נוהל דחוף",time:"3 ימי עבודה",validity:"לפי החלטת הקונסוליה",feeUsd:165,serviceUsd:65,tag:"physical",form:true,
-   docs:["דרכון מקורי בתוקף 6 חודשים לפחות עם 2 עמודים ריקים + צילום עמוד הפרטים","טופס בקשה מקוון מלא (COVA)","תמונת פספורט עדכנית (רקע לבן, 48x33 מ״מ)","אישור הזמנת טיסות הלוך-חזור ומלון","לעסקים: מכתב הזמנה מחברה בסין (על נייר מכתבים רשמי)"]},
-  {type:"מילוי טופס בקשה רשמי לויזה",time:"בהתאם להשלמת פרטי הנוסע",validity:"לא רלוונטי",feeUsd:0,serviceUsd:50,tag:"permit",ups:true,form:false,
-   docs:["צילום ברור של עמוד הפרטים בדרכון","שאלון פרטים אישיים מלא","פרטי קשר מלאים של הנוסע"]}
+  {type:"ויזת תיירות / עסקים - נוהל דחוף",time:"3 ימי עבודה",validity:"לפי החלטת הקונסוליה",feeUsd:165,serviceUsd:65,tag:"physical",
+   docs:["דרכון מקורי בתוקף 6 חודשים לפחות עם 2 עמודים ריקים + צילום עמוד הפרטים","טופס בקשה מקוון מלא (COVA)","תמונת פספורט עדכנית (רקע לבן, 48x33 מ״מ)","אישור הזמנת טיסות הלוך-חזור ומלון","לעסקים: מכתב הזמנה מחברה בסין (על נייר מכתבים רשמי)"]}
 ]},
 "TH":{options:[
   {type:"כרטיס הגעה דיגיטלי (TDAC)",time:"מיידי",validity:"60 ימים",feeUsd:0,serviceUsd:25,tag:"permit",
@@ -1881,8 +1879,7 @@ function openDrawer(code){
     + '<p style="margin:0;font-size:13px">המחירים המוצגים מתייחסים לנוסע יחיד</p></div>';
 
   c.options.forEach((o, i) => {
-    const showUps  = o.ups  !== undefined ? o.ups  : !!c.ups;
-    const showForm = o.form !== undefined ? o.form : !!c.form;
+    const showUps = o.ups !== undefined ? o.ups : !!c.ups;
     html += '<div class="opt" id="opt-' + i + '">'
       + '<h3>' + esc(o.type) + '</h3>'
       + '<span class="tag tag-' + o.tag + '">' + TAG_LBL[o.tag] + '</span>'
@@ -1893,16 +1890,11 @@ function openDrawer(code){
         + '<div><span>דמי שירות, הכנה והגשה</span><strong>' + usd(o.serviceUsd) + '</strong></div>'
       + '</div>';
 
-    if(showUps || showForm){
-      html += '<div class="addons"><h5>שירותים נוספים (אופציונלי)</h5>';
-      if(showUps){
-        html += '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups1" data-cost="25"><span>משלוח דרכון כיוון אחד (UPS) — <strong>$25.00</strong></span></label>'
-             +  '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups2" data-cost="50"><span>משלוח דרכון הלוך וחזור (UPS) — <strong>$50.00</strong></span></label>';
-      }
-      if(showForm){
-        html += '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="form" data-cost="50"><span>סיוע במילוי טופס הבקשה הרשמי — <strong>$50.00</strong></span></label>';
-      }
-      html += '</div>';
+    if(showUps){
+      html += '<div class="addons"><h5>שירותים נוספים (אופציונלי)</h5>'
+        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups1" data-cost="25"><span>משלוח דרכון כיוון אחד (UPS) — <strong>$25.00</strong></span></label>'
+        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups2" data-cost="50"><span>משלוח דרכון הלוך וחזור (UPS) — <strong>$50.00</strong></span></label>'
+        + '</div>';
     }
 
     html += '<div class="sum"><span>עלות כוללת לאדם</span><strong id="sum-' + i + '">' + usd(optTotal(o)) + '</strong></div>'
