@@ -12,15 +12,16 @@
 <meta name="description" content="מערכת אחת לבדיקת דרישות ויזה ותוקף דרכון, מחירון אשרות והעברת פניות למחלקת הויזות של אמסלם תיירות ונופש.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Assistant:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
+  --font-body:'Heebo','Assistant','Rubik','Open Sans','Tahoma',system-ui,sans-serif;
   --brand:#1bb0ce; --brand-dark:#128fa9; --brand-deep:#0d7189;
   --brand-soft:#eaf7fb; --brand-line:#c4e8f2;
   --ink:#16262e; --ink-soft:#3d525d; --muted:#7a8d97;
   --line:#e3ecf0; --field:#f7fafc; --panel:#ffffff; --bg:#f2f7f9;
   --danger:#c8372a; --danger-soft:#fdf3f1; --ok:#159d69; --warn:#d9722c;
-  --r:14px;
+  --r-sm:10px; --r-md:14px; --r-lg:20px; --r-pill:999px; --r:var(--r-md); /* alias, back-compat */
   --shadow:0 1px 2px rgba(16,44,55,.04), 0 4px 6px -1px rgba(16,44,55,.05), 0 12px 24px -14px rgba(16,44,55,.14);
   --shadow-lg:0 2px 4px rgba(16,44,55,.04), 0 10px 15px -3px rgba(16,44,55,.08), 0 30px 50px -28px rgba(16,44,55,.22);
   --glass:rgba(255,255,255,.82); --hair:rgba(16,44,55,.07); --grid:rgba(16,44,55,.035);
@@ -37,7 +38,7 @@ body.dark{
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  margin:0; font-family:'Heebo',system-ui,sans-serif; color:var(--ink);
+  margin:0; font-family:var(--font-body); color:var(--ink);
   background-color:var(--bg);
   background-image:
     radial-gradient(1100px 520px at 82% -10%, rgba(27,176,206,.14), transparent 62%),
@@ -66,21 +67,21 @@ body.locked .topbar,body.locked main,body.locked footer{visibility:hidden}
 }
 .gate.on{display:flex}
 .gatebox{
-  width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:18px;
-  padding:34px 30px 28px;box-shadow:var(--shadow-lg);text-align:center;
+  width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:38px 32px 30px;box-shadow:var(--shadow-lg);text-align:center;
   animation:rise .5s cubic-bezier(.16,.84,.34,1) both;
 }
 .gatebox > img{width:100%;max-width:190px;height:auto;display:block;margin:0 auto 20px}
-body.dark .gatebox > img{background:#fff;border-radius:8px;padding:6px 8px}
-.gatebox h1{font-size:20px;font-weight:900;margin:0 0 8px;letter-spacing:-.3px}
+body.dark .gatebox > img{background:#fff;border-radius:var(--r-sm);padding:6px 8px}
+.gatebox h1{font-size:20px;font-weight:700;margin:0 0 8px;letter-spacing:-.3px}
 .gatebox > p{margin:0 0 22px;font-size:13.5px;color:var(--muted);line-height:1.55}
-.gatebox .fld{text-align:start;margin-bottom:14px}
+.gatebox .fld{text-align:start;margin-bottom:16px}
 .gatebox .btn{margin-top:8px}
 .passwrap{position:relative}
 .passwrap input{padding-inline-end:44px}
 .passwrap button{
   position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);
-  border:0;background:none;color:var(--muted);cursor:pointer;padding:7px;border-radius:8px;display:flex;
+  border:0;background:none;color:var(--muted);cursor:pointer;padding:7px;border-radius:var(--r-sm);display:flex;
 }
 .passwrap button:hover{color:var(--brand-dark);background:var(--brand-soft)}
 .passwrap button svg{width:19px;height:19px}
@@ -88,7 +89,7 @@ body.dark .gatebox > img{background:#fff;border-radius:8px;padding:6px 8px}
 .gremember input{width:16px;height:16px;accent-color:var(--brand);padding:0;box-shadow:none;background:none}
 .gerr{
   display:none;background:var(--danger-soft);border:1px solid rgba(200,55,42,.3);color:var(--danger);
-  border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:700;margin-bottom:16px;line-height:1.5;text-align:start;
+  border-radius:var(--r-md);padding:11px 14px;font-size:13.5px;font-weight:700;margin-bottom:16px;line-height:1.5;text-align:start;
 }
 .gerr.on{display:block;animation:rise .3s both}
 .ghint{margin:16px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
@@ -102,50 +103,55 @@ body.dark .gatebox > img{background:#fff;border-radius:8px;padding:6px 8px}
 }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.topbar{background:var(--panel)}}
 .topbar-in{
-  max-width:1180px; margin:0 auto; padding:12px 20px;
-  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  max-width:1180px; margin:0 auto; padding:9px 20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
 }
 .brand{display:flex; align-items:center; gap:12px; margin-inline-end:auto; text-decoration:none}
-.brand img{height:46px; width:auto; display:block}
-body.dark .brand img{background:#fff;border-radius:7px;padding:4px 6px}
-.tabs{display:flex; gap:4px; background:var(--field); border:1px solid var(--line); padding:5px; border-radius:999px}
+.brand img{height:38px; width:auto; display:block}
+body.dark .brand img{background:#fff;border-radius:var(--r-sm);padding:4px 6px}
+.tabs{display:flex; gap:4px; background:var(--field); border:1px solid var(--line); padding:5px; border-radius:var(--r-pill)}
 .tab{
-  border:0; background:none; font-family:inherit; font-size:14.5px; font-weight:800;
-  color:var(--muted); padding:9px 18px; border-radius:999px; cursor:pointer;
+  border:0; background:none; font-family:inherit; font-size:14px; font-weight:700;
+  color:var(--muted); padding:8px 16px; border-radius:var(--r-pill); cursor:pointer;
   display:flex; align-items:center; gap:8px; transition:all .2s ease; white-space:nowrap;
 }
 .tab svg{width:17px;height:17px}
 .tab:hover{color:var(--ink)}
 .tab.on{background:var(--brand); color:#fff; box-shadow:0 4px 12px -3px rgba(18,143,169,.5)}
 .icon-btn{
-  width:42px;height:42px;border-radius:50%; border:1px solid var(--line); background:var(--field);
+  width:38px;height:38px;border-radius:50%; border:1px solid var(--line); background:var(--field);
   color:var(--ink-soft); display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;
 }
 .icon-btn:hover{border-color:var(--brand); color:var(--brand-dark)}
-.icon-btn svg{width:19px;height:19px}
+.icon-btn svg{width:18px;height:18px}
+.topbar-actions{display:flex;align-items:center;gap:8px;padding-inline-start:14px;margin-inline-start:2px;border-inline-start:1px solid var(--line)}
 
 /* ── פריסה ─────────────────────────────── */
 .wrap{max-width:1180px; margin:0 auto; padding:0 20px}
 .view{display:none; animation:rise .45s cubic-bezier(.16,.84,.34,1) both}
 .view.on{display:block}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.hero{text-align:center; padding:46px 0 30px; max-width:760px; margin:0 auto}
+.hero{text-align:center; padding:34px 0 24px; max-width:760px; margin:0 auto; transition:padding .35s ease}
+.hero.compact{padding:20px 0 16px}
+.hero.compact .eyebrow{display:none}
+.hero.compact h1{font-size:clamp(22px,3vw,28px);margin-bottom:6px}
+.hero.compact .lede{display:none}
 .eyebrow{
-  display:inline-flex;align-items:center;gap:8px; font-size:12.5px;font-weight:800; letter-spacing:.6px;
+  display:inline-flex;align-items:center;gap:8px; font-size:12.5px;font-weight:700; letter-spacing:.6px;
   color:var(--brand-dark); background:var(--brand-soft); border:1px solid var(--brand-line);
-  padding:6px 15px; border-radius:999px; margin-bottom:16px;
+  padding:6px 15px; border-radius:var(--r-pill); margin-bottom:14px;
 }
-h1{font-size:clamp(26px,4vw,40px); font-weight:900; letter-spacing:-.8px; margin:0 0 12px; line-height:1.15}
+h1{font-size:clamp(24px,3.6vw,36px); font-weight:700; letter-spacing:-.6px; margin:0 0 10px; line-height:1.15; transition:font-size .35s ease}
 h1 span{
   background:linear-gradient(135deg,var(--brand) 0%,var(--brand-deep) 100%);
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
 }
 body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.lede{margin:0 auto; max-width:560px; color:var(--muted); font-size:16px; line-height:1.6; font-weight:400}
-.card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+.lede{margin:0 auto; max-width:560px; color:var(--muted); font-size:15.5px; line-height:1.6; font-weight:400}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r-md); box-shadow:var(--shadow)}
 .pill{
   display:inline-flex;align-items:center;gap:8px; background:var(--panel); border:1px solid var(--brand-line);
-  border-radius:999px; padding:6px 14px; font-size:13.5px; font-weight:700; color:var(--ink-soft);
+  border-radius:var(--r-pill); padding:6px 14px; font-size:13.5px; font-weight:700; color:var(--ink-soft);
 }
 .pill img{width:20px;height:14px;border-radius:2px;object-fit:cover}
 
@@ -154,12 +160,12 @@ body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%
 .search{position:relative}
 .search input{
   width:100%; padding:19px 58px 19px 24px; font-family:inherit; font-size:17px; font-weight:500;
-  color:var(--ink); background:var(--panel); border:2px solid transparent; border-radius:999px;
+  color:var(--ink); background:var(--panel); border:2px solid transparent; border-radius:var(--r-pill);
   box-shadow:inset 0 0 0 1px var(--line), var(--shadow);
   transition:box-shadow .3s cubic-bezier(.4,0,.2,1), transform .3s cubic-bezier(.4,0,.2,1), border-color .2s;
 }
 .search input::placeholder{color:#a9b9c1;font-weight:400}
-.search input:focus{outline:none;border-color:var(--brand);transform:translateY(-2px);box-shadow:0 0 0 4px rgba(27,176,206,.15), 0 12px 26px -10px rgba(27,176,206,.35)}
+.search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(27,176,206,.15)}
 .search .ico{position:absolute; inset-inline-start:22px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none}
 .search .ico svg{width:21px;height:21px; display:block}
 .search .clr{
@@ -170,11 +176,11 @@ body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%
 .aclist{
   display:none; position:absolute; inset-inline:0; top:calc(100% + 8px); z-index:50;
   margin:0;padding:6px;list-style:none; max-height:300px; overflow-y:auto;
-  background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-lg);
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--r-md); box-shadow:var(--shadow-lg);
 }
 .aclist.open{display:block}
 .aclist li{
-  display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--r-sm);cursor:pointer;
   font-size:15px;font-weight:600;transition:background .13s;
 }
 .aclist li img{width:26px;height:19px;border-radius:3px;object-fit:cover;box-shadow:0 0 0 1px rgba(22,38,46,.12);flex:0 0 auto}
@@ -187,83 +193,97 @@ body.dark h1 span{background:linear-gradient(135deg,#5cd8ef 0%,var(--brand) 100%
 .quick button{
   display:inline-flex;align-items:center;gap:9px; background:var(--panel); border:1px solid var(--line);
   color:var(--ink-soft); font-family:inherit;font-size:13.5px;font-weight:700; padding:9px 15px;
-  border-radius:11px;cursor:pointer;transition:.2s;
+  border-radius:var(--r-sm);cursor:pointer;transition:.2s;
 }
-.quick button:hover{border-color:var(--brand);color:var(--brand-dark);transform:translateY(-1px)}
+.quick button:hover{border-color:var(--brand);color:var(--brand-dark)}
 .quick img{width:20px;height:14px;border-radius:2px;object-fit:cover}
 
 /* ── תוצאת בדיקה ───────────────────────── */
-#result{display:none; max-width:900px; margin:38px auto 0; padding:26px; border-radius:20px; position:relative; overflow:hidden}
+#result{display:none; max-width:900px; margin:38px auto 0; padding:26px; border-radius:var(--r-lg); position:relative; overflow:hidden}
 #result::before{content:"";position:absolute;top:0;inset-inline-start:0;bottom:0;width:4px;background:linear-gradient(to bottom,var(--vc,var(--brand)) 0%,var(--vc,var(--brand)) 55%,transparent 100%);opacity:.85}
 #result.on{display:block}
 .res-top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .res-id{display:flex;align-items:center;gap:16px}
 .res-id img{width:64px;height:46px;border-radius:7px;object-fit:cover;box-shadow:0 0 0 1px rgba(22,38,46,.14)}
-.res-id h2{margin:0 0 3px;font-size:clamp(22px,3vw,30px);font-weight:900;letter-spacing:-.5px}
+.res-id h2{margin:0 0 3px;font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.4px}
 .res-id p{margin:0;font-size:13px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
 .res-id p img{width:17px;height:12px;box-shadow:none;border-radius:2px}
 .acts{display:flex;flex-wrap:wrap;gap:8px}
 .act{
   display:inline-flex;align-items:center;gap:7px; border:1px solid var(--line); background:var(--field);
   color:var(--ink-soft); font-family:inherit;font-size:13.5px;font-weight:700; padding:9px 14px;
-  border-radius:10px;cursor:pointer;transition:.2s;text-decoration:none;
+  border-radius:var(--r-sm);cursor:pointer;transition:.2s;text-decoration:none;
 }
 .act svg{width:16px;height:16px}
 .act:hover{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-soft)}
 .act.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 .act.primary:hover{background:var(--brand-dark);color:#fff}
-.act.apply{background:var(--ink);border-color:var(--ink);color:#fff}
-.act.apply:hover{background:#0a1319;border-color:#0a1319;color:#fff;transform:translateY(-1px)}
-body.dark .act.apply{background:var(--brand);border-color:var(--brand);color:#062832}
-body.dark .act.apply:hover{background:#3fc9e4;border-color:#3fc9e4;color:#062832}
+.act.apply{background:transparent;border-color:var(--ink);color:var(--ink);border-width:1.5px}
+.act.apply:hover{background:var(--ink);color:#fff}
+body.dark .act.apply{border-color:var(--brand);color:var(--brand)}
+body.dark .act.apply:hover{background:var(--brand);color:#062832}
 .applybar{
-  display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;border-radius:12px;
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;border-radius:var(--r-md);
   background:linear-gradient(135deg,var(--brand-soft),transparent);border:1px solid var(--brand-line);
   text-decoration:none;color:inherit;transition:.22s;
 }
-.applybar:hover{border-color:var(--brand);box-shadow:0 8px 20px -12px rgba(18,143,169,.6);transform:translateY(-2px)}
-.applybar .ic{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.applybar:hover{border-color:var(--brand);box-shadow:0 2px 10px -4px rgba(18,143,169,.35)}
+.applybar .ic{width:38px;height:38px;border-radius:var(--r-sm);background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .applybar .ic svg{width:19px;height:19px}
-.applybar b{display:block;font-size:14.5px;font-weight:900;margin-bottom:2px}
+.applybar b{display:block;font-size:14.5px;font-weight:700;margin-bottom:2px}
 .applybar span{font-size:12.5px;color:var(--muted);font-weight:500}
-.applybar .arw{margin-inline-start:auto;color:var(--brand-dark);font-size:20px;font-weight:900;flex:0 0 auto}
+.applybar .arw{margin-inline-start:auto;color:var(--brand-dark);font-size:20px;font-weight:700;flex:0 0 auto}
 .act.wa{color:#128a4d;border-color:rgba(18,138,77,.25);background:rgba(18,138,77,.08)}
 .act.wa:hover{background:rgba(18,138,77,.16);color:#0d6b3b}
-.verdict{display:flex;align-items:center;gap:18px;padding:26px 0 22px;flex-wrap:wrap}
-.vmark{width:66px;height:66px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--panel)}
-.vmark svg{width:30px;height:30px}
-.vtxt h3{margin:0 0 8px;font-size:clamp(19px,2.6vw,26px);font-weight:900;line-height:1.2}
-.vtxt .pill{font-size:13px}
-.reqs{list-style:none;margin:0;padding:20px 22px;background:var(--field);border:1px solid var(--line);border-radius:14px}
+.verdict{
+  display:flex;align-items:center;gap:22px;padding:26px 24px;flex-wrap:wrap;
+  background:var(--field);border-radius:var(--r-lg);margin:22px 0;
+  border-top:4px solid var(--vc,var(--brand));
+}
+.vmark{width:82px;height:82px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--panel)}
+.vmark svg{width:38px;height:38px}
+.vtxt{min-width:0}
+.vtxt h3{margin:0 0 10px;font-size:clamp(26px,3.6vw,38px);font-weight:700;line-height:1.15;letter-spacing:-.4px}
+.vtxt .pill{font-size:13px;background:var(--panel)}
+/* ── דגלי דרישה קריטית: שכבה שנייה בהיררכיה, בין התשובה לפירוט המלא ── */
+.crit-list{margin:0 0 18px;display:flex;flex-direction:column;gap:10px}
+.crit{
+  display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--r-md);
+  background:rgba(217,114,44,.09);border:1px solid rgba(217,114,44,.32);color:#a8551d;
+  font-weight:700;font-size:14.5px;line-height:1.55;
+}
+.crit svg{flex:0 0 auto;width:20px;height:20px;margin-top:1px;color:var(--warn)}
+body.dark .crit{background:rgba(217,114,44,.14);color:#f0a868}
+.reqs{list-style:none;margin:0;padding:20px 22px;background:var(--field);border:1px solid var(--line);border-radius:var(--r-md)}
 .reqs li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;font-weight:500;color:var(--ink-soft);line-height:1.55}
 .reqs li+li{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line)}
 .reqs li i{
   width:20px;height:20px;border-radius:50%;background:var(--brand-soft);color:var(--brand-dark);
-  display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px;font-style:normal;font-size:11px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px;font-style:normal;font-size:11px;font-weight:700;
 }
 /* ── טפסי כניסה, הצהרות ואישורים מקוונים ── */
 .formbox{display:none;margin-top:20px}
 .formbox.on{display:block}
-.formbox > h4{display:flex;align-items:center;gap:9px;margin:0 0 12px;font-size:14px;font-weight:900;color:var(--ink-soft)}
+.formbox > h4{display:flex;align-items:center;gap:9px;margin:0 0 12px;font-size:14px;font-weight:700;color:var(--ink-soft)}
 .formbox > h4 svg{width:18px;height:18px;color:var(--brand)}
-.frow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);transition:.22s;text-decoration:none;color:inherit}
+.frow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--panel);transition:.22s;text-decoration:none;color:inherit}
 .frow + .frow{margin-top:10px}
-.frow:hover{border-color:var(--brand);background:var(--brand-soft);transform:translateY(-2px);box-shadow:0 8px 20px -14px rgba(18,143,169,.7)}
-.frow .fname{font-size:15px;font-weight:800;line-height:1.35}
+.frow:hover{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 2px 10px -4px rgba(18,143,169,.35)}
+.frow .fname{font-size:15px;font-weight:700;line-height:1.35}
 .frow .fkind{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
-.frow .go{margin-inline-start:auto;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--brand-dark);white-space:nowrap}
+.frow .go{margin-inline-start:auto;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--brand-dark);white-space:nowrap}
 .frow .go svg{width:15px;height:15px}
-.fbadge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:900;flex:0 0 auto}
+.fbadge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:var(--r-pill);font-size:12px;font-weight:700;flex:0 0 auto}
 .fbadge.must{background:rgba(200,55,42,.1);color:var(--danger);border:1px solid rgba(200,55,42,.25)}
 body.dark .fbadge.must{color:#ff8b96}
 .fbadge.rec{background:var(--field);color:var(--ink-soft);border:1px solid var(--line)}
 .formbox .disc{margin:10px 2px 0;font-size:12px;color:var(--muted);line-height:1.5}
 @media (max-width:560px){.frow{gap:10px}.frow .go{margin-inline-start:0;width:100%}}
-.calc{margin-top:22px;padding:22px;border:1px solid var(--brand-line);border-radius:14px;background:var(--panel)}
+.calc{margin-top:22px;padding:22px;border:1px solid var(--brand-line);border-radius:var(--r-md);background:var(--panel)}
 .calc-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:18px}
-.calc-head h4{margin:0 0 2px;font-size:18px;font-weight:900}
+.calc-head h4{margin:0 0 2px;font-size:18px;font-weight:700}
 .calc-head p{margin:0;font-size:13px;color:var(--muted)}
-.calc-head .ic{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand-dark);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.calc-head .ic{width:40px;height:40px;border-radius:var(--r-sm);background:var(--brand-soft);color:var(--brand-dark);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .calc-head .ic svg{width:20px;height:20px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 label{display:block;margin-bottom:8px;font-size:13.5px;font-weight:700;color:var(--ink-soft)}
@@ -271,7 +291,7 @@ label .req{color:var(--danger);margin-inline-start:2px}
 label .opt{font-weight:400;color:var(--muted);font-size:12px}
 input,select,textarea{
   width:100%;padding:13px 14px;border:1.5px solid transparent;background:var(--field);
-  box-shadow:inset 0 0 0 1px var(--line); border-radius:10px; font-family:inherit;font-size:15px;font-weight:500;
+  box-shadow:inset 0 0 0 1px var(--line); border-radius:var(--r-sm); font-family:inherit;font-size:15px;font-weight:500;
   color:var(--ink); transition:.2s;
 }
 input::placeholder,textarea::placeholder{color:#a9b9c1;font-weight:400}
@@ -282,7 +302,7 @@ textarea{resize:vertical;min-height:84px;line-height:1.6}
 input[type=date]{color-scheme:light}
 body.dark input[type=date]{color-scheme:dark}
 .btn{
-  width:100%;padding:15px;border:0;border-radius:11px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:900;
+  width:100%;padding:15px;border:0;border-radius:var(--r-sm);cursor:pointer;font-family:inherit;font-size:16px;font-weight:700;
   color:#fff; background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dark) 62%,var(--brand-deep) 100%);
   display:flex;align-items:center;justify-content:center;gap:10px;
   box-shadow:0 5px 16px -4px rgba(18,143,169,.45), inset 0 1px 0 rgba(255,255,255,.22);
@@ -296,11 +316,11 @@ body.dark input[type=date]{color-scheme:dark}
   transform:skewX(-25deg);transition:inset-inline-start .55s ease;pointer-events:none;
 }
 .btn:hover:not(:disabled)::after{inset-inline-start:160%}
-.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px -6px rgba(18,143,169,.55), inset 0 1px 0 rgba(255,255,255,.25)}
+.btn:hover:not(:disabled){box-shadow:0 7px 18px -5px rgba(18,143,169,.5), inset 0 1px 0 rgba(255,255,255,.25)}
 .btn:active:not(:disabled){transform:scale(.978)}
 .btn:disabled{background:#b3c1c8;box-shadow:none;cursor:default}
 .btn:disabled::after{display:none}
-.calcres{display:none;margin-top:16px;padding:16px 18px;border-radius:12px;border:1px solid;font-size:14px;line-height:1.55}
+.calcres{display:none;margin-top:16px;padding:16px 18px;border-radius:var(--r-md);border:1px solid;font-size:14px;line-height:1.55}
 .calcres.on{display:block;animation:rise .3s both}
 .calcres b{display:block;font-size:16px;margin-bottom:4px}
 .calcres.good{background:rgba(21,157,105,.09);border-color:rgba(21,157,105,.3);color:#0f7a51}
@@ -311,30 +331,27 @@ body.dark input[type=date]{color-scheme:dark}
 /* ── מחירון ────────────────────────────── */
 .toolbar{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
 .toolbar .search{flex:1 1 340px;max-width:460px}
-.toolbar .search input{padding:13px 46px 13px 20px;font-size:15px;border-radius:999px}
+.toolbar .search input{padding:13px 46px 13px 20px;font-size:15px;border-radius:var(--r-pill)}
 .toolbar .search .ico{inset-inline-start:16px}
 .toolbar .search .ico svg{width:18px;height:18px}
-.seg{display:flex;gap:4px;background:var(--field);border:1px solid var(--line);padding:4px;border-radius:12px}
-.seg button{border:0;background:none;font-family:inherit;font-size:13.5px;font-weight:800;color:var(--muted);padding:9px 16px;border-radius:9px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.2s}
+.seg{display:flex;gap:4px;background:var(--field);border:1px solid var(--line);padding:4px;border-radius:var(--r-md)}
+.seg button{border:0;background:none;font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);padding:9px 16px;border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;gap:7px;transition:.2s}
 .seg button svg{width:16px;height:16px}
 .seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 2px 8px rgba(16,44,55,.08)}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:40px}
 .ccard{
-  display:flex;align-items:center;gap:13px;padding:16px 18px;border-radius:13px;cursor:pointer;
-  background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);transition:.22s cubic-bezier(.16,.84,.34,1);
+  display:flex;align-items:center;gap:13px;padding:16px 18px;border-radius:var(--r-md);cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);transition:border-color .18s, box-shadow .18s;
   text-align:start;font-family:inherit;
 }
-.ccard:hover{transform:translateY(-4px) scale(1.008);border-color:var(--brand-line);box-shadow:0 14px 28px -14px rgba(16,44,55,.28), 0 4px 10px -4px rgba(18,143,169,.22)}
-.ccard:active{transform:translateY(-1px) scale(.996)}
-.ccard img{transition:transform .3s cubic-bezier(.16,.84,.34,1)}
-.ccard:hover img{transform:scale(1.09)}
+.ccard:hover{border-color:var(--brand-line);box-shadow:0 2px 10px -3px rgba(16,44,55,.14)}
 .ccard img{width:34px;height:25px;border-radius:4px;object-fit:cover;box-shadow:0 0 0 1px rgba(22,38,46,.13);flex:0 0 auto}
-.ccard h3{margin:0 0 2px;font-size:16.5px;font-weight:800;color:var(--ink)}
+.ccard h3{margin:0 0 2px;font-size:16.5px;font-weight:700;color:var(--ink)}
 .ccard span{font-size:12.5px;color:var(--muted);font-weight:600}
-.tablebox{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow-x:auto;margin-bottom:40px}
+.tablebox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow-x:auto;margin-bottom:40px}
 table{width:100%;border-collapse:collapse;min-width:900px}
 th{
-  background:var(--ink); color:#fff; padding:14px 16px; font-size:12.5px; font-weight:800; letter-spacing:.3px;
+  background:var(--ink); color:#fff; padding:14px 16px; font-size:12.5px; font-weight:700; letter-spacing:.3px;
   text-align:start; position:sticky; top:0; white-space:nowrap;
 }
 body.dark th{background:#0a1116}
@@ -347,12 +364,12 @@ tbody tr{cursor:pointer;transition:background .16s}
 tbody tr:hover{background:var(--brand-soft)}
 tbody tr:nth-child(even){background:rgba(122,141,151,.05)}
 tbody tr:nth-child(even):hover{background:var(--brand-soft)}
-td.cty{font-weight:800;white-space:nowrap}
+td.cty{font-weight:700;white-space:nowrap}
 td.cty img{width:24px;height:17px;border-radius:3px;object-fit:cover;vertical-align:middle;margin-inline-end:8px;box-shadow:0 0 0 1px rgba(22,38,46,.12)}
 td.num{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted);white-space:nowrap}
-td.total{font-variant-numeric:tabular-nums;font-weight:900;color:var(--brand-dark);background:var(--brand-soft);border-inline-start:2px solid var(--brand-line);white-space:nowrap}
-.badge{display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--field);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
-.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent}
+td.total{font-variant-numeric:tabular-nums;font-weight:700;color:var(--brand-dark);background:var(--brand-soft);border-inline-start:2px solid var(--brand-line);white-space:nowrap}
+.badge{display:inline-flex;align-items:center;padding:5px 11px;border-radius:var(--r-pill);font-size:12.5px;font-weight:700;background:var(--field);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--r-pill);font-size:12px;font-weight:700;border:1px solid transparent}
 .tag-electronic{background:rgba(21,157,105,.11);color:#0f7a51;border-color:rgba(21,157,105,.25)}
 .tag-physical{background:rgba(122,141,151,.13);color:var(--ink-soft);border-color:var(--line)}
 .tag-permit{background:var(--brand-soft);color:var(--brand-dark);border-color:var(--brand-line)}
@@ -368,28 +385,28 @@ td.total{font-variant-numeric:tabular-nums;font-weight:900;color:var(--brand-dar
 .drawer.on{inset-inline-start:0}
 .drawer-head{padding:22px 26px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px}
 body.dark .drawer-head{background:#0a1116}
-.drawer-head h2{margin:0;font-size:22px;font-weight:900;display:flex;align-items:center;gap:12px}
+.drawer-head h2{margin:0;font-size:22px;font-weight:700;display:flex;align-items:center;gap:12px}
 .drawer-head img{width:34px;height:25px;border-radius:4px;object-fit:cover}
 .drawer-head button{background:none;border:0;color:#fff;font-size:26px;line-height:1;cursor:pointer;padding:0 4px;opacity:.85}
 .drawer-head button:hover{opacity:1}
 .drawer-body{padding:24px 26px 40px;overflow-y:auto;flex:1}
-.opt{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:20px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .opt::before{content:"";position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:var(--brand)}
-.opt h3{margin:0 0 10px;font-size:17px;font-weight:900;line-height:1.4}
+.opt h3{margin:0 0 10px;font-size:17px;font-weight:700;line-height:1.4}
 .opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
 .opt-grid div span{display:block;font-size:12px;color:var(--muted);margin-bottom:3px;font-weight:600}
-.opt-grid div strong{font-size:14.5px;font-weight:800}
-.addons{background:var(--field);border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:14px}
-.addons h5{margin:0 0 10px;font-size:12.5px;font-weight:900;color:var(--ink-soft);letter-spacing:.3px}
+.opt-grid div strong{font-size:14.5px;font-weight:700}
+.addons{background:var(--field);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px;margin-bottom:14px}
+.addons h5{margin:0 0 10px;font-size:12.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.3px}
 .addons label{display:flex;align-items:center;gap:10px;margin:0 0 9px;font-size:13.5px;font-weight:500;color:var(--ink-soft);cursor:pointer}
 .addons label:last-child{margin-bottom:0}
 .addons input{width:17px;height:17px;accent-color:var(--brand);cursor:pointer;padding:0;box-shadow:none;background:none}
-.sum{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:11px;padding:13px 16px}
+.sum{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:var(--r-md);padding:13px 16px}
 .sum span{font-size:14px;font-weight:700;color:var(--brand-dark)}
-.sum strong{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
-.docs{display:none;margin-top:14px;background:var(--field);border:1px solid var(--brand-line);border-radius:12px;padding:16px 20px}
+.sum strong{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.docs{display:none;margin-top:14px;background:var(--field);border:1px solid var(--brand-line);border-radius:var(--r-md);padding:16px 20px}
 .docs.on{display:block;animation:rise .25s both}
-.docs h4{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--brand-line);font-size:14.5px;font-weight:900}
+.docs h4{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--brand-line);font-size:14.5px;font-weight:700}
 .docs h4 svg{width:20px;height:20px;color:var(--brand);flex:0 0 auto}
 .docs ul{list-style:none;margin:0;padding:0}
 .docs li{position:relative;padding:10px 16px 10px 0;padding-inline-start:16px;font-size:14px;font-weight:500;color:var(--ink-soft);line-height:1.5;border-bottom:1px dashed var(--line)}
@@ -400,53 +417,52 @@ body.dark .drawer-head{background:#0a1116}
 .act.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-dark)}
 
 /* ── טופס פנייה ────────────────────────── */
-.formcard{max-width:680px;margin:0 auto 40px;border-radius:18px;overflow:hidden}
-form.lead{padding:26px 30px 32px}
-fieldset{border:0;padding:0;margin:0 0 24px}
-legend{display:flex;align-items:center;gap:11px;width:100%;font-size:11.5px;font-weight:900;color:var(--brand-dark);letter-spacing:1.1px;margin-bottom:16px;padding:0}
+.formcard{max-width:680px;margin:0 auto 40px;border-radius:var(--r-lg);overflow:hidden}
+form.lead{padding:30px 34px 36px}
+fieldset{border:0;padding:0;margin:0 0 32px}
+fieldset:last-of-type{margin-bottom:0}
+legend{display:flex;align-items:center;gap:9px;width:100%;font-size:11.5px;font-weight:700;color:var(--brand-dark);letter-spacing:1.1px;margin-bottom:18px;padding:0}
 legend::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--brand);flex:0 0 auto}
-legend::after{content:"";flex:1;height:1px;background:linear-gradient(to left,var(--line),transparent)}
-.row{display:flex;flex-wrap:wrap;gap:16px}
-.fld{flex:1 1 210px;margin-bottom:16px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:18px}
+.fld{flex:1 1 210px;margin-bottom:18px;min-width:0}
 .row .fld{margin-bottom:0}
-.row+.fld,.row+.row{margin-top:16px}
-.hint{margin-top:7px;font-size:12.5px;font-weight:600;min-height:15px}
+.row+.fld,.row+.row{margin-top:18px}
+.hint{margin-top:8px;font-size:12.5px;font-weight:600;min-height:15px}
 .hint.warn{color:var(--warn)} .hint.ok{color:var(--muted)} .hint.bad{color:var(--danger)}
 .combo{position:relative}
 .combo input{padding-inline-start:44px}
 .cflag{position:absolute;inset-inline-start:13px;top:50%;transform:translateY(-50%);width:22px;height:16px;border-radius:2.5px;z-index:2;pointer-events:none;background-size:cover;background-position:center;box-shadow:0 0 0 1px rgba(22,38,46,.14);opacity:0;transition:opacity .18s}
 .cflag.on{opacity:1}
 .cflag.globe{opacity:1;background:none;box-shadow:none;width:18px;height:18px;color:var(--muted)}
-.drop{position:relative;border:1.5px dashed var(--brand-line);border-radius:12px;padding:24px 16px;text-align:center;background:var(--field);cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.drop{position:relative;border:1.5px dashed var(--brand-line);border-radius:var(--r-md);padding:24px 16px;text-align:center;background:var(--field);cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:5px}
 .drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:0;box-shadow:none}
 .drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-soft)}
-.drop svg{width:28px;height:28px;color:var(--brand);transition:transform .22s}
-.drop:hover svg{transform:translateY(-3px)}
-.drop .t{font-size:14px;font-weight:800;color:var(--brand-dark)}
+.drop svg{width:28px;height:28px;color:var(--brand)}
+.drop .t{font-size:14px;font-weight:700;color:var(--brand-dark)}
 .drop .s{font-size:12.5px;color:var(--muted)}
 .drop.busy{pointer-events:none;opacity:.7}
 .spin{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--brand-line);border-top-color:var(--brand);animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .files:not(:empty){margin-top:12px;display:flex;flex-direction:column;gap:8px}
-.file{display:flex;align-items:center;gap:11px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:10px;padding:10px 13px;font-size:13.5px;font-weight:600;animation:rise .3s both}
+.file{display:flex;align-items:center;gap:11px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:var(--r-md);padding:10px 13px;font-size:13.5px;font-weight:600;animation:rise .3s both}
 .file svg{width:17px;height:17px;color:var(--brand-dark);flex:0 0 auto}
 .file .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file .sz{color:var(--muted);font-size:12px;direction:ltr}
-.file .rm{border:0;background:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:0 3px;border-radius:5px}
+.file .rm{border:0;background:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:0 3px;border-radius:var(--r-sm)}
 .file .rm:hover{color:var(--danger);background:rgba(200,55,42,.09)}
 .hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
-.formerr{display:none;background:var(--danger-soft);border:1px solid rgba(200,55,42,.3);border-inline-start:4px solid var(--danger);color:var(--danger);border-radius:10px;padding:14px 16px;font-size:14px;font-weight:600;margin-bottom:20px;line-height:1.5}
+.formerr{display:none;background:var(--danger-soft);border:1px solid rgba(200,55,42,.3);border-inline-start:4px solid var(--danger);color:var(--danger);border-radius:var(--r-md);padding:14px 16px;font-size:14px;font-weight:600;margin-bottom:20px;line-height:1.5}
 .formerr.on{display:block;animation:rise .3s both}
-.formerr .mail{display:none;margin-top:12px;background:var(--brand);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.formerr .mail{display:none;margin-top:12px;background:var(--brand);color:#fff;border:0;border-radius:var(--r-sm);padding:10px 18px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .formerr .mail.on{display:block}
 .done{display:none;padding:52px 30px 56px;text-align:center}
 .done.on{display:block;animation:rise .45s both}
 .done .mark{width:76px;height:76px;border-radius:50%;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .done .mark svg{width:36px;height:36px}
-.done h2{margin:0 0 10px;font-size:23px;font-weight:900}
+.done h2{margin:0 0 10px;font-size:23px;font-weight:700}
 .done p{margin:0 auto;color:var(--muted);font-size:15px;max-width:380px;line-height:1.6}
-.ref{display:inline-block;margin-top:16px;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--brand-dark);border-radius:9px;padding:9px 18px;font-size:14px;font-weight:900;letter-spacing:.5px}
-.again{margin-top:26px;background:none;border:1.5px solid var(--line);border-radius:10px;padding:12px 26px;font-family:inherit;font-size:14.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:.2s}
+.ref{display:inline-block;margin-top:16px;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--brand-dark);border-radius:var(--r-sm);padding:9px 18px;font-size:14px;font-weight:700;letter-spacing:.5px}
+.again{margin-top:26px;background:none;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:12px 26px;font-family:inherit;font-size:14.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:.2s}
 .again:hover{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-soft)}
 
 /* ── פוטר ─────────────────────────────── */
@@ -455,28 +471,18 @@ footer{border-top:1px solid var(--line);background:var(--panel);margin-top:40px;
 .fcard{
   --c:var(--brand); --cg:27,176,206;
   display:flex;flex-direction:column;align-items:center;gap:6px;padding:22px 16px;
-  border:1px solid var(--line);border-radius:14px;background:var(--field);
-  text-decoration:none;color:inherit;position:relative;overflow:hidden;
-  transition:transform .25s cubic-bezier(.16,.84,.34,1), border-color .25s, box-shadow .25s;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--field);
+  text-decoration:none;color:inherit;
+  transition:border-color .2s, box-shadow .2s;
 }
-/* הילת התאורה של כל ערוץ — נדלקת בריחוף */
-.fcard::before{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
-  background:radial-gradient(120% 80% at 50% 0%, rgba(var(--cg),.16) 0%, transparent 70%);
-}
-.fcard:hover{
-  transform:translateY(-4px);border-color:rgba(var(--cg),.55);
-  box-shadow:0 10px 26px -12px rgba(var(--cg),.55), 0 0 0 4px rgba(var(--cg),.09);
-}
-.fcard:hover::before{opacity:1}
+.fcard:hover{border-color:rgba(var(--cg),.5);box-shadow:0 2px 10px -3px rgba(var(--cg),.25)}
 .fcard .ic{
   width:46px;height:46px;border-radius:50%;background:var(--panel);
   border:1px solid var(--line);color:var(--c);
   display:flex;align-items:center;justify-content:center;margin-bottom:8px;
-  position:relative;z-index:1;transition:border-color .25s, box-shadow .25s, transform .25s;
+  transition:border-color .2s;
 }
-.fcard:hover .ic{border-color:rgba(var(--cg),.5);box-shadow:0 0 18px -4px rgba(var(--cg),.55);transform:scale(1.06)}
-.fcard .lbl,.fcard .val,.fcard .ext{position:relative;z-index:1}
+.fcard:hover .ic{border-color:rgba(var(--cg),.5)}
 .fcard:hover .val{color:var(--c)}
 .fc-phone{--c:#2f9fd6;--cg:47,159,214}
 .fc-wa{--c:#12a45c;--cg:18,164,92}
@@ -486,20 +492,20 @@ body.dark .fc-wa{--c:#3fd08a}
 body.dark .fc-mail{--c:#ff8b96}
 .fcard .ic svg{width:21px;height:21px}
 .fcard .lbl{font-size:12.5px;color:var(--muted);font-weight:600}
-.fcard .val{font-size:16px;font-weight:900;direction:ltr;font-variant-numeric:tabular-nums}
-.fcard .ext{margin-top:6px;font-size:12px;font-weight:800;background:var(--ink);color:#fff;border-radius:999px;padding:4px 12px}
+.fcard .val{font-size:16px;font-weight:700;direction:ltr;font-variant-numeric:tabular-nums}
+.fcard .ext{margin-top:6px;font-size:12px;font-weight:700;background:var(--ink);color:#fff;border-radius:var(--r-pill);padding:4px 12px}
 body.dark .fcard .ext{background:var(--brand-dark);color:#0b1519}
 .legal{max-width:820px;margin:0 auto;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.65}
-.legal .upd{display:inline-block;margin-top:14px;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--brand-dark);border-radius:999px;padding:5px 15px;font-size:12px;font-weight:800}
+.legal .upd{display:inline-block;margin-top:14px;background:var(--brand-soft);border:1px solid var(--brand-line);color:var(--brand-dark);border-radius:var(--r-pill);padding:5px 15px;font-size:12px;font-weight:700}
 .dstat{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:11.5px;font-weight:600;color:var(--muted)}
 .dstat .dot,.dstat .dtxt{display:none}
 .dstat.ok .dot{background:var(--ok)}
 .dstat.bad{color:var(--warn)}
 .dstat.bad .dot{background:var(--warn)}
-.dstat button{background:none;border:0;color:var(--brand-dark);font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;padding:2px 4px;border-radius:5px;text-decoration:underline;text-underline-offset:2px}
+.dstat button{background:none;border:0;color:var(--brand-dark);font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;padding:2px 4px;border-radius:var(--r-sm);text-decoration:underline;text-underline-offset:2px}
 .dstat button:hover{background:var(--brand-soft)}
 .copy{margin-top:18px;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
-.toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:13px 24px;border-radius:999px;font-size:14.5px;font-weight:800;box-shadow:var(--shadow-lg);transition:bottom .3s;z-index:500}
+.toast{position:fixed;bottom:-90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:13px 24px;border-radius:var(--r-pill);font-size:14.5px;font-weight:700;box-shadow:var(--shadow-lg);transition:bottom .3s;z-index:500}
 .toast.on{bottom:26px}
 body.dark .toast{background:var(--brand-dark)}
 
@@ -512,7 +518,7 @@ body.dark .toast{background:var(--brand-dark)}
   .wrap{padding:0 14px}
   .hero{padding:30px 0 22px}
   .grid2,.opt-grid{grid-template-columns:1fr}
-  #result{padding:20px 16px;border-radius:16px}
+  #result{padding:20px 16px}
   form.lead{padding:22px 18px 28px}
   .drawer{max-width:100%}
   .fld{flex:1 1 100%}
@@ -581,8 +587,8 @@ body.dark .toast{background:var(--brand-dark)}
 
 <header class="topbar">
   <div class="topbar-in">
-    <a href="#" class="brand" id="brandLink" aria-label="AMSVISA — דף הבית">
-      <img src="data:image/jpeg;base64,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ACDn8MLtvKbcO+4fy3VhUTBl5d0xuwXu4UNdeLNRV9RQPMlJJUwtkMDjtu5m45HkOfqUI9qaxXu92zCm2Wz19xdBePKSijp3zGNuw9J3CDsPWVYJEmMkTgREUoEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREH/9k=" alt="AMSVISA — ויזות לכל העולם בהליך קל ומהיר">
+    <a href="#" class="brand" id="brandLink" aria-label="AMSVISA, דף הבית">
+      <img src="data:image/jpeg;base64,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ACDn8MLtvKbcO+4fy3VhUTBl5d0xuwXu4UNdeLNRV9RQPMlJJUwtkMDjtu5m45HkOfqUI9qaxXu92zCm2Wz19xdBePKSijp3zGNuw9J3CDsPWVYJEmMkTgREUoEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREH/9k=" alt="AMSVISA, ויזות לכל העולם בהליך קל ומהיר">
     </a>
 
     <nav class="tabs" role="tablist" aria-label="מסכי המערכת">
@@ -600,12 +606,14 @@ body.dark .toast{background:var(--brand-dark)}
       </button>
     </nav>
 
-    <button class="icon-btn" id="logoutBtn" title="התנתקות" aria-label="התנתקות מהמערכת" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-    </button>
-    <button class="icon-btn" id="themeBtn" title="מצב כהה / בהיר" aria-label="החלפת מצב תצוגה">
-      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-    </button>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="logoutBtn" title="התנתקות" aria-label="התנתקות מהמערכת" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" title="מצב כהה / בהיר" aria-label="החלפת מצב תצוגה">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -616,7 +624,7 @@ body.dark .toast{background:var(--brand-dark)}
   <div class="hero">
     <span class="eyebrow">מבית אמסלם תיירות ונופש</span>
     <h1>בדיקת <span>ויזה</span> ותוקף דרכון</h1>
-    <p class="lede">הזינו מדינת יעד או עיר וקבלו מיד את דרישות הכניסה, טפסי הכניסה הנדרשים ותוקף הדרכון — מותאם לדרכון ישראלי.</p>
+    <p class="lede">הזינו מדינת יעד או עיר וקבלו מיד את דרישות הכניסה, הטפסים הנדרשים ותוקף הדרכון, מותאם לדרכון ישראלי.</p>
   </div>
 
   <div class="search-wrap">
@@ -679,6 +687,7 @@ body.dark .toast{background:var(--brand-dark)}
       </div>
     </div>
 
+    <div class="crit-list" id="rCrit"></div>
     <ul class="reqs" id="rReqs"></ul>
 
     <section class="formbox" id="rForms" aria-label="טפסי כניסה ואישורים"></section>
@@ -717,7 +726,7 @@ body.dark .toast{background:var(--brand-dark)}
   <div class="hero">
     <span class="eyebrow">שירותי ויזות ואשרות</span>
     <h1>מחירון אשרות <span>ואישורי כניסה</span></h1>
-    <p class="lede">אגרות, דמי שירות, זמני טיפול ורשימת מסמכים לכל יעד — למגזר העסקי והפרטי, עם ליווי מלא עד קבלת האשרה.</p>
+    <p class="lede">אגרות, דמי שירות, זמני טיפול ורשימת מסמכים לכל יעד, למגזר העסקי והפרטי, עם ליווי מלא עד קבלת האשרה.</p>
   </div>
 
   <div class="toolbar">
@@ -979,7 +988,7 @@ const ENTRY_FORMS = {
   BT:[{req:"חובה",name:"Visa / Pre-registration",url:"https://immi.gov.bt/",kind:"visa"}],
   CO:[{req:"מומלץ",name:"Check-Mig",url:"https://apps.migracioncolombia.gov.co/pre-registro/",kind:"form"}],
   BA:[{req:"מומלץ",name:"Registration of Stay",url:"https://sps.gov.ba/en/",kind:"form"}],
-  BR:[{req:"מומלץ",name:"e-DBV — כאשר רלוונטי",url:"https://www.edbv.receita.fazenda.gov.br/",kind:"form"}],
+  BR:[{req:"מומלץ",name:"e-DBV, כאשר רלוונטי",url:"https://www.edbv.receita.fazenda.gov.br/",kind:"form"}],
   BN:[{req:"חובה",name:"E-Arrival Card",url:"https://www.immigration.gov.bn/en/",kind:"form"}],
   BF:[{req:"חובה",name:"eVisa / Entry Information",url:"https://www.visaburkina.bf/en/home/",kind:"info"}],
   KH:[{req:"חובה",name:"e-Arrival",url:"https://www.evisa.gov.kh/",kind:"form"}],
@@ -1041,7 +1050,7 @@ const ENTRY_FORMS = {
   PY:[{req:"מומלץ",name:"Pre Registro Migratorio",url:"https://migraciones.gov.py/pre-registro-migratorio/",kind:"form"}],
   PE:[{req:"מומלץ",name:"Customs Declaration",url:"https://bienvenidoalperu.sunat.gob.pe/",kind:"form"}],
   PH:[{req:"חובה",name:"eTravel",url:"https://etravel.gov.ph/",kind:"form"}],
-  QA:[{req:"מומלץ",name:"Visa / Hayya — נדרש אימות",url:"https://visitqatar.com/intl-en/plan-your-trip/visas",kind:"visa"}],
+  QA:[{req:"מומלץ",name:"Visa / Hayya, נדרש אימות",url:"https://visitqatar.com/intl-en/plan-your-trip/visas",kind:"visa"}],
   KN:[{req:"חובה",name:"eTA / Travel Form",url:"https://www.knatravelform.kn/",kind:"eta"}],
   VC:[{req:"מומלץ",name:"Pre-Arrival Form",url:"https://tourism.gov.vc/tourism/index.php/news/544-st-vincent-and-the-grenadines-pre-arrival-form",kind:"form"}],
   RS:[{req:"מומלץ",name:"Registration of Stay",url:"https://www.mfa.gov.rs/en/citizens/travel-serbia/registration-stay",kind:"form"}],
@@ -1066,21 +1075,21 @@ const ENTRY_FORMS = {
 const COUNTRIES = [
 {id:"AF",name:"אפגניסטן",aliases:["afghanistan"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"AL",name:"אלבניה",aliases:["albania"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"DZ",name:"אלג'יריה",aliases:["algeria"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר - חרם הליגה הערבית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"DZ",name:"אלג'יריה",aliases:["algeria"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר, בגלל חרם הליגה הערבית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"AD",name:"אנדורה",aliases:["andorra"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הכניסה דרך צרפת או ספרד (שנגן)"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"AO",name:"אנגולה",aliases:["angola"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום","עד 30 יום לביקור, מקסימום 90 יום בשנה קלנדרית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"AG",name:"אנטיגואה וברבודה",aliases:["antigua and barbuda"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 180 יום","פטור ל-24 שעות בהגעה בקרוזים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"AR",name:"ארגנטינה",aliases:["argentina","בואנוס איירס"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"AM",name:"ארמניה",aliases:["armenia"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 120 יום","בהגעה בנמל התעופה זבארטנוץ או מקוון מראש"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"AU",name:"אוסטרליה",aliases:["australia","סידני","מלבורן","sydney","melbourne"],category:"online",visaTitle:"ויזה מקוונת מראש",requirements:["ויזת מבקר מקוונת e600 - ישראלים אינם זכאים ל-ETA"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"AT",name:"אוסטריה",aliases:["austria","וינה","vienna","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"AT",name:"אוסטריה",aliases:["austria","וינה","vienna","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"AZ",name:"אזרבייג'ן",aliases:["azerbaijan","באקו","baku"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 30 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"BS",name:"איי בהאמה",aliases:["bahamas"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"BH",name:"בחריין",aliases:["bahrain"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 14 יום","נדרשת הוכחת אמצעים כלכליים וכתובת שהייה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BD",name:"בנגלדש",aliases:["bangladesh"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BB",name:"ברבדוס",aliases:["barbados"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 180 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"BY",name:"בלארוס",aliases:["belarus"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"BE",name:"בלגיה",aliases:["belgium","בריסל","brussels","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"BE",name:"בלגיה",aliases:["belgium","בריסל","brussels","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"BZ",name:"בליז",aliases:["belize"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BJ",name:"בנין",aliases:["benin"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום","נדרשת תעודת חיסונים בינלאומית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BT",name:"בהוטן",aliases:["bhutan"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1088,8 +1097,8 @@ const COUNTRIES = [
 {id:"BA",name:"בוסניה והרצגובינה",aliases:["bosnia and herzegovina"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"BW",name:"בוצואנה",aliases:["botswana"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של שנה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BR",name:"ברזיל",aliases:["brazil","ריו","סאו פאולו","rio"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"BN",name:"ברוניי",aliases:["brunei"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר - אינה מכירה בישראל"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"BG",name:"בולגריה",aliases:["bulgaria","סופיה","בורגס","ורנה","sofia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"BN",name:"ברוניי",aliases:["brunei"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר, המדינה אינה מכירה בישראל"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"BG",name:"בולגריה",aliases:["bulgaria","סופיה","בורגס","ורנה","sofia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"BF",name:"בורקינה פאסו",aliases:["burkina faso"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"BI",name:"בורונדי",aliases:["burundi"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: חודש","ויזה בהגעה זמינה בשדות התעופה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"KH",name:"קמבודיה",aliases:["cambodia"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 30 יום","ויזה בהגעה זמינה בשדות התעופה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1106,11 +1115,11 @@ const COUNTRIES = [
 {id:"CD",name:"קונגו הדמוקרטית",aliases:["dr congo"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 7 ימים","נדרש מכתב הזמנה או הזמנת מלון"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"CR",name:"קוסטה ריקה",aliases:["costa rica"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"CI",name:"חוף השנהב",aliases:["ivory coast"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 3 חודשים","כניסה עם eVisa רק דרך נמל התעופה פורט בואה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"HR",name:"קרואטיה",aliases:["croatia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"HR",name:"קרואטיה",aliases:["croatia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"CU",name:"קובה",aliases:["cuba"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"CY",name:"קפריסין",aliases:["cyprus","לרנקה","פאפוס","איה נאפה","larnaca"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"CZ",name:"צ'כיה",aliases:["czech republic","פראג","prague","צכיה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום; קיימת התייחסות להסכם בילטרלי מיוחד לישראלים, אך לאחר 90 יום יש לצאת מאזור שנגן לפחות ליום אחד"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"DK",name:"דנמרק",aliases:["denmark","קופנהגן","copenhagen","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"CY",name:"קפריסין",aliases:["cyprus","לרנקה","פאפוס","איה נאפה","larnaca"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום","90 יום בכל תקופה של 180 יום","קפריסין עדיין לא חברה במרחב שנגן, כך שימי השהייה בה לא נספרים היום במכסת 90 הימים של שנגן","האי נערך להצטרפות לשנגן, ואז ימי השהייה בו ייספרו במכסה המשותפת. כדאי לעקוב אחר עדכונים בנושא"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"CZ",name:"צ'כיה",aliases:["czech republic","פראג","prague","צכיה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: עד 90 יום. קיים אזכור להסכם בילטרלי מיוחד לישראלים, אבל אחרי 90 יום צריך לצאת מאזור שנגן ליום אחד לפחות"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"DK",name:"דנמרק",aliases:["denmark","קופנהגן","copenhagen","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"DJ",name:"ג'יבוטי",aliases:["djibouti"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"DM",name:"דומיניקה",aliases:["dominica"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 180 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"DO",name:"הרפובליקה הדומיניקנית",aliases:["dominican republic"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום","ניתן להאריך עד 120 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
@@ -1119,18 +1128,18 @@ const COUNTRIES = [
 {id:"SV",name:"אל סלבדור",aliases:["el salvador"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הסכם הגבולות CA-4"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"GQ",name:"גינאה המשוונית",aliases:["equatorial guinea"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ER",name:"אריתריאה",aliases:["eritrea"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:1,validityText:"חודש לפחות מעבר לשהייה"},
-{id:"EE",name:"אסטוניה",aliases:["estonia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"EE",name:"אסטוניה",aliases:["estonia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"SZ",name:"אסוואטיני",aliases:["eswatini"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ET",name:"אתיופיה",aliases:["ethiopia"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום","ויזה בהגעה רק בנמל התעופה אדיס אבבה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"FJ",name:"פיג'י",aliases:["fiji"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 120 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"FI",name:"פינלנד",aliases:["finland","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"FR",name:"צרפת",aliases:["france","פריז","paris","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"FI",name:"פינלנד",aliases:["finland","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"FR",name:"צרפת",aliases:["france","פריז","paris","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"GA",name:"גבון",aliases:["gabon"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום","כניסה עם eVisa רק דרך נמל התעופה ליברוויל"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"GM",name:"גמביה",aliases:["gambia"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"GE",name:"גאורגיה",aliases:["georgia","טביליסי","tbilisi","בטומי","batumi"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 365 יום","שהייה עד שנה"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
-{id:"DE",name:"גרמניה",aliases:["germany","ברלין","berlin","מינכן","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"GE",name:"גאורגיה",aliases:["georgia","טביליסי","tbilisi","בטומי","batumi"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 365 יום","⚠ חובת ביטוח בריאות ותאונות מ-1.1.2026 (צו 602). הפוליסה נבדקת בעמדות הגבול, ובלי ביטוח תקף אפשר לקבל סירוב כניסה","כדאי לרכוש את הביטוח יום לפני הטיסה, כי בהרבה פוליסות השעות הראשונות אחרי הרכישה לא מכוסות","הכניסה מותרת רק דרך מעברים רשמיים. כניסה דרך אבחזיה או דרום אוסטיה נחשבת חצייה בלתי חוקית ועלולה להוביל לאיסור כניסה"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
+{id:"DE",name:"גרמניה",aliases:["germany","ברלין","berlin","מינכן","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"GH",name:"גאנה",aliases:["ghana"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"GR",name:"יוון",aliases:["greece","אתונה","athens","רודוס","כרתים","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"GR",name:"יוון",aliases:["greece","אתונה","athens","רודוס","כרתים","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"GD",name:"גרנדה",aliases:["grenada"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"GT",name:"גואטמלה",aliases:["guatemala"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הסכם הגבולות CA-4"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"GN",name:"גינאה",aliases:["guinea"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1138,39 +1147,39 @@ const COUNTRIES = [
 {id:"GY",name:"גיאנה",aliases:["guyana"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"HT",name:"האיטי",aliases:["haiti"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"HN",name:"הונדורס",aliases:["honduras"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הסכם הגבולות CA-4"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"HU",name:"הונגריה",aliases:["hungary","בודפשט","budapest","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"IS",name:"איסלנד",aliases:["iceland","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"HU",name:"הונגריה",aliases:["hungary","בודפשט","budapest","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"IS",name:"איסלנד",aliases:["iceland","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"IN",name:"הודו",aliases:["india","דלהי","מומבאי","גואה"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום","כניסה עם eVisa דרך 32 שדות תעופה ו-5 נמלי ים מוגדרים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ID",name:"אינדונזיה",aliases:["indonesia"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["ישראלים בקטגוריית Calling Visa - הליך מיוחד ומורכב"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"IR",name:"איראן",aliases:["iran"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"IQ",name:"עיראק",aliases:["iraq"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"IR",name:"איראן",aliases:["iran"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב, נדרש היתר ממשרד הפנים ובלעדיו הכניסה תסורב"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"IQ",name:"עיראק",aliases:["iraq"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב, נדרש היתר ממשרד הפנים ובלעדיו הכניסה תסורב"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"IE",name:"אירלנד",aliases:["ireland"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"IT",name:"איטליה",aliases:["italy","רומא","rome","מילאנו","ונציה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"IT",name:"איטליה",aliases:["italy","רומא","rome","מילאנו","ונציה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"JM",name:"ג'מייקה",aliases:["jamaica"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"JP",name:"יפן",aliases:["japan","טוקיו","tokyo","קיוטו"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"JO",name:"ירדן",aliases:["jordan"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["נדרשת הזמנת מדריך ירדני ומלון מראש; אסורה כניסה בגשר אלנבי; עד יומיים ללא ויזה ממעבר רבין"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
+{id:"JP",name:"יפן",aliases:["japan","טוקיו","tokyo","קיוטו"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום. אשרת תייר ניתנת בנחיתה, בלי צורך בהגשה מראש","כדאי למלא מראש את טופס Visit Japan Web (הגירה ומכס) ולהגיע עם קודי ה-QR, זה חוסך זמן המתנה בביקורת","הפטור מיועד לתיירות וביקור בלבד. לעבודה או ללימודים צריך אשרה מתאימה"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
+{id:"JO",name:"ירדן",aliases:["jordan"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["נדרשת הזמנת מדריך ירדני ומלון מראש. אסורה כניסה בגשר אלנבי, ועד יומיים אפשר להיכנס בלי ויזה ממעבר רבין"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"KZ",name:"קזחסטן",aliases:["kazakhstan"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"KE",name:"קניה",aliases:["kenya"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 90 יום","הגשה עד 90 יום מראש, לפחות 72 שעות לפני נסיעה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"KI",name:"קיריבטי",aliases:["kiribati"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","עד 90 יום בכל תקופה של 12 חודשים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"KP",name:"צפון קוריאה",aliases:["north korea"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["נדרש אישור מיוחד לתיירות"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"KR",name:"דרום קוריאה",aliases:["south korea"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 90 יום","K-ETA בתוקף 3 שנים מיום האישור"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"KW",name:"כווית",aliases:["kuwait"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר - חרם הליגה הערבית"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
+{id:"KW",name:"כווית",aliases:["kuwait"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר, בגלל חרם הליגה הערבית"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"KG",name:"קירגיזסטן",aliases:["kyrgyzstan"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום","30 יום בכל תקופה של 60 יום"],passportValidity:3,validityText:"3 חודשים לפחות מעבר למועד היציאה"},
 {id:"LA",name:"לאוס",aliases:["laos"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 30 יום","eVisa דרך שדות תעופה וגשרי ידידות מוגדרים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"LV",name:"לטביה",aliases:["latvia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"LB",name:"לבנון",aliases:["lebanon"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
+{id:"LV",name:"לטביה",aliases:["latvia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"LB",name:"לבנון",aliases:["lebanon"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב, נדרש היתר ממשרד הפנים ובלעדיו הכניסה תסורב"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"LS",name:"לסוטו",aliases:["lesotho"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"LR",name:"ליבריה",aliases:["liberia"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 3 חודשים","ויזה מקוונת בהגעה (e-VOA)"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"LY",name:"לוב",aliases:["libya"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר - חרם הליגה הערבית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"LI",name:"ליכטנשטיין",aliases:["liechtenstein","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"LT",name:"ליטא",aliases:["lithuania","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"LU",name:"לוקסמבורג",aliases:["luxembourg","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"LY",name:"לוב",aliases:["libya"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה ומעבר, בגלל חרם הליגה הערבית"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"LI",name:"ליכטנשטיין",aliases:["liechtenstein","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"LT",name:"ליטא",aliases:["lithuania","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"LU",name:"לוקסמבורג",aliases:["luxembourg","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"MG",name:"מדגסקר",aliases:["madagascar"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"MW",name:"מלאווי",aliases:["malawi"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"MY",name:"מלזיה",aliases:["malaysia"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה לתיירות; למטרות אחרות - ויזה ואישור משרד הפנים המלזי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"MV",name:"האיים המלדיביים",aliases:["maldives"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["איסור כניסה לישראלים מ-15.4.2025"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"MW",name:"מלאווי",aliases:["malawi"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום","מ-3.1.2026 מלאווי צמצמה את רשימת הפטורים על בסיס הדדיות, ורוב האזרחויות נדרשות היום בויזה. לפי הפרסומים ישראל נשארה ברשימת הפטורים","יש סתירות בין המקורות, ולכן חשוב לאמת מול מחלקת הויזות לפני שנותנים התחייבות ללקוח"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"MY",name:"מלזיה",aliases:["malaysia"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["סירוב כניסה לתיירות. למטרות אחרות נדרשת ויזה ואישור משרד הפנים המלזי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"MV",name:"האיים המלדיביים",aliases:["maldives"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["איסור כניסה למחזיקי דרכון ישראלי מ-15.4.2025. האיסור עוגן בחוק, ועודכן ביוני 2026 כמי שעדיין בתוקף","האיסור חל רק על כניסה עם דרכון ישראלי. מי שיש לו אזרחות כפולה יכול להיכנס עם הדרכון הזר שברשותו","משרד החוץ הישראלי ממליץ להימנע מנסיעה ליעד"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ML",name:"מאלי",aliases:["mali"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"MT",name:"מלטה",aliases:["malta","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"MT",name:"מלטה",aliases:["malta","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"MH",name:"איי מרשל",aliases:["marshall islands"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"MR",name:"מאוריטניה",aliases:["mauritania"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום","זמין בנמל התעופה נואקשוט"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"MU",name:"מאוריציוס",aliases:["mauritius"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1180,31 +1189,31 @@ const COUNTRIES = [
 {id:"MC",name:"מונקו",aliases:["monaco"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"MN",name:"מונגוליה",aliases:["mongolia"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ME",name:"מונטנגרו",aliases:["montenegro"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"MA",name:"מרוקו",aliases:["morocco","מרקש","קזבלנקה"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום","eVisa ל-30 יום, ניתן להארכה עד 6 חודשים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"MA",name:"מרוקו",aliases:["morocco","מרקש","קזבלנקה"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: עד 30 יום בכל כניסה","האשרה עצמה תקפה עד 180 יום ממועד ההנפקה, אבל זה לא מאריך את משך השהייה המותר בכל כניסה","זמן טיפול רשמי: עד 72 שעות במסלול רגיל, עד 24 שעות במסלול אקספרס"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"MZ",name:"מוזמביק",aliases:["mozambique"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 30 יום","רישום ETA לפחות 48 שעות לפני הגעה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"MM",name:"מיאנמר",aliases:["myanmar"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 28 יום","כניסה דרך שדות התעופה יאנגון, נייפידאו או מנדליי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"NA",name:"נמיביה",aliases:["namibia"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום","ויזה בהגעה בנמל התעופה הוסאה קוטאקו ועמדות נוספות"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"NR",name:"נאורו",aliases:["nauru"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["ויזה בהגעה"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"NP",name:"נפאל",aliases:["nepal"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"NL",name:"הולנד",aliases:["netherlands","אמסטרדם","amsterdam","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"NZ",name:"ניו זילנד",aliases:["new zealand"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["נדרש NZeTA לפני הנסיעה; שהייה עד 3 חודשים; דרכון בתוקף לפחות 3 חודשים לאחר מועד היציאה"],passportValidity:3,validityText:"3 חודשים לפחות מעבר למועד היציאה"},
+{id:"NL",name:"הולנד",aliases:["netherlands","אמסטרדם","amsterdam","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"NZ",name:"ניו זילנד",aliases:["new zealand"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["נדרש NZeTA לפני הנסיעה. שהייה עד 3 חודשים, ודרכון בתוקף לפחות 3 חודשים אחרי מועד היציאה"],passportValidity:3,validityText:"3 חודשים לפחות מעבר למועד היציאה"},
 {id:"NI",name:"ניקרגואה",aliases:["nicaragua"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הסכם הגבולות CA-4"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"NE",name:"ניז'ר",aliases:["niger"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["ויזה בהגעה אפשרית עם מכתב Visa Volant"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"NG",name:"ניגריה",aliases:["nigeria"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום","נדרש אישור ויזה מראש מהאתר הרשמי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"MK",name:"צפון מקדוניה",aliases:["north macedonia"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"NO",name:"נורווגיה",aliases:["norway","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"NO",name:"נורווגיה",aliases:["norway","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"OM",name:"עומאן",aliases:["oman"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"PK",name:"פקיסטן",aliases:["pakistan"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["כניסה מוגבלת - רק עם ויזה ורישום משטרתי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"PK",name:"פקיסטן",aliases:["pakistan"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["כניסה מוגבלת, אפשרית רק עם ויזה ורישום משטרתי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"PW",name:"פלאו",aliases:["palau"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"PA",name:"פנמה",aliases:["panama"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
 {id:"PG",name:"פפואה גינאה החדשה",aliases:["papua new guinea"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 60 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"PY",name:"פרגוואי",aliases:["paraguay"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף ביום הכניסה"},
 {id:"PE",name:"פרו",aliases:["peru"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"PH",name:"הפיליפינים",aliases:["philippines","פיליפינים"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 60 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"PL",name:"פולין",aliases:["poland","ורשה","warsaw","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"PT",name:"פורטוגל",aliases:["portugal","ליסבון","lisbon","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"PL",name:"פולין",aliases:["poland","ורשה","warsaw","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"PT",name:"פורטוגל",aliases:["portugal","ליסבון","lisbon","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"QA",name:"קטאר",aliases:["qatar"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"RO",name:"רומניה",aliases:["romania","בוקרשט","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"RO",name:"רומניה",aliases:["romania","בוקרשט","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"RU",name:"רוסיה",aliases:["russia","מוסקבה"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"RW",name:"רואנדה",aliases:["rwanda"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"KN",name:"סנט קיטס ונוויס",aliases:["saint kitts and nevis"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
@@ -1213,48 +1222,48 @@ const COUNTRIES = [
 {id:"WS",name:"סמואה",aliases:["samoa"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["זמן שהייה: 90 יום","היתר כניסה בהגעה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SM",name:"סן מרינו",aliases:["san marino"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"ST",name:"סאו טומה ופרינסיפה",aliases:["sao tome and principe"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"SA",name:"ערב הסעודית",aliases:["saudi arabia"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["כניסה מוגבלת - חרם הליגה הערבית; היתרים זמניים למוסלמים ישראלים לחאג'"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"SA",name:"ערב הסעודית",aliases:["saudi arabia"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["כניסה מוגבלת בגלל חרם הליגה הערבית, עם היתרים זמניים למוסלמים ישראלים לחאג'"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SN",name:"סנגל",aliases:["senegal"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["זמן שהייה: חודש","נדרש דרכון בתוקף 6 חודשים וכרטיס המשך"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"RS",name:"סרביה",aliases:["serbia"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"SC",name:"סיישל",aliases:["seychelles"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 90 יום","מערכת גבולות אלקטרונית - הגשה עד 30 יום מראש"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
+{id:"SC",name:"סיישל",aliases:["seychelles"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 90 יום","מערכת גבולות אלקטרונית, אפשר להגיש עד 30 יום מראש"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"SL",name:"סיירה לאון",aliases:["sierra leone"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SG",name:"סינגפור",aliases:["singapore"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 30 יום","נדרש למלא SG Arrival Card בתוך 3 ימים לפני ההגעה. שימו לב: זהו טופס כניסה דיגיטלי ואינו מהווה ויזה."],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"SK",name:"סלובקיה",aliases:["slovakia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"SI",name:"סלובניה",aliases:["slovenia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"SK",name:"סלובקיה",aliases:["slovakia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"SI",name:"סלובניה",aliases:["slovenia","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"SB",name:"איי שלמה",aliases:["solomon islands"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SO",name:"סומליה",aliases:["somalia"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ZA",name:"דרום אפריקה",aliases:["south africa","קייפטאון","יוהנסבורג"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:1,validityText:"30 יום לפחות מעבר ליציאה + 2 עמודים ריקים"},
 {id:"SS",name:"דרום סודן",aliases:["south sudan"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"ES",name:"ספרד",aliases:["spain","מדריד","ברצלונה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"LK",name:"סרי לנקה",aliases:["sri lanka"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["נדרש ETA לתיירות ל-30 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"ES",name:"ספרד",aliases:["spain","מדריד","ברצלונה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"LK",name:"סרי לנקה",aliases:["sri lanka"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["נדרש ETA לתיירות ל-30 יום, שתי כניסות","חובה להנפיק את האישור לפני היציאה. מאז 15.10.2025 בוטלה ההנפקה בהגעה, ובלי אישור אפשר לקבל סירוב עלייה למטוס"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SD",name:"סודן",aliases:["sudan"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["הנורמליזציה מ-2020 טרם יושמה בפועל בהסדרי ויזה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"SR",name:"סורינם",aliases:["suriname"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הרשמה מקוונת מראש"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"SE",name:"שוודיה",aliases:["sweden","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"CH",name:"שווייץ",aliases:["switzerland","ציריך","זנבה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
-{id:"SY",name:"סוריה",aliases:["syria"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"SE",name:"שוודיה",aliases:["sweden","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"CH",name:"שווייץ",aliases:["switzerland","ציריך","זנבה","שנגן"],category:"free",visaTitle:"פטור מויזה",requirements:["מערכת EES פעילה בכל גבולות שנגן מ-10.4.2026, ורושמת טביעות אצבע ותצלום פנים בכניסה וביציאה. כדאי לקחת בחשבון זמני המתנה ארוכים יותר בגבול","ETIAS עדיין לא נכנס לתוקף ואין להגיש בקשה. ההשקה נדחתה ל-2027, ואחריה תהיה תקופת מעבר","זמן שהייה: 90 יום","90 יום בכל 180 יום במרחב שנגן"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
+{id:"SY",name:"סוריה",aliases:["syria"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב, נדרש היתר ממשרד הפנים ובלעדיו הכניסה תסורב"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TJ",name:"טג'יקיסטן",aliases:["tajikistan"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 60 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"TZ",name:"טנזניה",aliases:["tanzania","זנזיבר"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"TH",name:"תאילנד",aliases:["thailand","בנגקוק","פוקט","קוסמוי"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 60 יום","נדרש למלא טופס כניסה דיגיטלי (TDAC) עד 3 ימים לפני הכניסה. שימו לב: אינו ויזה."],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"TZ",name:"טנזניה",aliases:["tanzania","זנזיבר","zanzibar"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: עד 90 יום","האשרה תקפה גם ליבשת וגם לזנזיבר, ואין צורך באשרה נפרדת","⚠ זנזיבר דורשת ביטוח נסיעות חובה של ZIC לכל מבקר שאינו תושב, כולל ילדים. צריך לרכוש אותו מראש באתר הרשמי ולהציג קוד QR בביקורת הגבולות","ביטוח פרטי לא מתקבל כתחליף, ובלי הפוליסה הרשמית אפשר לקבל סירוב כניסה לזנזיבר","הביטוח מכסה עד 92 יום מהכניסה, ולא נדרש בטרנזיט בלי מעבר ביקורת גבולות","ייתכן שתידרש תעודת חיסון קדחת צהובה בהגעה מאזור נגוע או במעבר דרכו"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"TH",name:"תאילנד",aliases:["thailand","בנגקוק","פוקט","קוסמוי"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 30 יום. הפטור קוצר מ-60 ל-30 יום בכניסות מ-15.9.2026 (פורסם ברשומות ב-31.8.2026)","מי שנכנס עד 14.9.2026 שומר על תקופת השהייה שאושרה לו בכניסה","ניתן לבקש הארכה חד-פעמית של עד 30 יום נוספים מרשויות ההגירה","הפטור החדש מיועד לתיירות בלבד ואינו כולל עבודה או פעילות עסקית קצרת טווח","כניסה דרך מעברי גבול יבשתיים מוגבלת לפעמיים בשנה קלנדרית. ההגבלה לא חלה על כניסה בטיסה","נדרש למלא טופס כניסה דיגיטלי (TDAC) עד 3 ימים לפני הכניסה. שימו לב: אינו ויזה."],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TL",name:"מזרח טימור",aliases:["timor-leste"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["זמן שהייה: 30 יום","לא זמין בכל נקודות הכניסה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TG",name:"טוגו",aliases:["togo"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 15 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TO",name:"טונגה",aliases:["tonga"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TT",name:"טרינידד וטובגו",aliases:["trinidad and tobago"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"TN",name:"תוניסיה",aliases:["tunisia"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["לנוסעים בטיול מאורגן - דרך נציג החברה המארגנת"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"TN",name:"תוניסיה",aliases:["tunisia"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["לנוסעים בטיול מאורגן, ההגשה דרך נציג החברה המארגנת"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TR",name:"טורקיה",aliases:["turkey","איסטנבול","אנטליה"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TM",name:"טורקמניסטן",aliases:["turkmenistan"],category:"required",visaTitle:"נדרשת ויזה בשגרירות",requirements:["ויזה ל-10 ימים בהגעה עם מכתב הזמנה מאושר מראש"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"TV",name:"טובאלו",aliases:["tuvalu"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["זמן שהייה: חודש"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"UG",name:"אוגנדה",aliases:["uganda"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 3 חודשים"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"UA",name:"אוקראינה",aliases:["ukraine"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"AE",name:"איחוד האמירויות",aliases:["united arab emirates","uae","דובאי","dubai","אבו דאבי"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","נוסע עם דרכון זמני אינו יכול להיכנס במסגרת הפטור מויזה","יש לבדוק לא רק את תאריך התוקף אלא גם את סוג הדרכון ואת תקופת התוקף שניתנה בעת ההנפקה"],passportValidity:3,validityText:"3 חודשים לפחות מיום הכניסה"},
-{id:"GB",name:"בריטניה",aliases:["united kingdom","uk","לונדון","london","אנגליה","england"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: 180 יום","נדרש אישור ETA אלקטרוני לפני הנסיעה"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
-{id:"US",name:"ארצות הברית",aliases:["united states","usa","ארהב","ארה\"ב","ניו יורק","מיאמי"],category:"eta",visaTitle:"אישור אלקטרוני (ESTA)",requirements:["זמן שהייה: 90 יום","תוכנית הפטור מויזה (VWP) - נדרש ESTA בתוקף שנתיים; ללא דרכון ביומטרי - ויזת B1/B2","להגשת ESTA נדרש דרכון ישראלי ביומטרי ובתוקף","מעל גיל 18: הדרכון חייב להיות מונפק מלכתחילה ל-10 שנים","מתחת לגיל 18: ניתן להגיש גם עם דרכון ביומטרי שהונפק לתקופה קצרה יותר","דרכון זמני, דרכון חירום או דרכון שאינו ביומטרי אינם מתאימים להגשת ESTA"],passportValidity:0,validityText:"תקף למשך השהות בלבד - ישראל נכללת ב\"מועדון 6 החודשים\" של ארה\"ב"},
+{id:"AE",name:"איחוד האמירויות",aliases:["united arab emirates","uae","דובאי","dubai","אבו דאבי"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: עד 90 יום, ניתן להארכה","הפטור חל רק על דרכון ישראלי שהונפק ל-5 או ל-10 שנים, והאשרה ניתנת אוטומטית בביקורת הדרכונים בהגעה","⚠ מ-7.12.2024 מחזיקי דרכון זמני שהונפק לשנה אינם זכאים לפטור, ונדרשים בויזה מראש. בלי ויזה אפשר לקבל סירוב עלייה למטוס","הכלל אינו חל על נוסעי טרנזיט שאינם יוצאים מהטרמינל","הפטור מיועד לתיירות בלבד. לעבודה או ללימודים צריך אשרה מתאימה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"GB",name:"בריטניה",aliases:["united kingdom","uk","לונדון","london","אנגליה","england"],category:"eta",visaTitle:"אישור אלקטרוני (ETA)",requirements:["זמן שהייה: עד 180 יום","נדרש אישור ETA אלקטרוני לפני הנסיעה. האישור הזה הוא לא ויזה אלא היתר נסיעה מוקדם","⚠ מ-25.2.2026 האכיפה מלאה. חברות התעופה, מפעילי המעבורות והרכבות בודקים את האישור לפני העלייה, ובלי אישור מאושר לא תתאפשר עלייה","החובה חלה על כל נוסע בלי קשר לגיל, כולל תינוקות, וצריך אישור נפרד לכל אדם","האישור צמוד לדרכון שאיתו הוגשה הבקשה, ולכן צריך לנסוע עם אותו דרכון בדיוק","כדאי להגיש לפחות 3 ימי עבודה לפני הנסיעה. האישור תקף לשנתיים או עד פקיעת הדרכון, לכניסות מרובות","פטורים: מחזיקי ויזה בריטית או מעמד הגירה בתוקף, ומעבר Airside שאינו עובר ביקורת גבולות"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
+{id:"US",name:"ארצות הברית",aliases:["united states","usa","ארהב","ארה\"ב","ניו יורק","מיאמי"],category:"eta",visaTitle:"אישור אלקטרוני (ESTA)",requirements:["זמן שהייה: 90 יום","תוכנית הפטור מויזה (VWP) דורשת ESTA בתוקף שנתיים. בלי דרכון ביומטרי צריך ויזת B1/B2","להגשת ESTA נדרש דרכון ישראלי ביומטרי ובתוקף","מעל גיל 18: הדרכון חייב להיות מונפק מלכתחילה ל-10 שנים","מתחת לגיל 18: ניתן להגיש גם עם דרכון ביומטרי שהונפק לתקופה קצרה יותר","דרכון זמני, דרכון חירום או דרכון שאינו ביומטרי אינם מתאימים להגשת ESTA"],passportValidity:0,validityText:"תקף למשך השהות בלבד. ישראל נכללת ב\"מועדון 6 החודשים\" של ארה\"ב"},
 {id:"UY",name:"אורוגוואי",aliases:["uruguay"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 3 חודשים"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"UZ",name:"אוזבקיסטן",aliases:["uzbekistan"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום","שהייה מעל 3 ימים מחייבת רישום במשטרה המקומית"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"VU",name:"ונואטו",aliases:["vanuatu"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 120 יום"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"VA",name:"קריית הוותיקן",aliases:["vatican city"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","הכניסה דרך איטליה (שנגן)"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
 {id:"VE",name:"ונצואלה",aliases:["venezuela"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["יש לבדוק דרישות פרטניות במעמד הבקשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"VN",name:"וייטנאם",aliases:["vietnam"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: 90 יום","eVisa בתוקף 90 יום, רב-פעמי"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
-{id:"YE",name:"תימן",aliases:["yemen"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב - נדרש היתר ממשרד הפנים; סירוב כניסה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"VN",name:"וייטנאם",aliases:["vietnam"],category:"evisa",visaTitle:"ויזה אלקטרונית (eVisa)",requirements:["זמן שהייה: עד 90 יום","eVisa בתוקף עד 90 יום, כניסה אחת או כניסות מרובות","נדרש דרכון בתוקף 6 חודשים לפחות עם 2 עמודים ריקים","ישראל לא נכללת בפטור מויזה של וייטנאם, ואשרה נדרשת לכל מטרות הכניסה","האשרה תקפה ב-83 נקודות כניסה מוגדרות (אוויר, יבשה וים), וצריך לבחור את נקודת הכניסה בעת ההגשה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
+{id:"YE",name:"תימן",aliases:["yemen"],category:"banned_il",visaTitle:"אסור עפ\"י החוק הישראלי",requirements:["מדינת אויב, נדרש היתר ממשרד הפנים ובלעדיו הכניסה תסורב"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"ZM",name:"זמביה",aliases:["zambia"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 30 יום","זכאות לויזה אוניברסלית משותפת עם זימבבואה"],passportValidity:4,validityText:"4 חודשים לפחות מיום הכניסה"},
 {id:"ZW",name:"זימבבואה",aliases:["zimbabwe"],category:"evisa_voa",visaTitle:"ויזה אלקטרונית או בהגעה",requirements:["זמן שהייה: חודש","זכאות לויזה אוניברסלית משותפת עם זמביה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"XK",name:"קוסובו",aliases:["kosovo"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","90 יום בכל תקופה של 180 יום"],passportValidity:3,validityText:"3 חודשים מעבר ליציאה"},
@@ -1264,7 +1273,7 @@ const COUNTRIES = [
 {id:"IL",name:"ישראל",aliases:["israel","תל אביב"],category:"eta",visaTitle:"אישור אלקטרוני (ETA-IL)",requirements:["רלוונטי לנוסעים נכנסים מארצות פטורות ויזה","הגשה מומלצת 72 שעות לפני הנסיעה"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"},
 {id:"NCY",name:"צפון קפריסין",aliases:["northern cyprus"],category:"free",visaTitle:"פטור מויזה",requirements:["זמן שהייה: 90 יום","ישראל אינה מכירה בצפון קפריסין"],passportValidity:0,validityText:"תקף למשך השהות בלבד"},
 {id:"PS",name:"הרשות הפלסטינית",aliases:["palestine","gaza"],category:"refused",visaTitle:"כניסה אסורה / מוגבלת",requirements:["כניסת ישראלים אסורה עפ\"י צו אלוף"],passportValidity:0,validityText:"אין דרישת תוקף"},
-{id:"SML",name:"סומלילנד",aliases:["somaliland"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["ויזה בהגעה - בעקבות ההכרה מדצמבר 2025"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"}
+{id:"SML",name:"סומלילנד",aliases:["somaliland"],category:"voa",visaTitle:"ויזה בהגעה",requirements:["ויזה בהגעה, בעקבות ההכרה מדצמבר 2025"],passportValidity:6,validityText:"6 חודשים לפחות מיום הכניסה"}
 ];
 
 /* ═══════════ מחירון אשרות ═══════════
@@ -1275,8 +1284,8 @@ const COUNTRIES = [
 const PRICES = {
 "US":{ups:true,options:[
   {type:"אישור כניסה אלקטרוני ESTA, תיירות / עסקים",time:"עד 72 שעות",validity:"שנתיים או עד פקיעת הדרכון",feeUsd:40,serviceUsd:35,tag:"electronic",ups:false,form:false,
-   docs:["דרכון ישראלי ביומטרי (אלקטרוני עם שבב) ובתוקף — דרכון זמני, דרכון חירום או דרכון שאינו ביומטרי אינם מתאימים להגשה","מעל גיל 18: הדרכון חייב להיות מונפק מלכתחילה ל-10 שנים","מתחת לגיל 18: ניתן להגיש גם עם דרכון ביומטרי שהונפק לתקופה קצרה יותר","פרטי תעסוקה והיסטוריית עבודה (5 שנים אחרונות)","פרטי חשבונות רשתות חברתיות (5 שנים אחרונות)","מומלץ לשאת אישורי טיסה/מלון והוכחת אמצעים"]},
-  {type:"ויזת B1/B2 לארה״ב, תיירות / עסקים",time:"בכפוף לזמינות תורים; לרוב 7-14 ימי עבודה לאחר הראיון",validity:"עד 10 שנים",feeUsd:205,serviceUsd:85,tag:"physical",ups:true,form:false,
+   docs:["דרכון ישראלי ביומטרי (אלקטרוני עם שבב) ובתוקף. דרכון זמני, דרכון חירום או דרכון שאינו ביומטרי לא מתאימים להגשה","מעל גיל 18: הדרכון חייב להיות מונפק מלכתחילה ל-10 שנים","מתחת לגיל 18: ניתן להגיש גם עם דרכון ביומטרי שהונפק לתקופה קצרה יותר","פרטי תעסוקה והיסטוריית עבודה (5 שנים אחרונות)","פרטי חשבונות רשתות חברתיות (5 שנים אחרונות)","מומלץ לשאת אישורי טיסה/מלון והוכחת אמצעים"]},
+  {type:"ויזת B1/B2 לארה״ב, תיירות / עסקים",time:"תלוי בזמינות תורים, בדרך כלל 7 עד 14 ימי עבודה אחרי הראיון",validity:"עד 10 שנים",feeUsd:205,serviceUsd:85,tag:"physical",ups:true,form:false,
    docs:["דרכון בתוקף 6 חודשים לפחות מעבר למועד הנסיעה","מילוי טופס DS-160 מקוון ודף האישור","תמונת פספורט עדכנית (רקע לבן, 5x5 ס״מ)","אישור תשלום אגרת השגרירות","זימון לראיון בשגרירות","הוכחת קשרים לישראל (תלוש שכר / אישור מעסיק / נכסים)"]}
 ]},
 "CA":{options:[
@@ -1301,7 +1310,7 @@ const PRICES = {
 ]},
 "AE":{options:[
   {type:"ויזת תיירות / עסקים, כניסה אחת",time:"עד 3-5 ימי עבודה",validity:"בהתאם לאישור הרשויות",feeUsd:150,serviceUsd:45,tag:"electronic",
-   docs:["צילום צבעוני של עמוד הפרטים בדרכון (תוקף 6 חודשים+)","דרכון זמני אינו מתקבל במסגרת הפטור מויזה — יש לבדוק גם את סוג הדרכון ותקופת התוקף שניתנה בהנפקה","תמונת פספורט צבעונית עדכנית (רקע לבן, 43x55 מ״מ)","אישורי טיסה ומלון"]}
+   docs:["צילום צבעוני של עמוד הפרטים בדרכון (תוקף 6 חודשים+)","דרכון זמני לא מתקבל במסגרת הפטור מויזה, ולכן צריך לבדוק גם את סוג הדרכון ותקופת התוקף שניתנה בהנפקה","תמונת פספורט צבעונית עדכנית (רקע לבן, 43x55 מ״מ)","אישורי טיסה ומלון"]}
 ]},
 "IN":{options:[
   {type:"ויזת תיירות אלקטרונית (eVisa) ל-30 יום",time:"עד 3 ימי עבודה",validity:"30 ימים",feeUsd:28,serviceUsd:35,tag:"electronic",
@@ -1319,7 +1328,7 @@ const PRICES = {
 ]},
 "TH":{options:[
   {type:"כרטיס הגעה דיגיטלי (TDAC)",time:"מיידי",validity:"60 ימים",feeUsd:0,serviceUsd:25,tag:"permit",
-   docs:["דרכון בתוקף חצי שנה לפחות","כתובת שהייה בתאילנד (שם וכתובת מלון)","פרטי טיסה","הצהרת בריאות — יש למלא תוך 72 שעות לפני ההגעה, באנגלית"]}
+   docs:["דרכון בתוקף חצי שנה לפחות","כתובת שהייה בתאילנד (שם וכתובת מלון)","פרטי טיסה","הצהרת בריאות, יש למלא אותה תוך 72 שעות לפני ההגעה, באנגלית"]}
 ]},
 "IL":{options:[
   {type:"אישור כניסה אלקטרוני ETA-IL, כניסות מרובות",time:"עד 2-3 ימי עבודה (לרוב מיידי)",validity:"עד שנתיים או עד פקיעת הדרכון",feeUsd:10,serviceUsd:25,tag:"permit",
@@ -1620,9 +1629,26 @@ const VSTYLE = {
   banned_il: {c:'#c8372a', i:'<circle cx="12" cy="12" r="9"></circle><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"></line>'}
 };
 
+/* ── Hero מסתגל: מצטמצם אחרי שימוש ראשון בסשן, כדי לפנות מקום לתוכן ── */
+const HERO_SEEN_KEY = 'ams_hero_seen';
+function compactHero(){
+  const h = document.querySelector('.hero');
+  if(h && !h.classList.contains('compact')){
+    h.classList.add('compact');
+    try{ sessionStorage.setItem(HERO_SEEN_KEY, '1'); }catch(e){}
+  }
+}
+(function initHero(){
+  try{ if(sessionStorage.getItem(HERO_SEEN_KEY) === '1'){
+    const h = document.querySelector('.hero');
+    if(h) h.classList.add('compact');
+  }}catch(e){}
+})();
+
 function pickCountry(c, push){
   current = c;
   closeAc();
+  compactHero();
   $('rName').textContent = c.name;
   const f = flagUrl(c.id, 160);
   const fi = $('rFlag');
@@ -1637,15 +1663,30 @@ function pickCountry(c, push){
   $('rValidity').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;color:var(--brand-dark)" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>'
     + esc(c.validityText ? 'דרישת תוקף: ' + c.validityText : 'אין דרישת תוקף זמינה');
 
+  /* דרישות המסומנות ב-⚠ בתחילת השורה (בגיליון או בנתונים) מוצגות כאזהרה נפרדת,
+     שכבה שנייה בהיררכיה — בין התשובה הגדולה לבין רשימת הפרטים הרגילה. */
+  const crit = $('rCrit'); crit.innerHTML = '';
+  const critWarnIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>';
+  const allReqs = c.requirements || [];
+  const critReqs = allReqs.filter(r => r.indexOf('⚠') === 0);
+  const normReqs = allReqs.filter(r => r.indexOf('⚠') !== 0);
+  critReqs.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'crit';
+    div.innerHTML = critWarnIco + '<span>' + esc(r.replace(/^⚠\s*/, '')) + '</span>';
+    crit.appendChild(div);
+  });
+  crit.style.display = critReqs.length ? '' : 'none';
+
   const ul = $('rReqs'); ul.innerHTML = '';
-  (c.requirements || []).forEach(r => {
+  normReqs.forEach(r => {
     let txt = r;
     if(txt.indexOf('זמן שהייה: ') === 0 && txt.indexOf('עד') < 0) txt = txt.replace('זמן שהייה: ', 'זמן שהייה: עד ');
     const li = document.createElement('li');
     li.innerHTML = '<i>‹</i><span>' + esc(txt) + '</span>';
     ul.appendChild(li);
   });
-  ul.style.display = (c.requirements || []).length ? '' : 'none';
+  ul.style.display = normReqs.length ? '' : 'none';
 
   renderForms(c);
 
@@ -1892,8 +1933,8 @@ function openDrawer(code){
 
     if(showUps){
       html += '<div class="addons"><h5>שירותים נוספים (אופציונלי)</h5>'
-        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups1" data-cost="25"><span>משלוח דרכון כיוון אחד (UPS) — <strong>$25.00</strong></span></label>'
-        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups2" data-cost="50"><span>משלוח דרכון הלוך וחזור (UPS) — <strong>$50.00</strong></span></label>'
+        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups1" data-cost="25"><span>משלוח דרכון כיוון אחד (UPS), <strong>$25.00</strong></span></label>'
+        + '<label><input type="checkbox" class="ad" data-i="' + i + '" data-k="ups2" data-cost="50"><span>משלוח דרכון הלוך וחזור (UPS), <strong>$50.00</strong></span></label>'
         + '</div>';
     }
 
@@ -1917,7 +1958,7 @@ function openDrawer(code){
   html += '<div class="printfoot">'
     + (APPLY[code] ? '<div style="margin-bottom:8px"><strong>הגשה ותשלום מקוון:</strong> ' + APPLY[code] + '</div>' : '')
     + 'האגרות, זמני הטיפול ורשימת המסמכים נתונים להחלטת הרשויות ועשויים להשתנות ללא הודעה מוקדמת.<br>'
-    + '<strong>צוות מחלקת הויזות — אמסלם תיירות ונופש</strong><br>'
+    + '<strong>צוות מחלקת הויזות, אמסלם תיירות ונופש</strong><br>'
     + '04-6700900 שלוחה 5895 | WhatsApp 04-670-0998 | visa.dept@amsalem.com</div>';
 
   $('dBody').innerHTML = html;
@@ -1979,7 +2020,7 @@ $('dBody').addEventListener('click', e => {
 function copyOption(i, o){
   const ads = addonsOf(i);
   const extra = ads.reduce((s,a) => s + a.cost, 0);
-  let t = 'הצעת מחיר לאשרת כניסה — ' + priceName(dCode) + '\n===================\n\n'
+  let t = 'הצעת מחיר לאשרת כניסה ל' + priceName(dCode) + '\n===================\n\n'
     + o.type + '\n'
     + 'סוג תהליך: ' + TAG_LBL[o.tag] + '\n'
     + 'זמן טיפול: ' + o.time + '\n'
@@ -1994,7 +2035,7 @@ function copyOption(i, o){
   ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta); ta.select();
   try{ document.execCommand('copy'); toast('פרטי ההצעה הועתקו'); }
-  catch(err){ toast('ההעתקה נכשלה — נסו שוב'); }
+  catch(err){ toast('ההעתקה נכשלה, נסו שוב'); }
   document.body.removeChild(ta);
 }
 
@@ -2039,7 +2080,7 @@ function openDest(filter){
   destList.innerHTML = '';
   if(!dShown.length){
     const li = document.createElement('li');
-    li.className = 'none'; li.textContent = 'לא נמצא יעד — אפשר להקליד חופשי';
+    li.className = 'none'; li.textContent = 'לא נמצא יעד, אפשר להקליד חופשי';
     destList.appendChild(li);
   }
   dShown.forEach((n, i) => {
@@ -2094,8 +2135,8 @@ dep.addEventListener('change', () => {
   depHint.className = 'hint';
   if(n === null){ depHint.textContent = ''; return; }
   if(n < 0){ depHint.textContent = 'התאריך כבר עבר'; depHint.classList.add('bad'); }
-  else if(n === 0){ depHint.textContent = 'יציאה היום — הפנייה תסומן כדחופה'; depHint.classList.add('warn'); }
-  else if(n <= URGENT_DAYS){ depHint.textContent = 'יציאה בעוד ' + n + ' ימים — הפנייה תסומן כדחופה'; depHint.classList.add('warn'); }
+  else if(n === 0){ depHint.textContent = 'יציאה היום, הפנייה תסומן כדחופה'; depHint.classList.add('warn'); }
+  else if(n <= URGENT_DAYS){ depHint.textContent = 'יציאה בעוד ' + n + ' ימים, הפנייה תסומן כדחופה'; depHint.classList.add('warn'); }
   else { depHint.textContent = 'יציאה בעוד ' + n + ' ימים'; depHint.classList.add('ok'); }
 });
 
@@ -2107,7 +2148,7 @@ phone.addEventListener('blur', () => {
   if(!phone.value.trim()){ phoneHint.textContent = ''; phone.classList.remove('err'); return; }
   const ok = validPhone(phone.value);
   phoneHint.className = 'hint ' + (ok ? 'ok' : 'bad');
-  phoneHint.textContent = ok ? '' : 'מספר לא תקין — 10 ספרות המתחילות ב-0';
+  phoneHint.textContent = ok ? '' : 'מספר לא תקין, צריך 10 ספרות שמתחילות ב-0';
   phone.classList.toggle('err', !ok);
 });
 
@@ -2175,9 +2216,9 @@ async function addFiles(list){
   let warn = '';
   for(const f of list){
     if(files.length >= MAX_FILES){ warn = 'ניתן לצרף עד ' + MAX_FILES + ' קבצים'; break; }
-    if(f.size > 20 * 1024 * 1024){ warn = f.name + ' — הקובץ גדול מ-20MB'; continue; }
+    if(f.size > 20 * 1024 * 1024){ warn = f.name + ' גדול מ-20MB'; continue; }
     const out = await shrink(f);
-    if(files.reduce((s,x) => s + x.size, 0) + out.size > MAX_TOTAL){ warn = 'הגעתם למגבלת הגודל — הסירו קובץ כדי להוסיף עוד'; break; }
+    if(files.reduce((s,x) => s + x.size, 0) + out.size > MAX_TOTAL){ warn = 'הגעתם למגבלת הגודל, הסירו קובץ כדי להוסיף עוד'; break; }
     files.push(out);
   }
   dropBusy(false); renderFiles();
@@ -2204,12 +2245,12 @@ function fail(msg, field, fallback){
 }
 mailBtn.addEventListener('click', () => {
   const d = lastPayload; if(!d) return;
-  const subject = (d.urgency === 'דחוף' ? 'פנייה דחופה — ויזה — ' : 'פנייה — ויזה — ') + d.destination + ' — יציאה ' + d.departure;
+  const subject = (d.urgency === 'דחוף' ? 'פנייה דחופה, ויזה, ' : 'פנייה, ויזה, ') + d.destination + ', יציאה ' + d.departure;
   const body = [
-    'לקוח: ' + d.client_name, 'טלפון: ' + d.client_phone, 'דוא״ל: ' + (d.client_email || '—'),
-    'איפון חברה: ' + (d.company || '—'), 'יעד: ' + d.destination, 'נוסעים: ' + d.pax,
+    'לקוח: ' + d.client_name, 'טלפון: ' + d.client_phone, 'דוא״ל: ' + (d.client_email || '-'),
+    'איפון חברה: ' + (d.company || '-'), 'יעד: ' + d.destination, 'נוסעים: ' + d.pax,
     'יציאה: ' + d.departure + ' (בעוד ' + d.days_left + ' ימים)', 'דחיפות: ' + d.urgency,
-    'הערות: ' + (d.notes || '—'), '', 'מפנה: ' + d.agent_name,
+    'הערות: ' + (d.notes || '-'), '', 'מפנה: ' + d.agent_name,
     files.length ? '(יש לצרף ידנית ' + files.length + ' צילומי דרכון)' : ''
   ].join('\n');
   /* נפתח ב-Gmail; אם החלון נחסם, נופלים חזרה לתוכנת המייל המוגדרת במחשב */
@@ -2261,7 +2302,7 @@ leadForm.addEventListener('submit', async e => {
 
   if(!ENDPOINT){
     $('leadBtn').disabled = false; $('leadBtnTxt').textContent = 'שלח למחלקת ויזות';
-    return fail('הטופס אינו מחובר לשרת — יש להגדיר ENDPOINT בקוד.', null, true);
+    return fail('הטופס לא מחובר לשרת, צריך להגדיר ENDPOINT בקוד.', null, true);
   }
   try{
     const res = await fetch(ENDPOINT, {
@@ -2448,7 +2489,7 @@ async function loadData(force){
     setDataStatus('מקור נתונים: Google Sheets · עודכן ' + fmtWhen(Date.now()), 'ok');
   }catch(err){
     console.error('data load failed', err);
-    setDataStatus('העדכון מהשרת נכשל — מוצגים הנתונים השמורים', 'bad');
+    setDataStatus('העדכון מהשרת נכשל, מוצגים הנתונים השמורים', 'bad');
   }
 }
 
